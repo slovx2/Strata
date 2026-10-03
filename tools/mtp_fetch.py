@@ -26,13 +26,13 @@ import time
 import urllib.error
 import urllib.request
 
-# #214: a fixed commit of the checkpoint (its `sha` from https://huggingface.co/api/models/Qwen/Qwen3.8-Flash-Next
+# #214: a fixed commit of the checkpoint (its `sha` from https://hf-mirror.com/api/models/Qwen/Qwen3.8-Flash-Next
 # on 2026-09-30), so every install reads the same tensors; STRATA_MTP_REVISION overrides it (e.g. main).  When the
 # repository no longer has it, the current files are read instead, with a message (resolve_repo).
 PINNED_REVISION = "de4b8e4d43b917e7706784d8bb445c9af86a3540"
 REVISION = os.environ.get("STRATA_MTP_REVISION") or PINNED_REVISION
-REPO = "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/resolve/%s/" % REVISION
-PINNED = "https://huggingface.co/Qwen/Qwen3.8-Flash-Next/resolve/%s/" % PINNED_REVISION   # SHA256's revision
+REPO = "https://hf-mirror.com/Qwen/Qwen3.8-Flash-Next/resolve/%s/" % REVISION
+PINNED = "https://hf-mirror.com/Qwen/Qwen3.8-Flash-Next/resolve/%s/" % PINNED_REVISION   # SHA256's revision
 DTYPE_BYTES = {"BF16": 2, "F16": 2, "F32": 4, "F8_E4M3": 1, "I64": 8, "I32": 4}
 BAD = 3                                             # `verify`'s exit code: a tensor is missing or corrupt
 

@@ -59,7 +59,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 WIN = os.name == "nt"
 # #214: every Hugging Face file comes from a fixed commit of its repository (the `sha` of
-# https://huggingface.co/api/models/<repo> when this was pinned), so a checkout installs the same files on any
+# https://hf-mirror.com/api/models/<repo> when this was pinned), so a checkout installs the same files on any
 # day.  A revision the repository no longer has falls back to its current files, with a message (download()).
 HF_REVISIONS = {
     "ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF": "ed59f92082b1e93c0e96d60a8b11aab089b52f09",        # 2026-09-29
@@ -71,12 +71,12 @@ HF_REVISIONS = {
 
 def hf(repo: str) -> str:
     """The download folder of a Hugging Face repository at its pinned revision."""
-    return f"https://huggingface.co/{repo}/resolve/{HF_REVISIONS[repo]}/"
+    return f"https://hf-mirror.com/{repo}/resolve/{HF_REVISIONS[repo]}/"
 
 
 def hf_unpinned(url: str) -> str:
     """The same file at the repository's current revision (main)."""
-    return re.sub(r"(https://huggingface\.co/.+?/resolve/)[0-9a-f]{40}/", r"\1main/", url, count=1)
+    return re.sub(r"(https://hf-mirror\.com/.+?/resolve/)[0-9a-f]{40}/", r"\1main/", url, count=1)
 
 
 HF = hf("ISTA-DASLab/Qwen3.8-Flash-Next-GSQ-RCO-GGUF")
@@ -153,7 +153,7 @@ FAMILIES = {
               "file": "Swift-Qwen3.8-Flash-Next-GSQ-RCO-{q}-0000{i}-of-00002.gguf", "tag": "swift-",
               "mmproj_hf": hf("ukisai/Swift-1.5-Qwen3.8-Flash-Next-GSQ-RCO-GGUF"),
               "mmproj": "mmproj-Swift-Qwen3.8-Flash-Next-BF16.gguf", "name": "swift-1.5",
-              "license": "Swift Open License 1.0: https://huggingface.co/ukisai/Swift-1.5-Qwen3.8-Flash-Next-GSQ-RCO-GGUF"},
+              "license": "Swift Open License 1.0: https://hf-mirror.com/ukisai/Swift-1.5-Qwen3.8-Flash-Next-GSQ-RCO-GGUF"},
     # ISTA-DASLab's expert-pruned release: half of each layer's experts removed, chosen for code, agentic tool use and
     # vision; its shard 2 (the n-gram table) and vision encoder are the original's files, shared with it
     "coder": {"title": "Qwen3.8-Flash-Next Coder", "by": "ISTA-DASLab's coding version",
@@ -3303,7 +3303,7 @@ def main() -> int:
         # (UD-Q4_K_XL: --compat-bf16 - its Q8_0 hyper-connection projections become BF16, the form the engine reads)
         run([sys.executable, str(ROOT / "tools" / "iq_pack.py"), "--gguf", str(shards[0]), "--out", str(pack),
              *fam.get("pack_args", [])], env=env)
-    if low_ram and not (pack / "experts.bin").exists():
+    if low_ram and not (pack / "experts.bin").exists() and not (os.environ.get("STRATA_NATIVE_EXPERTS_NO_COPY") == "1" and engine_ver >= (0, 1, 31) and (pack / "native_experts.txt").exists()):
         say(f"  Writing the experts into one file for the low-RAM mode (one time, {MODELS[model]['arena_gb']:.0f} GB) ...")
         run([sys.executable, str(ROOT / "tools" / "iq_pack.py"), "--gguf", str(shards[0]), "--out", str(pack),
              "--experts-bin"], env=env)
