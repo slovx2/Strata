@@ -161,6 +161,9 @@ class RunDiagnostic:
         self.pipe = PipeDiagnostic(tokenizer, think_end_ids) if tokenizer else None
         self.model = MarkerStream()
         self.injected = MarkerStream()
+        self.channels = {k: MarkerStream() for k in ('reasoning', 'content', 'tool_args')}
+        self.call_ids = set()
+        self.duplicate_calls = 0
         self.events = Counter()
         self.event_chars = Counter()
         self.transitions = deque(maxlen=32)
@@ -196,20 +199,36 @@ class RunDiagnostic:
             kind = known(event.kind, EVENTS)
             self.events[kind] += 1
             self.event_chars[kind] += len(event.text or '')
+            if kind in self.channels:
+                self.channels[kind].feed(event.text or '')
+            if kind == 'tool_call':
+                if event.call.id in self.call_ids:
+                    self.duplicate_calls += 1
+                if len(self.call_ids) < 1024:
+                    self.call_ids.add(event.call.id)
 
     def snapshot(self):
         call_at = self.model.first_at.get('<tool_call>')
         end_at = self.model.first_at.get('</think>')
         flags = []
+        if self.data.get('recovery', {}).get('duplicate_recovered_calls'):
+            flags.append('duplicate_recovered_call_payload')
         if self.data['thinking'] and call_at is not None and (end_at is None or call_at < end_at):
             flags.append('tool_marker_before_think_end')
         if self.data['thinking'] and self.data['state'] == 'reasoning':
             flags.append('ended_in_reasoning')
+        if self.duplicate_calls:
+            flags.append('duplicate_parser_call_id')
+        if self.channels['content'].counts.get('</think>') or self.channels['content'].counts.get('<think>'):
+            flags.append('think_marker_in_content')
+        if self.data['thinking'] and not self.events['tool_call'] and not self.event_chars['content']:
+            flags.append('no_answer_or_tool')
         if self.events['tool_start'] > self.events['tool_call']:
             flags.append('unfinished_tool_call')
         return {'flags': flags, **self.data, 'model_output': self.model.snapshot(), 'server_injected': self.injected.snapshot(),
                 'engine_pipe': self.pipe.snapshot() if self.pipe else None,
-                'parser_events': dict(self.events), 'parser_chars': dict(self.event_chars),
+                'parser_channels': {k: v.snapshot() for k, v in self.channels.items()},
+                'duplicate_call_ids': self.duplicate_calls, 'parser_events': dict(self.events), 'parser_chars': dict(self.event_chars),
                 'transitions': list(self.transitions)}
 
 
@@ -224,11 +243,38 @@ class RequestDiagnostic:
         self.runs = deque(maxlen=8)
         self.run_count = 0
         self.counts = {'api_prepared': Counter(), 'http_written': Counter()}
+        self.channels = {stage: {k: MarkerStream() for k in ('reasoning', 'content', 'tool_args')}
+                         for stage in self.counts}
+        self.sequence = {stage: deque(maxlen=64) for stage in self.counts}
+        self.input_shape = {}
         self.stops = {}
         self.http_status = None
         self.disconnected = False
         self.sink.write({'phase': 'start', 'request_id': self.id, 'time': time.time(),
-                         'schema_version': 2, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'payload': '[omitted]'})
+                         'schema_version': 3, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'payload': '[omitted]'})
+
+    def normalized_input(self, messages):
+        # Structural metadata only, never message content, names, IDs, paths or schema values.
+        shape = Counter()
+        for m in messages:
+            role = known(m.get('role'), {'system', 'assistant', 'user', 'tool'})
+            shape[role] += 1
+            if role == 'assistant':
+                shape['assistant_with_reasoning'] += bool(m.get('reasoning_content'))
+                shape['assistant_with_calls'] += bool(m.get('tool_calls'))
+                shape['calls_without_reasoning'] += bool(m.get('tool_calls')) and not bool(m.get('reasoning_content'))
+        self.input_shape = dict(shape)
+
+    def channel(self, stage, kind, text):
+        if isinstance(text, str):
+            self.channels[stage][kind].feed(text)
+
+    def step(self, stage, kind):
+        seq = self.sequence[stage]
+        if seq and seq[-1]['event'] == kind:
+            seq[-1]['count'] += 1
+        else:
+            seq.append({'event': kind, 'count': 1})
 
     def run(self, *args):
         result = RunDiagnostic(*args)
@@ -247,6 +293,7 @@ class RequestDiagnostic:
             kind = known(event.get('type'), {'message_start', 'content_block_start', 'content_block_delta',
                                            'content_block_stop', 'message_delta', 'message_stop', 'error'})
             counts[kind] += 1
+            self.step(stage, kind)
             if kind == 'content_block_start':
                 counts['block.' + known(event.get('content_block', {}).get('type'),
                                          {'thinking', 'text', 'tool_use'})] += 1
@@ -254,6 +301,8 @@ class RequestDiagnostic:
                 delta = event.get('delta', {})
                 sub = known(delta.get('type'), {'thinking_delta', 'text_delta', 'input_json_delta', 'signature_delta'})
                 counts[sub] += 1
+                for field, channel in (('thinking', 'reasoning'), ('text', 'content'), ('partial_json', 'tool_args')):
+                    self.channel(stage, channel, delta.get(field, ''))
             if kind == 'message_delta':
                 self.stops[stage] = known(event.get('delta', {}).get('stop_reason'), STOPS)
         else:
@@ -265,6 +314,13 @@ class RequestDiagnostic:
                 for field in ('reasoning_content', 'content', 'tool_calls'):
                     if delta.get(field):
                         counts[field] += 1
+                for field, channel in (('reasoning_content', 'reasoning'), ('content', 'content')):
+                    self.channel(stage, channel, delta.get(field, ''))
+                for call in delta.get('tool_calls') or []:
+                    self.channel(stage, 'tool_args', call.get('function', {}).get('arguments', ''))
+                    if call.get('id'):
+                        counts['tool_start'] += 1
+                self.step(stage, 'chunk')
                 if choice.get('finish_reason') is not None:
                     self.stops[stage] = known(choice['finish_reason'], STOPS)
 
@@ -281,20 +337,50 @@ class RequestDiagnostic:
         counts['json_response'] += 1
         if self.api == 'anthropic':
             for block in obj.get('content', []):
+                for field, channel in (('thinking', 'reasoning'), ('text', 'content')):
+                    self.channel('http_written', channel, block.get(field, ''))
                 counts['block.' + known(block.get('type'), {'thinking', 'text', 'tool_use'})] += 1
             if 'stop_reason' in obj:
                 self.stops['http_written'] = known(obj['stop_reason'], STOPS)
         elif obj.get('choices'):
             choice = obj['choices'][0]
             message = choice.get('message', {})
+            for field, channel in (('reasoning_content', 'reasoning'), ('content', 'content')):
+                self.channel('http_written', channel, message.get(field, ''))
+            counts['tool_start'] += len(message.get('tool_calls') or [])
             for key in ('reasoning_content', 'content', 'tool_calls'):
                 if message.get(key):
                     counts[key] += 1
             self.stops['http_written'] = known(choice.get('finish_reason'), STOPS)
 
     def finish(self):
+        flags = []
+        for channel in ('reasoning', 'content'):
+            parsed = sum(r.event_chars[channel] for r in self.runs)
+            prepared = self.channels['api_prepared'][channel].chars
+            written = self.channels['http_written'][channel].chars
+            if self.run_count == 1 and parsed != prepared:
+                flags.append('parser_api_' + channel + '_count_mismatch')
+            if prepared != written:
+                flags.append('api_http_' + channel + '_count_mismatch')
+        tool_key = 'block.tool_use' if self.api == 'anthropic' else 'tool_start'
+        prepared_tools = self.counts['api_prepared'][tool_key]
+        written_tools = self.counts['http_written'][tool_key]
+        if prepared_tools != written_tools:
+            flags.append('api_http_tool_count_mismatch')
+        if (self.run_count == 1 and self.runs[0].data['finish'] == 'stop'
+                and self.runs[0].events['tool_call'] != prepared_tools):
+            flags.append('parser_api_tool_count_mismatch')
+        if self.stream:
+            for channel in ('reasoning', 'content', 'tool_args'):
+                if self.channels['api_prepared'][channel].snapshot() != self.channels['http_written'][channel].snapshot():
+                    flags.append('api_http_' + channel + '_structure_mismatch')
         self.sink.write({'phase': 'end', 'request_id': self.id, 'time': time.time(),
-                         'schema_version': 2, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'elapsed_s': round(time.monotonic() - self.clock, 3),
+                         'schema_version': 3, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'elapsed_s': round(time.monotonic() - self.clock, 3),
+                         'input_shape': self.input_shape, 'flags': flags,
+                         'channels': {stage: {k: v.snapshot() for k, v in channels.items()}
+                                      for stage, channels in self.channels.items()},
+                         'event_sequence_tail': {k: list(v) for k, v in self.sequence.items()},
                          'http_status': self.http_status, 'disconnected': self.disconnected,
                          'run_count': self.run_count, 'runs_dropped': max(0, self.run_count - 8),
                          'runs': [run.snapshot() for run in self.runs],

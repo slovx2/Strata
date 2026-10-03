@@ -21,3 +21,6 @@ charset-normalizer==3.5.1
 idna==3.20
 urllib3==2.8.0
 colorama==0.4.6; sys_platform == "win32"
+
+# Conservative tool recovery validates schemas; without it recovery fails closed.
+jsonschema==4.25.1

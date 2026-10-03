@@ -149,16 +149,19 @@ class HttpBoundary(unittest.TestCase):
         for api in ('anthropic', 'openai'):
             for stream in (False, True):
                 with self.subTest(api=api, stream=stream):
-                    bad, _ = self.check_case(CALL, True, api, stream, False)
+                    bad, _ = self.check_case(CALL, True, api, stream, True)
                     self.assertEqual(bad['runs'][0]['model_output']['markers']['<tool_call>'], 1)
                     self.assertIn('tool_marker_before_think_end', bad['runs'][0]['flags'])
+                    self.assertEqual(bad['runs'][0]['recovery']['decision'], 'recovered_missing_think_end')
+                    self.assertEqual(bad['flags'], [])
+                    self.assertEqual(bad['schema_version'], 3)
                     good, _ = self.check_case(SECRET + '</think>' + CALL, True, api, stream, True)
                     self.assertEqual(good['runs'][0]['model_think_end_token_sequences'], 1)
                     self.assertEqual(good['runs'][0]['model_output']['markers']['</think>'], 1)
 
     def test_native_pipe_before_queue_and_drain(self):
         for prefix in ('', '</think>'):
-            end, _ = self.check_case(prefix + CALL, True, 'anthropic', True, bool(prefix), native=True)
+            end, _ = self.check_case(prefix + CALL, True, 'anthropic', True, True, native=True)
             run = end['runs'][0]
             pipe = run['engine_pipe']
             self.assertTrue(pipe['attached'])
@@ -168,12 +171,27 @@ class HttpBoundary(unittest.TestCase):
             self.assertEqual(pipe['done'][0]['native_generated'], pipe['tokens'])
             self.assertEqual(pipe['observation_errors'], 0)
         # A marker emitted AFTER EOS must be visible in the pipe, but never reach the parser.
-        end, _ = self.check_case(CALL, True, 'anthropic', True, False, native=True, after_stop='</think>')
+        end, _ = self.check_case(CALL, True, 'anthropic', True, True, native=True, after_stop='</think>')
         run = end['runs'][0]
         self.assertEqual(run['engine_pipe']['think_end_sequences'], 1)
         self.assertEqual(run['model_think_end_token_sequences'], 0)
         self.assertGreater(run['engine_pipe']['tokens'], run['model_tokens'])
 
+
+    def test_recovery_rejections_and_plain_channels(self):
+        for api in ('anthropic', 'openai'):
+            for stream in (False, True):
+                for script in ('Example\n' + CALL, CALL + ' extra text',
+                               CALL.replace('function=read', 'function=unknown')):
+                    end, _ = self.check_case(script, True, api, stream, False)
+                    self.assertEqual(end['flags'], [])
+                    self.assertEqual(end['runs'][0]['recovery']['recovered_calls'], 0)
+                for script in ('Think.</think>Plain answer.', CALL + '</think>Plain answer.'):
+                    end, _ = self.check_case(script, True, api, stream, False)
+                    self.assertEqual(end['flags'], [])
+                    self.assertEqual(end['channels']['http_written']['content']['chars'], len('Plain answer.'))
+                end, _ = self.check_case(CALL, True, api, stream, False, budget=90)
+                self.assertEqual(end['runs'][0]['recovery']['decision'], 'non_normal_finish')
 
     def test_thinking_off_and_truncation(self):
         self.check_case(CALL, False, 'anthropic', True, True)

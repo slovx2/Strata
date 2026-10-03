@@ -3,7 +3,8 @@
 Set `STRATA_DIAGNOSTIC_LOG` to an absolute JSONL path before starting the Python
 server. Its parent directory must already exist. This is separate from
 `STRATA_DEBUG` and `api_monitor`: leave both of those disabled because they can
-retain real content. No tokenizer, template, sampling or parser behavior changes.
+retain real content. Logging does not change model generation. See `TOOL_RECOVERY.md` for the separate
+parser recovery now enabled by the service.
 
 Each authenticated generation request gets a random `X-Strata-Diagnostic-ID`
 response header and start/end records. The logs contain only fixed marker strings,
@@ -53,10 +54,10 @@ interrupting inference; an invalid startup path fails startup visibly.
 
 ## Song PC
 
-Production uses `/mnt/data/strata-deploy/logs/boundary-diagnostics.jsonl`.
+Production uses `/mnt/data/strata-deploy/logs/output-diagnostics.jsonl`.
 The service's environment drop-in enables this variable and removes
-`STRATA_DEBUG`; full API monitoring remains disabled. Keep production at 256K,
-MTP disabled and manual startup. Enabling/disabling diagnostics needs a Python
+`STRATA_DEBUG`; full API monitoring remains disabled. Keep production at 256K and manual startup. The current SC117 deployment
+has MTP enabled at the user's request. Enabling/disabling diagnostics needs a Python
 service restart; it does not require rebuilding the CUDA engine.
 
 Run `python -m unittest serve.test_diagnostics serve.test_server
@@ -98,3 +99,32 @@ loaded weights behind a shared API alias; other values are logged as `other`.
 The original redaction, rotation and permissions apply. Tests include a real
 scripted subprocess/pipe, both missing/present delimiters, and a delimiter emitted
 after EOS to exercise draining. This requires no CUDA rebuild.
+
+## Schema 3: recovery and all output channels
+
+`runs[].recovery` records a fixed decision code, buffered/released character
+counts, recovered call count, duplicate recovered payload count, pending length,
+and whether a real think-close occurred. A `buffering` record without parser
+finish means the request did not reach normal finalization; never infer recovery.
+
+`parser_channels` and request `channels` carry redacted marker/omission summaries
+for reasoning, content and tool arguments. `api_prepared` precedes serialization;
+`http_written` follows successful socket writes. Character count mismatch flags
+identify parser-to-API and API-to-HTTP losses/additions in reasoning or content.
+Tool block counts are also compared; streaming argument structure is compared
+across prepared/written stages. Collected JSON arguments are not compared as raw
+text because collection parses and reserializes JSON whitespace.
+
+`no_answer_or_tool`, `think_marker_in_content`, unfinished and duplicate call
+flags cover failures beyond tool recovery. `input_shape` counts normalized roles,
+assistant reasoning/call presence and calls without reasoning, without retaining
+input text. Event sequence tails show protocol order with repeated events grouped.
+The original native stdout and detokenizer observations remain: they distinguish
+missing model markers from parser or adapter losses and are still useful.
+
+These are structural observations, not proof of semantic correctness. Equal-length
+plain-text substitutions and an unintended but syntactically valid call cannot
+be established from redacted counts alone. Logs do not prove client receipt.
+Only fixed markers/counts are persisted; no content hashes or excerpts are added.
+Old schema-1/2 runtime log files are deleted on this deployment; the two compact,
+redacted failure evidence summaries are retained as useful comparison evidence.

@@ -52,6 +52,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT))   # run as a script (run-<model>.bat) as well as a module
 from serve.frontend import (ChatTemplate, Event, OutputParser, anthropic_to_messages,  # noqa: E402
                             images_of, openai_to_messages)
+from serve.recovery import RecoveringOutputParser
 from serve.diagnostics import DiagnosticSink  # noqa: E402
 from serve.mcp import McpCancelled, hub_from_config  # noqa: E402
 from serve.winjob import contain  # noqa: E402
@@ -1448,7 +1449,7 @@ class Service:
         if defaults:                   # the request's own fields win (explicit 0 stays greedy)
             req_values = {k: v for k, v in (sampling or {}).items() if v is not None}
             sampling = {**defaults, **req_values}
-        parser = OutputParser(thinking=thinking, tools=tools, stream_tools=True)
+        parser = RecoveringOutputParser(thinking=thinking, tools=tools, stream_tools=True)
         diagnostic = getattr(self.request_trace, "diagnostic", None)
         rd = diagnostic.run(thinking, len(ids), max_new, len(tools or []),
                             tuple(self.tok.encode("</think>", parse_special=True)), self.tok) if diagnostic else None
@@ -1473,6 +1474,11 @@ class Service:
                         self.status["queued"] -= 1
                     # issue #27: it died in an earlier request (or was unloaded) - start it again instead of failing
                     self.ensure_loaded()
+                    if rd:
+                        info = getattr(self.engine, 'info', {}) or {}
+                        rd.data['engine_config'] = {k: int(info[k]) for k in
+                            ('mtp_enabled', 'spec', 'lookup', 'context')
+                            if str(info.get(k, '')).isdigit()}
                     if rd and isinstance(self.engine, StrataEngine):
                         rd.pipe.attached = True
                         self.engine._boundary_observer = rd.pipe
@@ -1516,7 +1522,7 @@ class Service:
                                 if budget and parser.state == "reasoning":
                                     thought += 1
                                     # at a clean point: no tag held back, no character split across tokens
-                                    if thought >= budget and not parser.buf and not detok.pending():
+                                    if thought >= budget and not parser.buf and not parser.pending and not detok.pending():
                                         wrap = True
                                         break
                         except EngineDied as e:
@@ -1619,13 +1625,15 @@ class Service:
                         self.status.pop("tool", None)
         finally:
             if rd:
+                rd.data["recovery"] = parser.diagnostic_snapshot()
                 rd.data.update(finish=finish, state=parser.state,
                                detokenizer_pending=bool(detok.pending()), cancel=cancel.is_set())
             if emb:
                 Path(emb).unlink(missing_ok=True)
-        final_events = parser.finish()
+        final_events = parser.finish(finish)
         if rd:
             rd.data["parser_finish_called"] = True
+            rd.data["recovery"] = parser.diagnostic_snapshot()
             rd.parsed(parser, final_events)
         for ev in final_events:
             yield "event", ev
@@ -2422,6 +2430,8 @@ def make_handler(svc: Service):
         def _openai(self, req):
             req = svc.with_shared(req, "openai")
             messages, tools, kw = openai_to_messages(req)
+            if self.diagnostic:
+                self.diagnostic.normalized_input(messages)
             messages, validator = prepare_format(req.get("response_format"), messages)
             if validator is not None and (tools or req.get("strata_mcp")):
                 raise ValueError("structured response_format with tools/MCP is not supported")
@@ -2485,6 +2495,8 @@ def make_handler(svc: Service):
             read for the same request, rendered and tokenized - the model does not run."""
             req = svc.with_shared(req, "anthropic")
             messages, tools, kw = anthropic_to_messages(req, svc.anthropic_think_unasked)
+            if self.diagnostic:
+                self.diagnostic.normalized_input(messages)
             prompt = svc.template.render(messages, tools=tools, **kw)
             self._json(200, {"input_tokens": len(svc.tok.encode(prompt, parse_special=True))})
 
@@ -2492,6 +2504,8 @@ def make_handler(svc: Service):
             svc.load()
             req = svc.with_shared(req, "anthropic")
             messages, tools, kw = anthropic_to_messages(req, svc.anthropic_think_unasked)
+            if self.diagnostic:
+                self.diagnostic.normalized_input(messages)
             max_new = int(req.get("max_tokens") or 0)                  # 0/-1: the rest of the context
             svc.reasoning_budget(req)                         # a bad value is a 400 before anything is sent
             ids, thinking, max_new = svc.prepare(messages, tools, kw, max_new)
