@@ -11,7 +11,8 @@ that historical directory name does not describe the active CLI configuration.
 - Context 262144, INT8 KV, vision on demand, original 56 GiB WSL limit.
 - `--no-mtp` removed, `--mtp /mnt/data/strata-deploy/Strata-data/mtp/rt`
   and `--spec-min-p 0.5` restored. Native INFO: `mtp_enabled=1 spec=6 lookup=3`.
-  `spec=6` is the adaptive runtime window; the CLI retains `--spec 4`.
+  `spec=6` is the verifier capacity including suffix lookup; MTP itself remains
+  capped at 4 tokens, matching the CLI `--spec 4`.
   Removing `--no-mtp` also restores the engine's suffix-lookup default (3).
 - Configuration: `/mnt/data/strata-deploy/strata-sc117-iq3_s.json`, mirrored in
   `strata-sc117-256k-production.json`. The separate no-MTP JSON remains a backup.
