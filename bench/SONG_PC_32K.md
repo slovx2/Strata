@@ -47,6 +47,8 @@
 
 ## 最终配置基准
 
+补充复核见 [Prefill 同条件对照](SONG_PC_PREFILL_RECHECK.md)：约 1K 的吞吐不能直接与历史约 4K/16K 比较。重启后同预热的 SC117 开关对照，约 4K prefill 为 1410.2 → 1451.9，约 16K 为 2155.4 → 2227.0 tokens/s。默认快测流程不变。
+
 以下为三次测量中位数，所有测量请求实际输出 128 tokens，所有 `cache_n=0`。
 
 | 实际输入 tokens | Prefill tokens/s | Decode tokens/s | 首字等待秒 |
