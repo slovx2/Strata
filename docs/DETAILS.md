@@ -886,6 +886,8 @@ the document, +0.4% on the chat. Details: `bench/results/2026-09-27-esp/`.
 
 ## How it works
 
+For target-only serving without loading or executing the MTP module, see [Serving without MTP](NO_MTP.md).
+
 <p align="center"><img src="paper/tiers.svg" width="760" alt="memory tiers"></p>
 
 - **GPU (VRAM):** attention and DeltaNet mixers, the gated-residual weights, routers, shared experts, output head, the MTP
