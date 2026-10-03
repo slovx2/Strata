@@ -88,9 +88,8 @@ public:
     /// Only a prompt path that runs every layer uses it (no layer split); the pool must be idle during `run`.
     void set_cpu_pool(strata::kernels::cpu::ExpertPool* pool);
 
-    /// Device bytes `init` needs for a chunk. `src` must match whether init receives an ExpertSource.
-    static uint64_t bytes_needed(const core::ModelGeometry& g, const core::SessionState& ss, int64_t chunk,
-                                 bool src = true);
+    /// Device bytes `init` needs for a chunk of `chunk` tokens (what a borrowed region must hold).
+    static uint64_t bytes_needed(const core::ModelGeometry& g, const core::SessionState& ss, int64_t chunk);
 
     /// Positions [pos0, pos0 + n) holding `tokens`; `ss.ple_prev` must be the two tokens before pos0 (oldest
     /// first, -1 for none) and is advanced to the last two of these.
