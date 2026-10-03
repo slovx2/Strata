@@ -1,0 +1,600 @@
+{
+  "checked_at_utc": "2026-10-03T07:09:46.944548+00:00",
+  "baseline": "251949c0f1daf1d5193156d535ff1b284151d0bf",
+  "tag": "song-pc-32k-baseline-20261003",
+  "note": "github_merged=false does not exclude a manual upstream integration; see the accompanying report and maintainer comments. No optimization applied in this audit.",
+  "prs": [
+    {
+      "number": 345,
+      "title": "Add native Responses API support for Codex CLI",
+      "url": "https://github.com/Niko1221/Strata/pull/345",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "3d89ab76578f2a30820c8c723916190e31ff08b1",
+      "base_sha": "9259cad4cfa3543cd3b8decab5962672b968c649",
+      "updated_at": "2026-10-03T07:02:38Z",
+      "files": [
+        "README.md",
+        "serve/frontend.py",
+        "serve/responses.py",
+        "serve/server.py",
+        "serve/test_responses.py",
+        "tools/codex_responses_smoke.py",
+        "tools/responses_live_smoke.py"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/345#issuecomment-5966585150"
+      ]
+    },
+    {
+      "number": 363,
+      "title": "experts: smaller and fewer launches for the verify window's PCIe call",
+      "url": "https://github.com/Niko1221/Strata/pull/363",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "ae958ae96899cf75ab4ad06ad70de6f7c56a3757",
+      "base_sha": "9259cad4cfa3543cd3b8decab5962672b968c649",
+      "updated_at": "2026-10-03T01:17:44Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/core/verify.hpp",
+        "include/strata/kernels/iq_kernels.hpp",
+        "src/core/verify.cpp",
+        "src/kernels/cuda/iq_kernels.cu",
+        "src/kernels/native_grouped_parity.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/363#issuecomment-5943206799",
+        "https://github.com/Niko1221/Strata/pull/363#issuecomment-5964019852"
+      ]
+    },
+    {
+      "number": 372,
+      "title": "Prompt path: an MMQ group's experts gathered in one launch, after one wait, released by one event (-9% on a 32K prompt, same output)",
+      "url": "https://github.com/Niko1221/Strata/pull/372",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "936fc67310cc1da8ff25c7bc57514a826cfddbb4",
+      "base_sha": "36fa455e579b23a9c909c2c6fe1bddd9e51cb8ca",
+      "updated_at": "2026-10-03T01:17:18Z",
+      "files": [
+        "include/strata/prefill/moe_mmq.hpp",
+        "src/prefill/moe_mmq.cu",
+        "src/prefill/prefill.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/372#issuecomment-5960136519",
+        "https://github.com/Niko1221/Strata/pull/372#issuecomment-5964016679"
+      ]
+    },
+    {
+      "number": 374,
+      "title": "Prompt path: the first chunk's n-gram (PLE) rows read beside layer 0, 256 at a time (same output)",
+      "url": "https://github.com/Niko1221/Strata/pull/374",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "89e2994dc588ebf60b4448b7e2078d382df577cb",
+      "base_sha": "c499bd102e7a4135c0de389dcfe38c399759ccc8",
+      "updated_at": "2026-10-03T01:17:25Z",
+      "files": [
+        "include/strata/kernels/ngram.hpp",
+        "src/prefill/prefill.cpp",
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/374#issuecomment-5952120793",
+        "https://github.com/Niko1221/Strata/pull/374#issuecomment-5964017432"
+      ]
+    },
+    {
+      "number": 378,
+      "title": "Elastic K/V (--kv-grow, opt-in): the K/V takes VRAM as the context grows, the expert cache holds the rest (+68% cache on a 16 GB card at 262K)",
+      "url": "https://github.com/Niko1221/Strata/pull/378",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "c053829b788e3e17472e3c097fde14024dfd5c69",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:55:44Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/core/expert_cache.hpp",
+        "include/strata/core/layer.hpp",
+        "include/strata/core/vmm.hpp",
+        "src/core/expert_cache.cpp",
+        "src/core/layer.cpp",
+        "src/core/vmm.cpp",
+        "src/program/generate.cpp",
+        "tests/core/vmm_test.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/378#issuecomment-5964028528",
+        "https://github.com/Niko1221/Strata/pull/378#issuecomment-5966002650"
+      ]
+    },
+    {
+      "number": 407,
+      "title": "Adaptive tier: --adapt-decay, and --adapt-tuned (opt-in): 31% fewer misses, -19% CPU pool, -22% PCIe on UD-Q4_K_XL",
+      "url": "https://github.com/Niko1221/Strata/pull/407",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "bf76ef6d0ab751d02b764bfbe25d65a1411b1547",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T06:08:52Z",
+      "files": [
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/407#issuecomment-5965874668",
+        "https://github.com/Niko1221/Strata/pull/407#issuecomment-5966228005"
+      ]
+    },
+    {
+      "number": 413,
+      "title": "prefill: DeltaNet recurrence with the three value heads of a key head in one thread (bitwise; 1.4x on a 4080 SUPER, 1.3x on a 3090)",
+      "url": "https://github.com/Niko1221/Strata/pull/413",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "f73ad585928af15e7686ffcd1a8ef9b2cae4a46e",
+      "base_sha": "c499bd102e7a4135c0de389dcfe38c399759ccc8",
+      "updated_at": "2026-10-03T01:17:36Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/prefill/kernels.hpp",
+        "src/prefill/gdn_rec_parity.cu",
+        "src/prefill/kernels.cu"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/413#issuecomment-5962660898",
+        "https://github.com/Niko1221/Strata/pull/413#issuecomment-5964018869"
+      ]
+    },
+    {
+      "number": 439,
+      "title": "prefill: a group's expert gathers in one launch (bit-identical, long prompts +4%)",
+      "url": "https://github.com/Niko1221/Strata/pull/439",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "772a81086f413f94b910eb6d045213c3220299f4",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T01:17:22Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/prefill/moe_mmq.hpp",
+        "src/prefill/moe_mmq.cu",
+        "src/prefill/prefill.cpp",
+        "tests/cuda/prefill_gather_batch_test.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/439#issuecomment-5961261319",
+        "https://github.com/Niko1221/Strata/pull/439#issuecomment-5964017070"
+      ]
+    },
+    {
+      "number": 443,
+      "title": "kernels: add opt-in small-window GR and one-warp MMVQ experiments",
+      "url": "https://github.com/Niko1221/Strata/pull/443",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "b60a86198e5ac71651bfd4cce01f4564ba971706",
+      "base_sha": "1678de333d0e0711bc414ad992b640e1a37dd814",
+      "updated_at": "2026-10-03T02:50:20Z",
+      "files": [
+        "CMakeLists.txt",
+        "README.md",
+        "docs/EXPERIMENTAL_KERNELS.md",
+        "docs/benchmarks/2026-10-01-experimental-kernels.json",
+        "docs/benchmarks/2026-10-01-experimental-kernels.md",
+        "docs/benchmarks/2026-10-02-upstream-sync-experimental.json",
+        "docs/benchmarks/2026-10-02-upstream-sync-experimental.md",
+        "src/kernels/cuda/fused_gr.cu",
+        "src/kernels/cuda/native_mmvq.cu",
+        "tests/gr_roofline.cpp",
+        "tests/mmvq_roofline.cpp",
+        "tools/bench_mtp_modes.py"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/443#issuecomment-5964023882",
+        "https://github.com/Niko1221/Strata/pull/443#issuecomment-5964807311"
+      ]
+    },
+    {
+      "number": 452,
+      "title": "qsa_prompt_attn: Q4_0 KV on tensor cores (mode 4) - long prompts with --kv q4_0 ~19% faster",
+      "url": "https://github.com/Niko1221/Strata/pull/452",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "e71abf87525dc4ee4ab0f2df8061c0068097638b",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T01:17:33Z",
+      "files": [
+        "include/strata/kernels/qsa_prompt_attn.hpp",
+        "src/kernels/cuda/qsa_prompt_attn.cu",
+        "src/kernels/qsa_prompt_attn_parity.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/452#issuecomment-5945150566",
+        "https://github.com/Niko1221/Strata/pull/452#issuecomment-5964018534"
+      ]
+    },
+    {
+      "number": 453,
+      "title": "prefill: the draft layer's batched K/V for a ring too (KV streaming) - prefill +4.6% with --kv-resident",
+      "url": "https://github.com/Niko1221/Strata/pull/453",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "7d4a560b1732f802a153fe36fbe605851a66fd08",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T01:17:31Z",
+      "files": [
+        "src/prefill/prefill.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/453#issuecomment-5961260566",
+        "https://github.com/Niko1221/Strata/pull/453#issuecomment-5964018171"
+      ]
+    },
+    {
+      "number": 463,
+      "title": "decode: wait for an adaptive expert swap before reading the residency table",
+      "url": "https://github.com/Niko1221/Strata/pull/463",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "4d07a0aebbf6cff79b63d30596a1e146a1dcf46f",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T05:55:25Z",
+      "files": [
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/463#issuecomment-5964431340",
+        "https://github.com/Niko1221/Strata/pull/463#issuecomment-5966127761"
+      ]
+    },
+    {
+      "number": 478,
+      "title": "prefill: MMQ prompt kernels for Q6_K experts (STRATA_MMQ_KQUANTS)",
+      "url": "https://github.com/Niko1221/Strata/pull/478",
+      "state": "open",
+      "github_merged": false,
+      "draft": true,
+      "head_sha": "1fc2787f936b7a9751889253fa166f7a7779f0c4",
+      "base_sha": "d9ab8435f654c368c586340d490915f6addf56a3",
+      "updated_at": "2026-10-03T01:18:43Z",
+      "files": [
+        "CMakeLists.txt",
+        "src/prefill/moe_mmq.cu",
+        "tests/cuda/prefill_mmq_kquant_test.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/478#issuecomment-5964027423"
+      ]
+    },
+    {
+      "number": 487,
+      "title": "PCIe probe: median of several primed bursts instead of one",
+      "url": "https://github.com/Niko1221/Strata/pull/487",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "c434fcce204c3bbfdf0b576908eff1c8f5e54a02",
+      "base_sha": "d9ab8435f654c368c586340d490915f6addf56a3",
+      "updated_at": "2026-10-03T06:33:41Z",
+      "files": [
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/487#issuecomment-5964024470",
+        "https://github.com/Niko1221/Strata/pull/487#issuecomment-5966397000"
+      ]
+    },
+    {
+      "number": 488,
+      "title": "pinned: honor STRATA_NO_LARGEPAGES on Linux; name the hugetlb pool shortfall",
+      "url": "https://github.com/Niko1221/Strata/pull/488",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "e38181f96f85e944d7a9d41fbdb9bc267a153cf9",
+      "base_sha": "d9ab8435f654c368c586340d490915f6addf56a3",
+      "updated_at": "2026-10-03T06:33:41Z",
+      "files": [
+        "src/core/pinned.cu"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/488#issuecomment-5964022038",
+        "https://github.com/Niko1221/Strata/pull/488#issuecomment-5966396987"
+      ]
+    },
+    {
+      "number": 500,
+      "title": "perf(cpu-pool): parallelize intermediate activation quantization across worker threads",
+      "url": "https://github.com/Niko1221/Strata/pull/500",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "8eacd97390dc286e81af046f4a9bd8332c84ed1d",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T06:51:47Z",
+      "files": [
+        "include/strata/kernels/cpu/pool.hpp",
+        "src/kernels/cpu/pool.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/500#issuecomment-5964027623",
+        "https://github.com/Niko1221/Strata/pull/500#issuecomment-5966512698"
+      ]
+    },
+    {
+      "number": 546,
+      "title": "prefill: the fused layout's smaller MoE buffers only when every layer takes the fused path (STRATA_PF_FUSED=1 on IQ2_XS wrote past them)",
+      "url": "https://github.com/Niko1221/Strata/pull/546",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "3af0f04a744d4ac5f4595b0fb7c4462de9689e31",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T05:12:34Z",
+      "files": [
+        "src/prefill/prefill.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/546#issuecomment-5965844621"
+      ]
+    },
+    {
+      "number": 547,
+      "title": "prefill: bytes_needed counts what carve allocates (0.31 GiB less borrowed at an 8K chunk, 1.25 GiB at 32K)",
+      "url": "https://github.com/Niko1221/Strata/pull/547",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "4072b708e94d06cadee61a47df1930f22d313d86",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-03T05:10:53Z",
+      "files": [
+        "include/strata/prefill/prefill.hpp",
+        "src/prefill/prefill.cpp",
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": [
+        "https://github.com/Niko1221/Strata/pull/547#issuecomment-5964796142",
+        "https://github.com/Niko1221/Strata/pull/547#issuecomment-5965832659"
+      ]
+    },
+    {
+      "number": 550,
+      "title": "generate: residency-table uploads wait for their own copy before the non-blocking streams read the table",
+      "url": "https://github.com/Niko1221/Strata/pull/550",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "000f2887d4a61d764bfaf4b25a5f60cfd0ee7ee8",
+      "base_sha": "db4f91a1171d697928b0d2e1f50ef95e25559d4c",
+      "updated_at": "2026-10-02T22:14:18Z",
+      "files": [
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 559,
+      "title": "Several conversations at once: batch slots, a pipelined layer split, per-stage dense weights",
+      "url": "https://github.com/Niko1221/Strata/pull/559",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "c67052c7792e7a4bcdf6501b92e7f35f1f4903f1",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T06:18:49Z",
+      "files": [
+        "docs/BATCHING.md",
+        "docs/MULTI_GPU.md",
+        "include/strata/core/native_dense.hpp",
+        "include/strata/core/verify.hpp",
+        "serve/server.py",
+        "src/core/native_dense.cpp",
+        "src/core/verify.cpp",
+        "src/program/generate.cpp",
+        "tools/batch_test.py",
+        "tools/early_close_test.py"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 567,
+      "title": "serve: tokenise the prompt from the last shared prefix, not from the start",
+      "url": "https://github.com/Niko1221/Strata/pull/567",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "f29e527856b85e37bda90626ccc28e002b4989dd",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T01:54:47Z",
+      "files": [
+        "serve/server.py",
+        "serve/test_server.py",
+        "tools/strata_tokenizer.py",
+        "tools/test_strata_tokenizer.py"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 571,
+      "title": "Feat/responses api 451",
+      "url": "https://github.com/Niko1221/Strata/pull/571",
+      "state": "open",
+      "github_merged": false,
+      "draft": true,
+      "head_sha": "bfd77510079a68e16facbff7a762fa058452f0a7",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T03:06:00Z",
+      "files": [
+        ".gitignore",
+        "README.md",
+        "docs/DETAILS.md",
+        "docs/RESPONSES.md",
+        "docs/benchmarks/2026-10-02-responses-cuda.json",
+        "docs/benchmarks/2026-10-03-responses-merge-check.json",
+        "docs/benchmarks/2026-10-03-responses-upstream-0138.json",
+        "serve/response_store.py",
+        "serve/responses.py",
+        "serve/server.py",
+        "serve/test_responses.py",
+        "serve/web/monitor.html",
+        "serve/web/monitor.js"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 575,
+      "title": "qsa select: split the top-k past the register fit - 9% faster long-prompt prefill",
+      "url": "https://github.com/Niko1221/Strata/pull/575",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "c850d91fda791cd58e3f9dacde6d16c0eb650698",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:52:08Z",
+      "files": [
+        "include/strata/kernels/qsa_select.hpp",
+        "src/kernels/cuda/qsa_select.cu",
+        "src/kernels/qsa_topk_active_parity.cpp"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 580,
+      "title": "Weight carve 0138",
+      "url": "https://github.com/Niko1221/Strata/pull/580",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "688f46f8243026df7b7e8df57a818b0ec97a7332",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:11:20Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/core/native_dense.hpp",
+        "include/strata/core/weights.hpp",
+        "src/core/native_dense.cpp",
+        "src/core/weights.cpp",
+        "src/program/generate.cpp",
+        "tests/core/weights_carve_test.cpp"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 583,
+      "title": "Prefill chunk ring",
+      "url": "https://github.com/Niko1221/Strata/pull/583",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "817aa9c7a0f0538e3b514e787d5680fc02c865ca",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:12:49Z",
+      "files": [
+        "include/strata/prefill/prefill.hpp",
+        "serve/test_server.py",
+        "serve/web/app.js",
+        "serve/web/index.html",
+        "src/prefill/prefill.cpp",
+        "src/program/generate.cpp"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 584,
+      "title": "Split placement search",
+      "url": "https://github.com/Niko1221/Strata/pull/584",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "d0aebee386af6164f10b9413fd7b1ab9888b8bcc",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:13:38Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/core/native_dense.hpp",
+        "include/strata/core/weights.hpp",
+        "src/core/native_dense.cpp",
+        "src/core/weights.cpp",
+        "src/program/generate.cpp",
+        "tests/core/weights_carve_test.cpp",
+        "tools/make_profile.py"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 586,
+      "title": "ple: read the PLE table at full BF16 precision (opt-in, alongside FP8)",
+      "url": "https://github.com/Niko1221/Strata/pull/586",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "36f829da8bc1396e8c8198e3c2e0c147c78d14ba",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:44:18Z",
+      "files": [
+        "CMakeLists.txt",
+        "include/strata/artifact/gguf_reader.hpp",
+        "include/strata/kernels/ngram.hpp",
+        "src/kernels/ngram.cpp",
+        "src/kernels/ple_fp8_parity.cpp",
+        "src/ngram/ple_reader_test.cpp",
+        "src/program/generate.cpp",
+        "tools/ple_fp8_pack.py",
+        "tools/ple_table_pack.py"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 589,
+      "title": "make_profile: --reorder so a trace can rank ahead of a complete base",
+      "url": "https://github.com/Niko1221/Strata/pull/589",
+      "state": "open",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "f4f7396549230296df11b13eb265593b16642d3e",
+      "base_sha": "99f3dbd0b21d1401b3769e0c0d963913607f380b",
+      "updated_at": "2026-10-03T05:53:28Z",
+      "files": [
+        "tools/make_profile.py",
+        "tools/test_make_profile.py"
+      ],
+      "latest_comment_urls": []
+    },
+    {
+      "number": 415,
+      "title": "IQ4_XS expert rows on the AVX-2 path: the multi-token kernel this format never had",
+      "url": "https://github.com/Niko1221/Strata/pull/415",
+      "state": "closed",
+      "github_merged": false,
+      "draft": false,
+      "head_sha": "094c2d79422558735302ce55d88e2bcbc8839010",
+      "updated_at": "2026-10-03T01:17:50Z"
+    },
+    {
+      "number": 366,
+      "title": "[RFC] EXPERIMENTAL Investigate DFlash2 support for Qwen3.8-Flash-Next",
+      "url": "https://github.com/Niko1221/Strata/pull/366",
+      "state": "open",
+      "github_merged": false,
+      "draft": true,
+      "head_sha": "8c3049e71cfca6f72058e1455877a68f85282836",
+      "updated_at": "2026-10-01T20:29:14Z"
+    }
+  ]
+}
