@@ -61,3 +61,35 @@ markers, no-tool-schema cases, cancellation/disconnect/error, disabled behavior,
 Both API formats in streaming/nonstreaming modes also run through a real StrataEngine subprocess pipe with
 scripted tokens, including trailing speculative tokens after EOS. This is deterministic fault injection, not a
 claim of reproducing the model's stochastic failure on demand. Production smoke results are recorded separately.
+
+### Song PC acceptance, 2026-10-03
+
+Deployed code commit: `7ebaacf1a0674cf31046be441beeb8397bb6c22e`; previous code:
+`daab7ad649143f85d4127c0affaa691fa84cbc24`. SC117 IQ3_S, `qwen3.8-fn`, context 262144,
+MTP enabled (MTP cap 4; native verifier capacity `spec=6`, lookup 3). The existing CUDA binary and model configuration
+are retained. Service is manually started (`linked`, not enabled for boot), with authenticated `0.0.0.0:8080`.
+
+- All 161 regression tests passed on Song PC using the deployed virtualenv and actual SC117 tokenizer;
+  113.073 seconds, no skips. The Debian run lacked `regex` for three tokenizer tests; the target run resolved
+  that environment limitation without installing another project environment.
+- Four real API cases passed: Anthropic streaming and OpenAI nonstreaming each returned one requested tool
+  call; each also returned nonempty prose after a forced thinking-budget close. Both prose cases recorded
+  two native generation passes and one server-injected `</think>`. No tools were executed by the probes.
+- The missing-EOS-close failure itself was exercised by deterministic fault injection, including native pipe
+  draining. The real model smoke used the existing thinking budget to exercise native continuation; it did
+  not reproduce a stochastic premature EOS. This distinction matters: these checks are not a measured
+  elimination rate for the user's original failure.
+- The live probe initially expected Anthropic's `end_turn` for an OpenAI prose reply. Corrected to `stop` and
+  revalidated all four saved responses and their completed diagnostic records. No service fix or repeated
+  inference was needed for that test assertion.
+- All four records had clean parser/API/transport flags. The eight start/end log records passed the fixed-string
+  privacy allowlist, with no unapproved values. All diagnostic files were mode 0600. Synthetic fault-injection
+  tests also asserted private prompt and reasoning sentinels were absent from logs.
+
+Several probes queued behind live long-context user requests. Their wall times include queueing and are not
+performance benchmark numbers. Restart was performed only after observing an idle service; this cold model
+load took about four minutes before health was ready.
+
+Target evidence directory: `/mnt/data/strata-deploy/reasoning-eos-20261003/` (tests.log, live-results.json,
+deployment.json, acceptance.json, privacy.json). The service diagnostic log remains
+`/mnt/data/strata-deploy/logs/output-diagnostics.jsonl`.
