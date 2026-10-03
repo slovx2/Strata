@@ -33,3 +33,17 @@ closed code followed by an independent call, closed fences, tilde text, earlier
 example discussion, nested backtick widths, still-open code, context bounds and
 privacy. Existing EOS-only, later-real-close, schema, API and native-pipe tests
 remain in place. Synthetic tool calls are never executed.
+
+## Deployment acceptance
+
+Deployed runtime `daab7ad` to Song PC, preserving SC117 IQ3_S, MTP enabled and
+262144-token context. Full regression: 141 tests, 136 passed and 5 skipped.
+The additional HTTP regression for closed-code prefixes passed in both APIs and
+both streaming modes. Five live synthetic API cases passed: Messages stream
+(one call), Messages nonstream (two calls), Chat Completions stream/nonstream
+(one each), and plain Messages text. All logs confirmed guard policy 2, no channel
+mismatches, and complete responses. These normal live replies did not require
+recovery; the malformed-output case is exercised by the parser and HTTP tests.
+
+Artifacts and the prior redacted refusal record are in
+`/mnt/data/strata-deploy/recovery-context-20261003`. Service remains manual-start.
