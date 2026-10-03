@@ -304,6 +304,9 @@ class StrataEngine:
     def _pump(self):
         proc, lines = self.proc, self.lines             # this process's: a restart replaces both (#344)
         for line in proc.stdout:
+            observer = getattr(self, "_boundary_observer", None)
+            if observer is not None:
+                observer.observe(line)  # content-free native boundary, before queue/detokenizer/parser
             lines.put(line)
         if self.proc is proc:                           # a killed engine's pump must not mark its successor dead
             self.ended = True                           # its output closed: it is gone, even before the OS says so
@@ -1448,7 +1451,7 @@ class Service:
         parser = OutputParser(thinking=thinking, tools=tools, stream_tools=True)
         diagnostic = getattr(self.request_trace, "diagnostic", None)
         rd = diagnostic.run(thinking, len(ids), max_new, len(tools or []),
-                            tuple(self.tok.encode("</think>", parse_special=True))) if diagnostic else None
+                            tuple(self.tok.encode("</think>", parse_special=True)), self.tok) if diagnostic else None
         detok, n, finish = Detokenizer(self.tok), 0, "length"
         timings, before = None, None                    # this request's timings; the engine's `last` before it
         raw_ids = []                                    # every generated id (STRATA_DEBUG: dump raw model text)
@@ -1470,6 +1473,9 @@ class Service:
                         self.status["queued"] -= 1
                     # issue #27: it died in an earlier request (or was unloaded) - start it again instead of failing
                     self.ensure_loaded()
+                    if rd and isinstance(self.engine, StrataEngine):
+                        rd.pipe.attached = True
+                        self.engine._boundary_observer = rd.pipe
                     with self.status_lock:
                         self.status.update(busy=True, phase="reading the prompt", prompt_tokens=len(ids),
                                            generated=0, started=time.time(), first_token=None, tool=None, tail="",
@@ -1554,6 +1560,8 @@ class Service:
                     finish = "disconnect"
                     raise
                 finally:
+                    if rd and getattr(self.engine, "_boundary_observer", None) is rd.pipe:
+                        self.engine._boundary_observer = None  # DONE drained, before releasing the FIFO
                     # #266: settle this request's status, history and totals while still holding the fifo: once
                     # it is released the next request sets its own status, which this must not record or clear
                     with self.status_lock:

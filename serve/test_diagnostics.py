@@ -10,7 +10,7 @@ import urllib.request
 
 from serve.diagnostics import DiagnosticSink, MARKERS, MarkerStream
 from serve.frontend import ChatTemplate
-from serve.server import ByteTokenizer, MockEngine, Service, serve
+from serve.server import ByteTokenizer, MockEngine, Service, StrataEngine, serve
 
 ROOT = Path(__file__).resolve().parents[1]
 SECRET = 'PRIVATE_API_KEY_path_command_novel_秘密'
@@ -67,11 +67,23 @@ class Markers(unittest.TestCase):
 
 
 class HttpBoundary(unittest.TestCase):
-    def check_case(self, script, thinking, api, stream, expected_tool, budget=None):
+    def check_case(self, script, thinking, api, stream, expected_tool, budget=None, native=False, after_stop=""):
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / 'trace.jsonl'
             tok = ByteTokenizer()
-            svc = Service(MockEngine(tok, script, max_context=8192), tok,
+            engine = MockEngine(tok, script, max_context=8192)
+            if native:
+                emitted = tok.encode(script, parse_special=True) + tok.encode('<|im_end|>', parse_special=True)
+                emitted += tok.encode(after_stop, parse_special=True)
+                exe = Path(temp) / 'engine.py'
+                exe.write_text("#!/usr/bin/env python3\nimport sys\nprint('READY 8192 stop', flush=True)\n"
+                               "for line in sys.stdin:\n"
+                               " if line.startswith('GEN '):\n"
+                               "  for t in " + repr(emitted) + ": print('T',t,flush=True)\n"
+                               "  print('DONE " + str(len(emitted)) + " 1 0 0 stop 0 0 0',flush=True)\n")
+                exe.chmod(0o700)
+                engine = StrataEngine(str(exe), [])
+            svc = Service(engine, tok,
                           ChatTemplate(ROOT / 'serve/chat_template.jinja'))
             svc.diagnostic_sink = DiagnosticSink(path)
             httpd = serve(svc, port=0)
@@ -130,6 +142,8 @@ class HttpBoundary(unittest.TestCase):
                 httpd.shutdown()
                 httpd.server_close()
                 svc.diagnostic_sink.handler.close()
+                if native:
+                    engine.close()
 
     def test_missing_end_and_valid_calls_all_api_modes(self):
         for api in ('anthropic', 'openai'):
@@ -141,6 +155,25 @@ class HttpBoundary(unittest.TestCase):
                     good, _ = self.check_case(SECRET + '</think>' + CALL, True, api, stream, True)
                     self.assertEqual(good['runs'][0]['model_think_end_token_sequences'], 1)
                     self.assertEqual(good['runs'][0]['model_output']['markers']['</think>'], 1)
+
+    def test_native_pipe_before_queue_and_drain(self):
+        for prefix in ('', '</think>'):
+            end, _ = self.check_case(prefix + CALL, True, 'anthropic', True, bool(prefix), native=True)
+            run = end['runs'][0]
+            pipe = run['engine_pipe']
+            self.assertTrue(pipe['attached'])
+            self.assertEqual(pipe['tokens'], run['model_tokens'])
+            self.assertEqual(pipe['think_end_sequences'], int(bool(prefix)))
+            self.assertEqual(pipe['raw_bytes']['markers'].get('</think>', 0), int(bool(prefix)))
+            self.assertEqual(pipe['done'][0]['native_generated'], pipe['tokens'])
+            self.assertEqual(pipe['observation_errors'], 0)
+        # A marker emitted AFTER EOS must be visible in the pipe, but never reach the parser.
+        end, _ = self.check_case(CALL, True, 'anthropic', True, False, native=True, after_stop='</think>')
+        run = end['runs'][0]
+        self.assertEqual(run['engine_pipe']['think_end_sequences'], 1)
+        self.assertEqual(run['model_think_end_token_sequences'], 0)
+        self.assertGreater(run['engine_pipe']['tokens'], run['model_tokens'])
+
 
     def test_thinking_off_and_truncation(self):
         self.check_case(CALL, False, 'anthropic', True, True)

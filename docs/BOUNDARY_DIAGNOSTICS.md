@@ -65,3 +65,36 @@ use an HTTP mock engine to cover missing/present think boundaries, both API
 formats and streaming modes, thinking disabled, truncated calls, chunk-split
 markers, privacy and bounded retention. Live smoke tests use synthetic prompts;
 no model-selected command is executed.
+
+## Native stdout boundary (schema 2)
+
+`engine_pipe` observes C++ `T <id>` lines in the stdout pump, **before** Python
+queues them and before cancellation/stop filtering, detokenization or parsing.
+The observer is attached after model loading, while the generation FIFO is held,
+and removed after the generator drains its DONE line, before the FIFO is released.
+It also observes tokens drained after a consumer stops, so a late boundary after
+EOS can be distinguished from a delimiter that was never emitted.
+
+The pipe independently counts the think-end token sequence and scans individual
+token bytes for fixed ASCII markers. `raw_bytes.chars` and marker offsets here
+are byte counts (Latin-1 is used solely for a one-to-one byte scan), unlike the
+Unicode character counts at the parser input. No raw token stream/bytes are
+persisted. DONE records contain native generated counts, observed pipe counts and
+an allowlisted finish reason; keep at most eight, plus total pass counts.
+Observation failures are counted without exposing exception text or interrupting
+the engine pump. A mock engine has `attached=false`, so zero counts there are not
+evidence about native output.
+
+For native requests, compare `engine_pipe.think_end_sequences`,
+`engine_pipe.raw_bytes.markers`, `model_think_end_token_sequences`,
+`model_output.markers`, parser events, then API/HTTP events. If the delimiter is
+absent already at the native pipe and the observation has no errors, the Python
+parser did not lose it. This still does not separate model weights, native
+numerical computation, sampling, or prompt/template effects. Nonzero pipe counts
+with zero downstream counts locate the loss before parsing (check EOS/draining).
+
+Set `STRATA_DIAGNOSTIC_VARIANT=sc117-iq3_s` or `orca-iq3_xxs` to label the actual
+loaded weights behind a shared API alias; other values are logged as `other`.
+The original redaction, rotation and permissions apply. Tests include a real
+scripted subprocess/pipe, both missing/present delimiters, and a delimiter emitted
+after EOS to exercise draining. This requires no CUDA rebuild.

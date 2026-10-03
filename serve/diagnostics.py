@@ -7,9 +7,10 @@ import json
 import logging
 import os
 import time
+import threading
 import uuid
 
-MARKERS = ('<think>', '</think>', '<tool_call>', '</tool_call>', '<function=',
+MARKERS = ('<|im_end|>', '<|endoftext|>', '<think>', '</think>', '<tool_call>', '</tool_call>', '<function=',
            '</function>', '<parameter=', '</parameter>',
            '&lt;/think&gt;', '&lt;tool_call&gt;', '&lt;/tool_call&gt;',
            '&lt;/parameter&gt;', '&amp;lt;/think&amp;gt;', '&amp;lt;/parameter&amp;gt;')
@@ -68,6 +69,61 @@ class MarkerStream:
                 'partial_marker_at_end': bool(self.pending)}
 
 
+class PipeDiagnostic:
+    """Observe the native stdout BEFORE queueing, independently of Detokenizer/OutputParser.
+
+    Arbitrary token IDs/bytes never enter a record. Latin-1 preserves ASCII delimiters
+    and gives byte offsets without sharing the server's incremental UTF-8 decoder.
+    """
+    def __init__(self, tokenizer, think_end_ids):
+        self.tok = tokenizer
+        self.think_end_ids = think_end_ids
+        self.lock = threading.Lock()
+        self.tail = deque(maxlen=max(1, len(think_end_ids)))
+        self.markers = MarkerStream()
+        self.tokens = 0
+        self.think_end = 0
+        self.read_errors = 0
+        self.error_lines = 0
+        self.done = deque(maxlen=8)
+        self.pass_tokens = 0
+        self.passes = 0
+        self.attached = False
+
+    def observe(self, line):
+        with self.lock:
+            try:
+                if line.startswith('T '):
+                    token = int(line[2:])
+                    self.tokens += 1
+                    self.pass_tokens += 1
+                    self.tail.append(token)
+                    if self.think_end_ids and tuple(self.tail) == self.think_end_ids:
+                        self.think_end += 1
+                    raw = self.tok.token_bytes(token) if hasattr(self.tok, 'token_bytes') else \
+                        self.tok.decode([token]).encode('utf-8')
+                    self.markers.feed(raw.decode('latin-1'))
+                elif line.startswith('DONE '):
+                    fields = line.split()
+                    self.done.append({'native_generated': int(fields[1]), 'pipe_tokens': self.pass_tokens,
+                                      'finish': known(fields[5], STOPS)})
+                    self.pass_tokens = 0
+                    self.passes += 1
+                    self.tail.clear()
+                elif line.startswith('ERR'):
+                    self.error_lines += 1
+            except Exception:
+                # The observation must never break the pump or log the payload/exception.
+                self.read_errors += 1
+
+    def snapshot(self):
+        with self.lock:
+            return {'attached': self.attached, 'tokens': self.tokens, 'think_end_sequences': self.think_end,
+                    'raw_bytes': self.markers.snapshot(), 'observation_errors': self.read_errors,
+                    'engine_error_lines': self.error_lines, 'done': list(self.done),
+                    'passes': self.passes, 'pending_pass_tokens': self.pass_tokens}
+
+
 class PrivateHandler(RotatingFileHandler):
     def _open(self):
         fd = os.open(self.baseFilename, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
@@ -101,7 +157,8 @@ class DiagnosticSink:
 
 
 class RunDiagnostic:
-    def __init__(self, thinking, prompt_tokens, max_new, tools_count, think_end_ids):
+    def __init__(self, thinking, prompt_tokens, max_new, tools_count, think_end_ids, tokenizer=None):
+        self.pipe = PipeDiagnostic(tokenizer, think_end_ids) if tokenizer else None
         self.model = MarkerStream()
         self.injected = MarkerStream()
         self.events = Counter()
@@ -151,6 +208,7 @@ class RunDiagnostic:
         if self.events['tool_start'] > self.events['tool_call']:
             flags.append('unfinished_tool_call')
         return {'flags': flags, **self.data, 'model_output': self.model.snapshot(), 'server_injected': self.injected.snapshot(),
+                'engine_pipe': self.pipe.snapshot() if self.pipe else None,
                 'parser_events': dict(self.events), 'parser_chars': dict(self.event_chars),
                 'transitions': list(self.transitions)}
 
@@ -159,6 +217,7 @@ class RequestDiagnostic:
     def __init__(self, sink, api, stream):
         self.sink = sink
         self.id = uuid.uuid4().hex
+        self.variant = known(os.environ.get('STRATA_DIAGNOSTIC_VARIANT'), {'sc117-iq3_s', 'orca-iq3_xxs'})
         self.api = known(api, {'openai', 'anthropic'})
         self.stream = bool(stream)
         self.clock = time.monotonic()
@@ -169,7 +228,7 @@ class RequestDiagnostic:
         self.http_status = None
         self.disconnected = False
         self.sink.write({'phase': 'start', 'request_id': self.id, 'time': time.time(),
-                         'api': self.api, 'stream': self.stream, 'payload': '[omitted]'})
+                         'schema_version': 2, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'payload': '[omitted]'})
 
     def run(self, *args):
         result = RunDiagnostic(*args)
@@ -235,7 +294,7 @@ class RequestDiagnostic:
 
     def finish(self):
         self.sink.write({'phase': 'end', 'request_id': self.id, 'time': time.time(),
-                         'api': self.api, 'stream': self.stream, 'elapsed_s': round(time.monotonic() - self.clock, 3),
+                         'schema_version': 2, 'variant': self.variant, 'api': self.api, 'stream': self.stream, 'elapsed_s': round(time.monotonic() - self.clock, 3),
                          'http_status': self.http_status, 'disconnected': self.disconnected,
                          'run_count': self.run_count, 'runs_dropped': max(0, self.run_count - 8),
                          'runs': [run.snapshot() for run in self.runs],
