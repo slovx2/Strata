@@ -104,6 +104,72 @@ def strict_calls(text, schemas):
     return calls
 
 
+class RecoveryContext:
+    """Track code delimiters at the candidate, not whether code ever appeared.
+
+    Only the current bounded line and the previous nonempty line are kept in
+    memory. Neither is exposed by snapshot(). Unsupported/oversized context
+    fails closed. This is a conservative Markdown heuristic, not intent detection.
+    """
+    MAX_LINE = 8192
+
+    def __init__(self):
+        self.line = ''
+        self.previous = ''
+        self.fence = None
+        self.inline = 0
+        self.overflow = False
+
+    @staticmethod
+    def advance(line, fence, inline, complete):
+        start = re.match(r' {0,3}(`{3,}|~{3,})(.*)$', line)
+        if fence:
+            if complete and start and start[1][0] == fence[0] and len(start[1]) >= fence[1] and not start[2].strip():
+                return None, 0
+            return fence, inline
+        if not inline and start:
+            return (start[1][0], len(start[1])), 0
+        for ticks in re.finditer(r'(?<!\\)`+', line):
+            width = len(ticks[0])
+            if not inline:
+                inline = width
+            elif inline == width:
+                inline = 0
+        return None, inline
+
+    def feed(self, text):
+        for part in text.splitlines(keepends=True):
+            full = self.line + part
+            if len(full) > self.MAX_LINE:
+                self.overflow = True
+            self.line = full[:self.MAX_LINE]
+            if part.endswith(('\n', '\r')):
+                line = self.line.rstrip('\r\n')
+                self.fence, self.inline = self.advance(line, self.fence, self.inline, True)
+                if line.strip():
+                    self.previous = line[-512:]
+                self.line = ''
+
+    def snapshot(self):
+        fence, inline = self.advance(self.line, self.fence, self.inline, False)
+        nearby = self.line.strip() or self.previous.strip()
+        # A previous paragraph mentioning an example must not taint a later action.
+        example = bool(re.search(r'(?i)\bexample\b|\be\.g\.|\bfor instance\b|\bformat\s*[:：]|示例|例如|举例|格式如下', nearby))
+        quote = (nearby in ('"', "'", '“', '「') or nearby.startswith('>')
+                 or nearby.endswith(('"', "'", '“', '「')))
+        return {'policy': 2, 'in_fenced_code': bool(fence), 'in_inline_code': bool(inline),
+                'nearby_example_cue': example, 'quote_context': quote, 'context_limit': self.overflow}
+
+    def reason(self):
+        flags = self.snapshot()
+        for key, reason in [('context_limit', 'context_limit'), ('in_fenced_code', 'inside_fenced_code'),
+                            ('in_inline_code', 'inside_inline_code'), ('nearby_example_cue', 'nearby_example_cue'),
+                            ('quote_context', 'quoted_call_context')]:
+            if flags[key]:
+                return reason
+        return None
+
+
 class RecoveringOutputParser(OutputParser):
     """Hold calls inside thinking until a real close or a normal EOS determines routing.
 
@@ -115,17 +181,16 @@ class RecoveringOutputParser(OutputParser):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pending = ''
-        self.context = ''
-        self.code_seen = False  # deliberately conservative, even for earlier closed code
+        self.context = RecoveryContext()
         self.active = self.state == 'reasoning' and bool(self.schemas)
         self.candidate = False
         self.finished = False
         self.recovery = {'decision': 'none', 'buffered_chars': 0, 'recovered_calls': 0,
-                         'released_reasoning_chars': 0, 'explicit_close': False, 'duplicate_recovered_calls': 0}
+                         'released_reasoning_chars': 0, 'explicit_close': False, 'duplicate_recovered_calls': 0,
+                         'candidate_validation': 'not_attempted', 'candidate_call_count': 0}
 
     def _context(self, text):
-        self.code_seen |= '`' in text or '~' in text
-        self.context = (self.context + text)[-512:]
+        self.context.feed(text)
 
     def feed(self, delta):
         if self.finished:
@@ -173,14 +238,15 @@ class RecoveringOutputParser(OutputParser):
             reason = None
             if finish_reason != 'stop':
                 reason = 'non_normal_finish'
-            elif self.code_seen or re.search(r'(?i)example|e\.g\.|for instance|示例|例如|举例|格式如下', self.context) \
-                    or self.context.rstrip().endswith(('"', "'", '“', '「', '>', ':', '：')):
-                reason = 'example_or_quote_context'
             else:
+                validation_error = None
                 try:
                     calls = strict_calls(self.pending, self.schemas)
+                    self.recovery.update(candidate_validation='valid', candidate_call_count=len(calls))
                 except RecoveryRejected as exc:
-                    reason = str(exc)  # only fixed codes defined above
+                    validation_error = str(exc)  # fixed codes, never payload or schema messages
+                    self.recovery['candidate_validation'] = validation_error
+                reason = self.context.reason() or validation_error
                 if reason is None:
                     # The base parser can still hold a prefix ('<') from earlier reasoning.
                     out += super().finish()
@@ -204,4 +270,5 @@ class RecoveringOutputParser(OutputParser):
         return out
 
     def diagnostic_snapshot(self):
-        return {**self.recovery, 'pending_chars': len(self.pending), 'candidate_seen': self.candidate}
+        return {**self.recovery, 'guard': self.context.snapshot(),
+                'pending_chars': len(self.pending), 'candidate_seen': self.candidate}

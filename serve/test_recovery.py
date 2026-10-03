@@ -68,9 +68,54 @@ class Recovery(unittest.TestCase):
         self.assertEqual(p.recovery['recovered_calls'], 0)
 
     def test_refuse_examples_and_quotes(self):
-        for prefix in ('```xml\n', '~~~\n', 'Example\n', '例如\n', '"', '> ', 'format:\n', '`'):
-            self.assert_kept(prefix + CALL, 'example_or_quote_context')
-        self.assert_kept('```' + 'x'*600 + CALL, 'example_or_quote_context')
+        cases = [('```xml\n', 'inside_fenced_code'), ('~~~\n', 'inside_fenced_code'),
+                 ('Example\n', 'nearby_example_cue'), ('例如\n', 'nearby_example_cue'),
+                 ('"', 'quoted_call_context'), ('> ', 'quoted_call_context'),
+                 ('format:\n', 'nearby_example_cue'), ('`', 'inside_inline_code')]
+        for prefix, reason in cases:
+            self.assert_kept(prefix + CALL, reason)
+        self.assert_kept('```' + 'x'*600 + CALL, 'inside_fenced_code')
+
+    def test_closed_code_and_old_examples_do_not_taint_later_calls(self):
+        prefixes = ['Checked `style guide` and ~15 entries.\nLet me update the rule and commit.\n',
+                    'Checked ~~old wording~~.\nNow update it.\n',
+                    '```text\nExample only.\n```\nNow update it.\n',
+                    '~~~text\nExample only.\n~~~\nNow update it.\n',
+                    'Example discussed above.\n\nNow apply the change.\n',
+                    'Use ``a ` literal``.\nNow call the tool:\n']
+        for prefix in prefixes:
+            text = prefix + CALL
+            for split in range(len(text)+1):
+                p, evs = run(text, split)
+                self.assertEqual(sum(e.kind == 'tool_call' for e in evs), 1)
+                self.assertEqual(''.join(e.text for e in evs if e.kind == 'reasoning'), prefix)
+                self.assertEqual(p.recovery['candidate_validation'], 'valid')
+                self.assertFalse(p.diagnostic_snapshot()['guard']['in_inline_code'])
+            p = RecoveringOutputParser(tools=TOOLS)
+            evs = []
+            for c in text:
+                evs += p.feed(c)
+            evs += p.finish('stop')
+            self.assertEqual(sum(e.kind == 'tool_call' for e in evs), 1)
+
+    def test_unclosed_code_and_longer_fences_still_refuse(self):
+        for prefix, reason in [('Mention `unclosed\n', 'inside_inline_code'),
+                               ('Mention ``single ` does not close.\n', 'inside_inline_code'),
+                               ('````text\n```\n', 'inside_fenced_code'),
+                               ('```text\n~~~\n', 'inside_fenced_code')]:
+            for split in range(len(prefix + CALL)+1):
+                p, evs = run(prefix + CALL, split)
+                self.assertEqual(p.recovery['decision'], reason)
+                self.assertEqual(p.recovery['candidate_validation'], 'valid')
+                self.assertFalse(any(e.kind.startswith('tool') for e in evs))
+
+    def test_context_log_has_only_flags_and_fixed_codes(self):
+        p, _ = run('PRIVATE_DISCUSSION `closed`\nProceed.\n' + CALL)
+        snapshot = p.diagnostic_snapshot()
+        self.assertEqual(snapshot['guard']['policy'], 2)
+        self.assertNotIn('PRIVATE_DISCUSSION', json.dumps(snapshot))
+        self.assertNotIn('secret/path', json.dumps(snapshot))
+        self.assert_kept('x'*9000 + CALL, 'context_limit')
 
     def test_stop_only(self):
         for finish in ('length', 'cancel', 'disconnect', 'error'):

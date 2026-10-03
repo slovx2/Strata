@@ -14,8 +14,11 @@ remains reasoning with `validator_unavailable`. No values are invented.
 A real `</think>` takes precedence: everything preceding it remains reasoning.
 Recovery is refused on length limits, cancellation, error, examples/quotes,
 incomplete XML, unknown tools, invalid arguments or mixed prose after calls.
-The example check is deliberately conservative: any earlier backtick/tilde, or
-an example cue in the last 512 reasoning characters, blocks recovery. It cannot
+Guard policy 2 tracks whether the candidate is currently inside a fenced or
+inline code block; earlier closed code and ordinary tildes do not block recovery.
+Example cues are checked on the current/nearest nonempty line, rather than the
+whole recent reasoning tail. An ambiguous quote prefix still blocks recovery.
+The current context line is bounded to 8192 characters; overflow refuses recovery. It cannot
 perfectly distinguish an unmarked example from an intended call. Candidate
 buffering is capped at 256 Ki characters and 16 calls; exceeding a limit leaves
 the output as reasoning. This can produce false negatives rather than inventing
@@ -43,3 +46,17 @@ IDs, later real closure, schema errors, examples, truncated/cancelled replies,
 bounded buffers, both API formats and streaming modes, native stdout observation,
 redaction, and structured thinking/tool history. Synthetic tool calls are never
 executed. Passing these checks cannot establish real-workload model reliability.
+
+
+## Guard policy 2 diagnostics
+
+`recovery.guard` contains only booleans: code-fence state, inline-code state,
+nearby example cue, quote cue and context limit, plus the policy version. Reasons
+are now distinct (`inside_fenced_code`, `inside_inline_code`, `nearby_example_cue`,
+`quoted_call_context`, `context_limit`). No surrounding text is logged.
+
+On a normal EOS, candidate syntax/schema validation runs even when the context
+guard refuses recovery. `candidate_validation` reports a fixed code and
+`candidate_call_count` reports the number of validated calls. This distinguishes
+an overbroad context refusal from incomplete XML or invalid arguments without
+retaining those arguments. On non-normal finishes validation is not attempted.

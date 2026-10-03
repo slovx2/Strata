@@ -155,6 +155,13 @@ class HttpBoundary(unittest.TestCase):
                     self.assertEqual(bad['runs'][0]['recovery']['decision'], 'recovered_missing_think_end')
                     self.assertEqual(bad['flags'], [])
                     self.assertEqual(bad['schema_version'], 3)
+                    closed, _ = self.check_case('Checked `label` and ~15 entries.\nNow proceed.\n' + CALL,
+                                                True, api, stream, True)
+                    recovery = closed['runs'][0]['recovery']
+                    self.assertEqual(recovery['candidate_validation'], 'valid')
+                    self.assertEqual(recovery['guard']['policy'], 2)
+                    self.assertFalse(recovery['guard']['in_inline_code'])
+                    self.assertEqual(closed['flags'], [])
                     good, _ = self.check_case(SECRET + '</think>' + CALL, True, api, stream, True)
                     self.assertEqual(good['runs'][0]['model_think_end_token_sequences'], 1)
                     self.assertEqual(good['runs'][0]['model_output']['markers']['</think>'], 1)
