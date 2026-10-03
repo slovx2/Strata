@@ -4,6 +4,67 @@ import re
 
 from serve.frontend import (OutputParser, Event, ToolCall, THINK_END, CALL_START, CALL_END,
                             FUNC_END, PARAM_END, param_end)
+from serve.diagnostics import MarkerStream
+
+
+class ReasoningEosGuard:
+    """One bounded continuation for a plain, unterminated reasoning turn.
+
+    Inspired by halogen-flash-server #84 and vLLM #55420. Never turn a
+    reasoning buffer into an answer, or continue past a possible tool call.
+    This observer retains fixed markers/counts only, not the generated prose.
+    """
+    ANSWER_LIMIT = 2048
+
+    def __init__(self, enabled=True):
+        self.enabled = enabled
+        self.markers = MarkerStream()
+        self.content = False
+        self.tool = False
+        self.data = {'policy': 1, 'enabled': enabled, 'attempts': 0,
+                     'decision': 'not_needed', 'injected_tokens': 0,
+                     'continuation_tokens': 0, 'answer_chars': 0,
+                     'tool_calls': 0, 'outcome': 'not_attempted'}
+
+    def feed(self, text, events):
+        self.markers.feed(text)
+        for ev in events:
+            self.content |= ev.kind == 'content' and bool(ev.text.strip())
+            self.tool |= ev.kind.startswith('tool')
+            if self.data['attempts']:
+                if ev.kind == 'content':
+                    self.data['answer_chars'] += len(ev.text)
+                if ev.kind == 'tool_call':
+                    self.data['tool_calls'] += 1
+
+    def decide(self, parser, finish, cancel, pending_bytes, remaining, injected):
+        if finish != 'stop' or parser.state != 'reasoning':
+            return False
+        reason = 'continue'
+        if cancel:
+            reason = 'cancelled'
+        elif not self.enabled:
+            reason = 'disabled'
+        elif self.data['attempts']:
+            reason = 'attempt_limit'
+        elif self.content or self.tool or self.markers.counts.get('</think>'):
+            reason = 'answer_or_boundary_seen'
+        elif parser.candidate or any('tool_call' in m or 'function' in m or 'parameter' in m
+                                     for m in self.markers.counts):
+            reason = 'tool_marker_seen'
+        elif parser.buf or parser.pending or self.markers.pending or pending_bytes:
+            reason = 'partial_boundary'
+        elif not self.markers.chars:
+            reason = 'empty_generation'
+        elif remaining <= injected:
+            reason = 'no_answer_room'
+        self.data['decision'] = reason
+        return reason == 'continue'
+
+    def finish(self, finish):
+        if self.data['attempts']:
+            self.data['outcome'] = ('tool_call' if self.data['tool_calls'] else
+                                    'answer' if self.content else 'empty') if finish == 'stop' else finish
 
 
 class RecoveryRejected(Exception):

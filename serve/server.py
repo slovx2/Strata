@@ -52,7 +52,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT))   # run as a script (run-<model>.bat) as well as a module
 from serve.frontend import (ChatTemplate, Event, OutputParser, anthropic_to_messages,  # noqa: E402
                             images_of, openai_to_messages)
-from serve.recovery import RecoveringOutputParser
+from serve.recovery import RecoveringOutputParser, ReasoningEosGuard
 from serve.diagnostics import DiagnosticSink  # noqa: E402
 from serve.mcp import McpCancelled, hub_from_config  # noqa: E402
 from serve.winjob import contain  # noqa: E402
@@ -1450,6 +1450,9 @@ class Service:
             req_values = {k: v for k, v in (sampling or {}).items() if v is not None}
             sampling = {**defaults, **req_values}
         parser = RecoveringOutputParser(thinking=thinking, tools=tools, stream_tools=True)
+        eos_guard = ReasoningEosGuard(os.environ.get('STRATA_REASONING_EOS_RECOVERY', '1') != '0')
+        generation_limit = max_new
+        pass_metrics = []
         diagnostic = getattr(self.request_trace, "diagnostic", None)
         rd = diagnostic.run(thinking, len(ids), max_new, len(tools or []),
                             tuple(self.tok.encode("</think>", parse_special=True)), self.tok) if diagnostic else None
@@ -1492,8 +1495,9 @@ class Service:
                     last_print = time.time()
                     prompt, thought = ids, 0            # thought: the reasoning tokens so far (the budget's count)
                     while True:
-                        gen = self.engine.generate(prompt, max_new - n, sampling, cancel, embeddings=emb) if emb \
-                            else self.engine.generate(prompt, max_new - n, sampling, cancel)
+                        pass_before = getattr(self.engine, 'last', None)
+                        gen = self.engine.generate(prompt, generation_limit - n, sampling, cancel, embeddings=emb) if emb \
+                            else self.engine.generate(prompt, generation_limit - n, sampling, cancel)
                         seg, wrap = [], False           # this pass's tokens; the budget is reached
                         try:
                             for t in gen:
@@ -1502,6 +1506,8 @@ class Service:
                                     yield "ping", None
                                     continue
                                 n += 1
+                                if eos_guard.data['attempts']:
+                                    eos_guard.data['continuation_tokens'] += 1
                                 if trace is not None and trace["first_token_s"] is None:
                                     with self.status_lock:
                                         trace["first_token_s"] = round(time.perf_counter() - trace["_clock"], 3)
@@ -1515,6 +1521,7 @@ class Service:
                                 seg.append(t)
                                 text = detok.push(t)
                                 evs = rd.feed(parser, text) if rd else parser.feed(text)
+                                eos_guard.feed(text, evs)
                                 self._note(n, evs)
                                 last_print = self._progress(last_print)
                                 for ev in evs:
@@ -1540,22 +1547,38 @@ class Service:
                             gen.close()                 # STOP+drain to THIS request's DONE while still holding the
                             #                             fifo, so a stop-token break can't leave the shared engine
                             #                             queue mid-drain for the next request to read as its own DONE
-                        if not wrap or cancel.is_set():
+                        pass_last = getattr(self.engine, 'last', None)
+                        if pass_last is not None and pass_last is not pass_before:
+                            pass_metrics.append(dict(pass_last))
+                        extra = self.tok.encode(REASONING_WRAP_UP, parse_special=True)
+                        recover_eos = eos_guard.decide(parser, finish, cancel.is_set(), detok.pending(),
+                                                       max_new - n, len(extra)) if not wrap else False
+                        if recover_eos:
+                            eos_guard.data.update(attempts=1, injected_tokens=len(extra))
+                            generation_limit = min(max_new, n + len(extra) + eos_guard.ANSWER_LIMIT)
+                            # The ending token is in raw_ids, but NOT seg. Replay the verified prefix
+                            # after draining DONE, just as the existing thinking-budget path does.
+                            # This also resets speculative state through the ordinary GEN boundary.
+                            finish = 'length'
+                            print('[strata] reasoning EOS recovery: closing thinking; one bounded continuation',
+                                  flush=True)
+                        if (not wrap and not recover_eos) or cancel.is_set():
                             break
                         # #123: the thinking reached reasoning_budget_tokens.  Close it the way the model would (a
                         # short wrap-up and </think>) and let it answer: the next pass's prompt is this one plus what
                         # was generated plus the wrap-up, so the engine continues from the prefix it already holds.
                         budget = None
-                        extra = self.tok.encode(REASONING_WRAP_UP, parse_special=True)
                         if max_new - n - len(extra) < 1:
                             break                       # no room left to answer: "length", as without a budget
-                        print(f"[strata] thinking budget reached ({thought} tokens): wrapping up the thinking",
-                              flush=True)
+                        if wrap:
+                            print(f"[strata] thinking budget reached ({thought} tokens): wrapping up the thinking",
+                                  flush=True)
                         for t in extra:
                             n += 1
                             raw_ids.append(t)
                             text = detok.push(t)
                             evs = rd.feed(parser, text, injected=True) if rd else parser.feed(text)
+                            eos_guard.feed('', evs)
                             self._note(n, evs)
                             for ev in evs:
                                 yield "event", ev
@@ -1576,6 +1599,13 @@ class Service:
                             # disconnect)
                             last = dict(getattr(self.engine, "last", {}) or {}) \
                                 if getattr(self.engine, "last", None) is not engine_last0 else {}
+                            if len(pass_metrics) > 1:
+                                # Keep original prompt/cache counts; sum work across all passes.
+                                # Do not report the short continuation's decode clock for the whole reply.
+                                last = dict(pass_metrics[0], finish=last.get('finish'))
+                                for key in ('generated', 'prompt_ms', 'decode_ms', 'drafts_offered', 'drafts_accepted'):
+                                    if all(p.get(key) is not None for p in pass_metrics):
+                                        last[key] = sum(p[key] for p in pass_metrics)
                             started = self.status.get("started", time.time())
                             cvec = (getattr(self.engine, "info", {}) or {}).get("cvec", 0)
                             loaded = str(cvec) not in ("0", "", "None")
@@ -1624,14 +1654,19 @@ class Service:
                         self.status.pop("tail", None)            # #212: the answer's end is not kept once it is done
                         self.status.pop("tool", None)
         finally:
+            eos_guard.finish(finish)
             if rd:
+                rd.data['reasoning_eos_recovery'] = dict(eos_guard.data)
                 rd.data["recovery"] = parser.diagnostic_snapshot()
                 rd.data.update(finish=finish, state=parser.state,
                                detokenizer_pending=bool(detok.pending()), cancel=cancel.is_set())
             if emb:
                 Path(emb).unlink(missing_ok=True)
         final_events = parser.finish(finish)
+        eos_guard.feed('', final_events)
+        eos_guard.finish(finish)
         if rd:
+            rd.data['reasoning_eos_recovery'] = dict(eos_guard.data)
             rd.data["parser_finish_called"] = True
             rd.data["recovery"] = parser.diagnostic_snapshot()
             rd.parsed(parser, final_events)

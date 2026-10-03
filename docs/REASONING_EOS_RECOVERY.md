@@ -1,0 +1,63 @@
+# Recovering a plain answer after premature reasoning EOS
+
+A model can emit an end-of-turn token without `</think>`. A successful HTTP response can then contain only
+reasoning, with neither an answer nor a tool call. This guard asks the model to finish its answer; it does not
+relabel reasoning as final content.
+
+Community precedents:
+
+- [Halogen Flash Server #84](https://github.com/peonist-ai/halogen-flash-server/issues/84#issuecomment-5783440989)
+  ships reasoning EOS protection in 0.13.4, separately recovering complete calls inside reasoning. It normally
+  retains an EOS as text and continues. Its later bounded guard closes reasoning after repeated markers.
+- [vLLM #55420](https://github.com/vllm-project/vllm/issues/55420) proposes forcing the reasoning-end boundary
+  before allowing an answer. At review time this is an open proposal, not an upstream merged implementation.
+- [ds4 #1087](https://github.com/antirez/ds4/issues/1087#issuecomment-5737104740) explains why moving all reasoning
+  into content prevents empty text but does not produce a completed or schema-conforming answer.
+
+## Strata adaptation
+
+The Python service uses the existing reasoning-budget continuation mechanism rather than changing the native
+sampler or importing code from a different engine. The default is enabled. Set `STRATA_REASONING_EOS_RECOVERY=0`
+in the server environment and restart to disable it.
+
+On an actual stop token while the parser is still in reasoning, continue only if there has been no answer,
+explicit reasoning end, tool event, or complete/partial tool marker. A buffered boundary or incomplete UTF-8
+character also prevents recovery. No recovery is attempted on cancellation, disconnect, engine errors, token
+budget exhaustion or an entirely empty generation. Existing complete-tool recovery takes priority. Even
+quoted, escaped, malformed or unknown tool markers conservatively prevent the prose continuation.
+
+1. Close the generator and drain its native DONE while holding the service FIFO. Tokens queued after EOS
+   (including accepted speculative tokens) are not added to the continuation prompt.
+2. Reuse original prompt + generated tokens before EOS. Append the existing fixed reasoning-budget wrap-up
+   sentence and `</think>`; omit the premature stop token. Start a normal new GEN pass on the same loaded engine.
+3. Allow one continuation, at most 2048 generated tokens and never more than the original remaining request
+   budget. Injected tokens and the discarded EOS are counted against that budget. MTP remains enabled; GEN
+   restores/replays the prefix through the normal engine mechanism.
+4. Stream new answer/tool events normally. Never execute tools in this recovery path. A second empty stop is
+   reported as empty in diagnostics; reaching the cap remains `length`, not a successful stop.
+
+Normal requests do not gain an extra generation pass. Recovery adds generation latency and may require some
+prefix replay. Already streamed thinking cannot be withdrawn. The generated answer is new text, not a guaranteed
+reconstruction of an answer embedded in the reasoning. This guard does not repair malformed tools, infer an
+arbitrary boundary within prose, or guarantee the accuracy of the new answer.
+
+## Diagnostics and privacy
+
+Each run has `reasoning_eos_recovery`: fixed policy/decision/outcome codes, enabled flag, attempt count,
+injected/continuation token counts, answer character count and tool-call count. An injected `</think>` is counted
+under `server_injected`, never under model/native output. Native passes remain visible separately. Timing totals
+sum native work across completed passes and keep the original request's prompt/cache attribution.
+
+No user message, history, reasoning text, tool name, argument, path value, key or content hash is stored by this
+observer. MarkerStream keeps fixed markers/counts only. Existing private rotating diagnostics remain in use.
+Do not turn on STRATA_DEBUG or the API payload monitor when deploying this fix.
+
+## Verification
+
+`python3 -m unittest serve.test_reasoning_eos serve.test_recovery serve.test_diagnostics serve.test_server serve.test_structured serve.test_detok`
+
+The new tests cover prefix replay/EOS removal, one-attempt and token limits, tool recovery precedence, partial
+markers, no-tool-schema cases, cancellation/disconnect/error, disabled behavior, request isolation, and privacy.
+Both API formats in streaming/nonstreaming modes also run through a real StrataEngine subprocess pipe with
+scripted tokens, including trailing speculative tokens after EOS. This is deterministic fault injection, not a
+claim of reproducing the model's stochastic failure on demand. Production smoke results are recorded separately.
