@@ -52,6 +52,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 sys.path.insert(0, str(ROOT))   # run as a script (run-<model>.bat) as well as a module
 from serve.frontend import (ChatTemplate, Event, OutputParser, anthropic_to_messages,  # noqa: E402
                             images_of, openai_to_messages)
+from serve.diagnostics import DiagnosticSink  # noqa: E402
 from serve.mcp import McpCancelled, hub_from_config  # noqa: E402
 from serve.winjob import contain  # noqa: E402
 from serve.structured import StructuredOutputError, prepare_format, validated_json  # noqa: E402
@@ -890,6 +891,7 @@ class Service:
         self.api_monitor = False
         self.api_requests = collections.deque(maxlen=100)  # bounded I/O in memory; no headers or API keys
         self.request_trace = threading.local()
+        self.diagnostic_sink = DiagnosticSink.from_env()
         self.history = collections.deque(maxlen=500)    # the last finished requests, newest last (GET /metrics)
         # since the server started (the Monitor's totals, issue #35)
         self.totals = {"since": time.time(), "requests": 0, "prompt_tokens": 0, "reused": 0, "output_tokens": 0,
@@ -1444,6 +1446,9 @@ class Service:
             req_values = {k: v for k, v in (sampling or {}).items() if v is not None}
             sampling = {**defaults, **req_values}
         parser = OutputParser(thinking=thinking, tools=tools, stream_tools=True)
+        diagnostic = getattr(self.request_trace, "diagnostic", None)
+        rd = diagnostic.run(thinking, len(ids), max_new, len(tools or []),
+                            tuple(self.tok.encode("</think>", parse_special=True))) if diagnostic else None
         detok, n, finish = Detokenizer(self.tok), 0, "length"
         timings, before = None, None                    # this request's timings; the engine's `last` before it
         raw_ids = []                                    # every generated id (STRATA_DEBUG: dump raw model text)
@@ -1488,13 +1493,16 @@ class Service:
                                 if trace is not None and trace["first_token_s"] is None:
                                     with self.status_lock:
                                         trace["first_token_s"] = round(time.perf_counter() - trace["_clock"], 3)
+                                if rd:
+                                    rd.token(t, stop=t in self.stop_ids)
                                 if t in self.stop_ids:
                                     finish = "stop"
                                     raw_ids.append(t)
                                     break
                                 raw_ids.append(t)
                                 seg.append(t)
-                                evs = parser.feed(detok.push(t))
+                                text = detok.push(t)
+                                evs = rd.feed(parser, text) if rd else parser.feed(text)
                                 self._note(n, evs)
                                 last_print = self._progress(last_print)
                                 for ev in evs:
@@ -1534,7 +1542,8 @@ class Service:
                         for t in extra:
                             n += 1
                             raw_ids.append(t)
-                            evs = parser.feed(detok.push(t))
+                            text = detok.push(t)
+                            evs = rd.feed(parser, text, injected=True) if rd else parser.feed(text)
                             self._note(n, evs)
                             for ev in evs:
                                 yield "event", ev
@@ -1601,9 +1610,16 @@ class Service:
                         self.status.pop("tail", None)            # #212: the answer's end is not kept once it is done
                         self.status.pop("tool", None)
         finally:
+            if rd:
+                rd.data.update(finish=finish, state=parser.state,
+                               detokenizer_pending=bool(detok.pending()), cancel=cancel.is_set())
             if emb:
                 Path(emb).unlink(missing_ok=True)
-        for ev in parser.finish():
+        final_events = parser.finish()
+        if rd:
+            rd.data["parser_finish_called"] = True
+            rd.parsed(parser, final_events)
+        for ev in final_events:
             yield "event", ev
         yield "done", {"finish": finish, "completion_tokens": n, "reused": (timings or {}).get("cache_n", 0),
                        "timings": timings}
@@ -1971,6 +1987,7 @@ def make_handler(svc: Service):
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.0"                       # SSE ends by closing the connection
 
+        diagnostic = None
         record = None                                       # #332: this request's monitor record, if kept
         watch_done = None                                   # #430 #431: stops this request's disconnect watcher
 
@@ -2004,6 +2021,13 @@ def make_handler(svc: Service):
 
         def _note(self, **values):
             """#332: what the monitor shows about this request (nothing when the monitor is off)."""
+            if self.diagnostic:
+                if values.get("outcome") == "disconnected":
+                    self.diagnostic.disconnected = True
+                if "http_status" in values:
+                    self.diagnostic.http_status = values["http_status"]
+                if "error" in values:
+                    self.diagnostic.counts["http_written"]["error_reported"] += 1
             if self.record is not None:
                 with svc.status_lock:
                     self.record.update(values)
@@ -2037,6 +2061,8 @@ def make_handler(svc: Service):
             self.end_headers()
 
         def _json(self, code, obj):
+            if self.diagnostic:
+                self.diagnostic.http_status = code
             if self.record is not None:
                 with svc.status_lock:
                     self.record["http_status"] = code
@@ -2048,10 +2074,15 @@ def make_handler(svc: Service):
             body = json.dumps(obj, ensure_ascii=False).encode()
             self.send_response(code)
             self.send_header("Content-Type", "application/json")
+            if self.diagnostic:
+                self.send_header("X-Strata-Diagnostic-ID", self.diagnostic.id)
             self._cors()
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
+            self.wfile.flush()
+            if self.diagnostic:
+                self.diagnostic.json_written(obj)
 
         def _authorized(self) -> bool:
             if not svc.api_key:
@@ -2233,6 +2264,10 @@ def make_handler(svc: Service):
                     return
                 if path in ("/v1/chat/completions", "/v1/messages"):
                     self.record = svc.begin_request(path, req)
+                    if svc.diagnostic_sink:
+                        api = "anthropic" if path == "/v1/messages" else "openai"
+                        self.diagnostic = svc.diagnostic_sink.begin(api, req.get("stream"))
+                        svc.request_trace.diagnostic = self.diagnostic
                 if path == "/v1/chat/completions":
                     self._openai(req)
                 elif path == "/v1/messages":
@@ -2259,6 +2294,9 @@ def make_handler(svc: Service):
                 self._note(outcome="disconnected")
                 raise                                        # as before #332: the server's own handling
             finally:
+                if self.diagnostic:
+                    self.diagnostic.finish()
+                    svc.request_trace.diagnostic = None
                 if self.watch_done is not None:
                     self.watch_done.set()
                 record = self.record
@@ -2331,6 +2369,8 @@ def make_handler(svc: Service):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.send_header("Cache-Control", "no-cache")
+            if self.diagnostic:
+                self.send_header("X-Strata-Diagnostic-ID", self.diagnostic.id)
             self.send_header("X-Accel-Buffering", "no")   # nginx and similar proxies pass each event at once
             self._cors()
             self.end_headers()
@@ -2338,6 +2378,8 @@ def make_handler(svc: Service):
         def _capture(self, items, api):
             """Retain bounded input/output for the monitor without changing the API response (the items as they
             are when the monitor is off)."""
+            if self.diagnostic:
+                items = self.diagnostic.prepared(items)
             if self.record is None:
                 return items
             return self._captured(items, api)
@@ -2407,7 +2449,12 @@ def make_handler(svc: Service):
                     else:
                         self.wfile.write(b"data: " + json.dumps(c, ensure_ascii=False).encode() + b"\n\n")
                     self.wfile.flush()
+                    if self.diagnostic:
+                        self.diagnostic.observe(c, "http_written")
                 self.wfile.write(b"data: [DONE]\n\n")
+                self.wfile.flush()
+                if self.diagnostic:
+                    self.diagnostic.counts["http_written"]["done_sentinel"] += 1
             except OSError:
                 self._note(outcome="disconnected")
                 cancel.set()                                 # client went away: stop the engine
@@ -2457,6 +2504,8 @@ def make_handler(svc: Service):
                         self.wfile.write(f"event: {name}\n".encode() + b"data: " +
                                          json.dumps(e, ensure_ascii=False).encode() + b"\n\n")
                     self.wfile.flush()
+                    if self.diagnostic:
+                        self.diagnostic.observe(item, "http_written")
             except OSError:
                 self._note(outcome="disconnected")
                 cancel.set()
