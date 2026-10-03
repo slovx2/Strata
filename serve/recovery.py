@@ -40,7 +40,9 @@ def strict_calls(text, schemas):
         name = match[1]
         if name not in schemas:
             raise RecoveryRejected('unknown_tool')
-        schema = schemas[name].get('parameters') or {'type': 'object'}
+        schema = schemas[name].get('parameters')
+        if schema is None:
+            schema = {'type': 'object'}
         if not isinstance(schema, dict) or not isinstance(schema.get('properties', {}), dict):
             raise RecoveryRejected('schema_unverifiable')
         props = schema.get('properties', {})

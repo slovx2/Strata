@@ -94,6 +94,10 @@ class Recovery(unittest.TestCase):
         p, evs = run(CALL.replace('</function>', '<parameter=limit>2</parameter></function>'))
         self.assertEqual(evs[-1].call.arguments['limit'], 2)
 
+    def test_boolean_schema_fails_closed(self):
+        call = '<tool_call><function=read></function></tool_call>'
+        self.assert_kept(call, 'schema_unverifiable', tools=[{'name': 'read', 'parameters': False}])
+
     def test_remote_ref_fails_closed(self):
         tools = [{'name': 'read', 'parameters': {'properties': {'path': {'type': 'string'}}, '$ref': 'https://example.invalid/private'}}]
         self.assert_kept(CALL, 'schema_unverifiable', tools=tools)
