@@ -1,5 +1,7 @@
 # Song PC 32K 单轮基准
 
+这是已打标签的历史基线记录。后续筛选、撤回项及当前运行版本见 [优化筛选与验收 R1](SONG_PC_OPTIMIZATION_R1.md)。
+
 2026-10-03。此分支从实际部署的 architectds/Strata `636531421747293942cb1e213ccbeda5fcb52dbe` 建立，保留本地 HF 镜像和 native-pack 安装修改。未升级引擎、未合入新社区 PR。本次只启用已有能力并固定快速验证流程。
 
 ## 固定环境

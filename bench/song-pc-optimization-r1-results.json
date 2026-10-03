@@ -1,0 +1,3350 @@
+{
+  "baseline-hot": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 51.02732289599953,
+    "rows": [
+      {
+        "ttft_s": 1.4940225139980612,
+        "wall_s": 2.3709200029989006,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的运行机制主要包含两个核心阶段：Prefill（预",
+        "text_sha256": "c2ade4b82152c57e0bdb56a121a6e7e83fb7f07e48364fb394621903d62c882c",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1456.9,
+          "prompt_per_token_ms": 25.119,
+          "prompt_per_second": 39.8,
+          "predicted_n": 32,
+          "predicted_ms": 904.2,
+          "predicted_per_token_ms": 28.256,
+          "predicted_per_second": 35.4,
+          "draft_n": 27,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5151654700021027,
+        "wall_s": 2.2801264109984913,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1475.8,
+          "prompt_per_token_ms": 1.656,
+          "prompt_per_second": 603.7,
+          "predicted_n": 32,
+          "predicted_ms": 786.9,
+          "predicted_per_token_ms": 24.591,
+          "predicted_per_second": 40.7,
+          "draft_n": 24,
+          "draft_n_accepted": 16
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.7055664069994236,
+        "wall_s": 3.3512819150018913,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2656.2,
+          "prompt_per_token_ms": 0.691,
+          "prompt_per_second": 1446.4,
+          "predicted_n": 32,
+          "predicted_ms": 664.3,
+          "predicted_per_token_ms": 20.759,
+          "predicted_per_second": 48.2,
+          "draft_n": 25,
+          "draft_n_accepted": 22
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.0555421030003345,
+        "wall_s": 4.039409012002579,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1024.2,
+          "prompt_per_token_ms": 17.659,
+          "prompt_per_second": 56.6,
+          "predicted_n": 128,
+          "predicted_ms": 3007.0,
+          "predicted_per_token_ms": 23.492,
+          "predicted_per_second": 42.6,
+          "draft_n": 101,
+          "draft_n_accepted": 74
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4934041010019428,
+        "wall_s": 4.54007124599957,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1465.2,
+          "prompt_per_token_ms": 1.644,
+          "prompt_per_second": 608.1,
+          "predicted_n": 128,
+          "predicted_ms": 3064.6,
+          "predicted_per_token_ms": 23.942,
+          "predicted_per_second": 41.8,
+          "draft_n": 114,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.698088776000077,
+        "wall_s": 5.659172848998423,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务验证的全流程安装。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥",
+        "text_sha256": "314847544ae8e4d69a242de104e8df199fce86f96bfbf0196488cfb94c636c3b",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2646.3,
+          "prompt_per_token_ms": 0.689,
+          "prompt_per_second": 1451.8,
+          "predicted_n": 128,
+          "predicted_ms": 2995.2,
+          "predicted_per_token_ms": 23.4,
+          "predicted_per_second": 42.7,
+          "draft_n": 126,
+          "draft_n_accepted": 70
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2404322239999601,
+        "wall_s": 4.2296767250009,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1207.7,
+          "prompt_per_token_ms": 20.822,
+          "prompt_per_second": 48.0,
+          "predicted_n": 128,
+          "predicted_ms": 3016.7,
+          "predicted_per_token_ms": 23.568,
+          "predicted_per_second": 42.4,
+          "draft_n": 103,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4538422870027716,
+        "wall_s": 4.435981218000961,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向AI编程助手（如Claude Code、Cursor、Codex等）的操作指南，旨在指导AI代理协助用户在其个人电脑上安装名为“Strata”的本地大语言模型运行环境。Strata的核心功能是本地运行Qwen3.8-Flash-Next模型，该模型依赖于一块NVIDIA或AMD独立显卡以及系统内存，并在本地地址 `http://127.0.0.1:8080` 上提供兼容OpenAI和Anthropic标准的API服务。资料明确指出",
+        "text_sha256": "0aa6cd893e17018c4cce8e8bfc850766d0e63e1db324d611421dc5b68f7ea939",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1421.0,
+          "prompt_per_token_ms": 1.595,
+          "prompt_per_second": 627.0,
+          "predicted_n": 128,
+          "predicted_ms": 3004.5,
+          "predicted_per_token_ms": 23.473,
+          "predicted_per_second": 42.6,
+          "draft_n": 103,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.706963819997327,
+        "wall_s": 5.687917095998273,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务验证的全流程安装。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥",
+        "text_sha256": "314847544ae8e4d69a242de104e8df199fce86f96bfbf0196488cfb94c636c3b",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2653.7,
+          "prompt_per_token_ms": 0.691,
+          "prompt_per_second": 1447.8,
+          "predicted_n": 128,
+          "predicted_ms": 3014.6,
+          "predicted_per_token_ms": 23.552,
+          "predicted_per_second": 42.5,
+          "draft_n": 124,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2591373359973659,
+        "wall_s": 4.201438689000497,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列中的所有Token都是已知的，模型可以利用矩阵乘法的高度并行性，通过GPU的大规模并行计算能力快速生成每个Token对应的Key-Value（KV）缓存。这一阶段的特点是",
+        "text_sha256": "54abe5e5d0cbe4490eb8af90566309b5a88fd0774dbbee826623acb0af77ee8d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1226.9,
+          "prompt_per_token_ms": 21.153,
+          "prompt_per_second": 47.3,
+          "predicted_n": 128,
+          "predicted_ms": 2969.3,
+          "predicted_per_token_ms": 23.198,
+          "predicted_per_second": 43.1,
+          "draft_n": 101,
+          "draft_n_accepted": 73
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.452331159998721,
+        "wall_s": 4.67226132200085,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1418.5,
+          "prompt_per_token_ms": 1.592,
+          "prompt_per_second": 628.1,
+          "predicted_n": 128,
+          "predicted_ms": 3239.7,
+          "predicted_per_token_ms": 25.31,
+          "predicted_per_second": 39.5,
+          "draft_n": 111,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.7253594850008085,
+        "wall_s": 5.546545675002562,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2658.8,
+          "prompt_per_token_ms": 0.692,
+          "prompt_per_second": 1445.0,
+          "predicted_n": 128,
+          "predicted_ms": 2855.3,
+          "predicted_per_token_ms": 22.307,
+          "predicted_per_second": 44.8,
+          "draft_n": 114,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 48.0,
+        "decode_tps": 42.6,
+        "ttft_s": 1.2404322239999601,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 627.0,
+        "decode_tps": 41.8,
+        "ttft_s": 1.4538422870027716,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1447.8,
+        "decode_tps": 42.7,
+        "ttft_s": 2.706963819997327,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "p0": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 54.695736898996984,
+    "rows": [
+      {
+        "ttft_s": 1.8167816889981623,
+        "wall_s": 2.9170932390006783,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1746.4,
+          "prompt_per_token_ms": 30.11,
+          "prompt_per_second": 33.2,
+          "predicted_n": 32,
+          "predicted_ms": 1148.4,
+          "predicted_per_token_ms": 35.888,
+          "predicted_per_second": 27.9,
+          "draft_n": 26,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.1665613850018417,
+        "wall_s": 3.2218764400022337,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 2115.1,
+          "prompt_per_token_ms": 2.374,
+          "prompt_per_second": 421.3,
+          "predicted_n": 32,
+          "predicted_ms": 1086.3,
+          "predicted_per_token_ms": 33.947,
+          "predicted_per_second": 29.5,
+          "draft_n": 23,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 3.953721672998654,
+        "wall_s": 4.9266700750013115,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 3878.3,
+          "prompt_per_token_ms": 1.009,
+          "prompt_per_second": 990.6,
+          "predicted_n": 32,
+          "predicted_ms": 1011.2,
+          "predicted_per_token_ms": 31.6,
+          "predicted_per_second": 31.6,
+          "draft_n": 31,
+          "draft_n_accepted": 22
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.1204661369993119,
+        "wall_s": 4.661804774998018,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1091.2,
+          "prompt_per_token_ms": 18.814,
+          "prompt_per_second": 53.2,
+          "predicted_n": 128,
+          "predicted_ms": 3557.0,
+          "predicted_per_token_ms": 27.789,
+          "predicted_per_second": 36.0,
+          "draft_n": 105,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4764407220027351,
+        "wall_s": 4.647689689001709,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理如何在用户的个人电脑上安装并配置名为“Strata”的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anth",
+        "text_sha256": "83161ac05fd1fbff82e1267f18e065e6fd63b92a99bdb96d24f9914810b13501",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1440.6,
+          "prompt_per_token_ms": 1.617,
+          "prompt_per_second": 618.5,
+          "predicted_n": 128,
+          "predicted_ms": 3191.0,
+          "predicted_per_token_ms": 24.93,
+          "predicted_per_second": 40.1,
+          "draft_n": 108,
+          "draft_n_accepted": 77
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6243926669994835,
+        "wall_s": 5.733331757997803,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理协助非技术用户完成从环境检查到服务启动的全流程，强调操作的安全性与规范性。\n\n首先，文档确立了严格的“基本规则”。核心原则是安全性，严禁在无API密钥",
+        "text_sha256": "3566e94ff0e933c326bdfecf62d7cbb2cbb31fd3b6811edf93754c422fd78f91",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2533.8,
+          "prompt_per_token_ms": 0.66,
+          "prompt_per_second": 1516.3,
+          "predicted_n": 128,
+          "predicted_ms": 3162.8,
+          "predicted_per_token_ms": 24.709,
+          "predicted_per_second": 40.5,
+          "draft_n": 116,
+          "draft_n_accepted": 66
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2481762030001846,
+        "wall_s": 4.359637795998424,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行地计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token",
+        "text_sha256": "337dfbca4b317b9daacc6f612b3f4a266f9037c6fc96720cb05d20b87d555d3c",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1212.6,
+          "prompt_per_token_ms": 20.907,
+          "prompt_per_second": 47.8,
+          "predicted_n": 128,
+          "predicted_ms": 3132.4,
+          "predicted_per_token_ms": 24.472,
+          "predicted_per_second": 40.9,
+          "draft_n": 110,
+          "draft_n_accepted": 77
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.482479346999753,
+        "wall_s": 4.552460415001406,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1447.3,
+          "prompt_per_token_ms": 1.624,
+          "prompt_per_second": 615.6,
+          "predicted_n": 128,
+          "predicted_ms": 3090.2,
+          "predicted_per_token_ms": 24.142,
+          "predicted_per_second": 41.4,
+          "draft_n": 114,
+          "draft_n_accepted": 79
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.5936268320001545,
+        "wall_s": 5.427098223997746,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2527.6,
+          "prompt_per_token_ms": 0.658,
+          "prompt_per_second": 1520.0,
+          "predicted_n": 128,
+          "predicted_ms": 2867.4,
+          "predicted_per_token_ms": 22.402,
+          "predicted_per_second": 44.6,
+          "draft_n": 109,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2342600060001132,
+        "wall_s": 4.2338271539993,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列中的所有Token都是已知的，模型可以利用矩阵乘法的高度并行性，通过GPU的大规模并行计算能力快速生成每个Token对应的Key-Value（KV）缓存。这一阶段的特点是",
+        "text_sha256": "54abe5e5d0cbe4490eb8af90566309b5a88fd0774dbbee826623acb0af77ee8d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1200.5,
+          "prompt_per_token_ms": 20.698,
+          "prompt_per_second": 48.3,
+          "predicted_n": 128,
+          "predicted_ms": 3027.6,
+          "predicted_per_token_ms": 23.653,
+          "predicted_per_second": 42.3,
+          "draft_n": 104,
+          "draft_n_accepted": 74
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4627612280019093,
+        "wall_s": 4.528506611000921,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1430.4,
+          "prompt_per_token_ms": 1.605,
+          "prompt_per_second": 622.9,
+          "predicted_n": 128,
+          "predicted_ms": 3089.2,
+          "predicted_per_token_ms": 24.134,
+          "predicted_per_second": 41.4,
+          "draft_n": 112,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.587421936001192,
+        "wall_s": 5.474951178999618,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务验证的全流程安装。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥",
+        "text_sha256": "314847544ae8e4d69a242de104e8df199fce86f96bfbf0196488cfb94c636c3b",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2522.4,
+          "prompt_per_token_ms": 0.657,
+          "prompt_per_second": 1523.2,
+          "predicted_n": 128,
+          "predicted_ms": 2935.6,
+          "predicted_per_token_ms": 22.934,
+          "predicted_per_second": 43.6,
+          "draft_n": 121,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 48.3,
+        "decode_tps": 40.9,
+        "ttft_s": 1.2342600060001132,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 618.5,
+        "decode_tps": 41.4,
+        "ttft_s": 1.4764407220027351,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1520.0,
+        "decode_tps": 43.6,
+        "ttft_s": 2.5936268320001545,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "p1": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 56.913294450998364,
+    "rows": [
+      {
+        "ttft_s": 1.92620793199967,
+        "wall_s": 3.056417578001856,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1820.3,
+          "prompt_per_token_ms": 31.384,
+          "prompt_per_second": 31.9,
+          "predicted_n": 32,
+          "predicted_ms": 1185.2,
+          "predicted_per_token_ms": 37.038,
+          "predicted_per_second": 27.0,
+          "draft_n": 26,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.3266396269973484,
+        "wall_s": 3.5538037739970605,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 2274.6,
+          "prompt_per_token_ms": 2.553,
+          "prompt_per_second": 391.7,
+          "predicted_n": 32,
+          "predicted_ms": 1261.3,
+          "predicted_per_token_ms": 39.416,
+          "predicted_per_second": 25.4,
+          "draft_n": 26,
+          "draft_n_accepted": 18
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.075502686002437,
+        "wall_s": 5.458532413002104,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编码助手（如Claude Code",
+        "text_sha256": "41d7919ddf9bf25148b3dfb650828b7ed959433a5a77def602ca8ae5418a9fe9",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 4017.9,
+          "prompt_per_token_ms": 1.046,
+          "prompt_per_second": 956.2,
+          "predicted_n": 32,
+          "predicted_ms": 1417.4,
+          "predicted_per_token_ms": 44.294,
+          "predicted_per_second": 22.6,
+          "draft_n": 28,
+          "draft_n_accepted": 23
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.1355171750001318,
+        "wall_s": 4.907694486002583,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。理解这两个阶段对于优化模型性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。在这个阶段，模型并行地处理所有输入Token，计算它们的Key和Value向量，并将这些中间状态存储在KV Cache中。由于输入是已知的，GPU可以充分利用并行计算能力，因此Prefill阶段通常是计算密集型（Compute-bound），速度较快，但显存占用会随着输入长度的增加",
+        "text_sha256": "6befa4229686029232a83c5c249ac756d097204373ca2a2ad86f7d2da35b943d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1103.0,
+          "prompt_per_token_ms": 19.017,
+          "prompt_per_second": 52.6,
+          "predicted_n": 128,
+          "predicted_ms": 3794.4,
+          "predicted_per_token_ms": 29.644,
+          "predicted_per_second": 33.7,
+          "draft_n": 106,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5530211119985324,
+        "wall_s": 4.884636560000217,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1516.2,
+          "prompt_per_token_ms": 1.702,
+          "prompt_per_second": 587.7,
+          "predicted_n": 128,
+          "predicted_ms": 3350.4,
+          "predicted_per_token_ms": 26.175,
+          "predicted_per_second": 38.2,
+          "draft_n": 111,
+          "draft_n_accepted": 78
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.638642860998516,
+        "wall_s": 5.786987368999689,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2570.2,
+          "prompt_per_token_ms": 0.669,
+          "prompt_per_second": 1494.8,
+          "predicted_n": 128,
+          "predicted_ms": 3186.8,
+          "predicted_per_token_ms": 24.897,
+          "predicted_per_second": 40.2,
+          "draft_n": 123,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2701435290000518,
+        "wall_s": 4.487131583999144,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列中的所有Token在计算注意力机制时是相互可见的，因此这一阶段具有高度的并行性。Prefill阶段的主要瓶颈在于计算密集度（Compute-bound），即GPU的算力",
+        "text_sha256": "1864eac36dfbfbef15fb9faa2e0c79bb87c53b9f00eda28762b2b828253d25bb",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1234.9,
+          "prompt_per_token_ms": 21.291,
+          "prompt_per_second": 47.0,
+          "predicted_n": 128,
+          "predicted_ms": 3240.2,
+          "predicted_per_token_ms": 25.314,
+          "predicted_per_second": 39.5,
+          "draft_n": 100,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5134428119999939,
+        "wall_s": 4.684770973999548,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1476.3,
+          "prompt_per_token_ms": 1.657,
+          "prompt_per_second": 603.5,
+          "predicted_n": 128,
+          "predicted_ms": 3194.9,
+          "predicted_per_token_ms": 24.96,
+          "predicted_per_second": 40.1,
+          "draft_n": 112,
+          "draft_n_accepted": 78
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6287881179996475,
+        "wall_s": 5.443388291001611,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2569.6,
+          "prompt_per_token_ms": 0.669,
+          "prompt_per_second": 1495.2,
+          "predicted_n": 128,
+          "predicted_ms": 2856.2,
+          "predicted_per_token_ms": 22.314,
+          "predicted_per_second": 44.8,
+          "draft_n": 118,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.246108193998225,
+        "wall_s": 4.5459686659996805,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行地计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token",
+        "text_sha256": "337dfbca4b317b9daacc6f612b3f4a266f9037c6fc96720cb05d20b87d555d3c",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1212.0,
+          "prompt_per_token_ms": 20.897,
+          "prompt_per_second": 47.9,
+          "predicted_n": 128,
+          "predicted_ms": 3327.0,
+          "predicted_per_token_ms": 25.992,
+          "predicted_per_second": 38.5,
+          "draft_n": 118,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4997908520017518,
+        "wall_s": 4.590222322000045,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装并配置名为“Strata”的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和",
+        "text_sha256": "c34fd56298b215fe05414f0e2ca06bc153169e0751c6aa7d3a4ed8b8d56415bf",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1466.4,
+          "prompt_per_token_ms": 1.646,
+          "prompt_per_second": 607.6,
+          "predicted_n": 128,
+          "predicted_ms": 3111.8,
+          "predicted_per_token_ms": 24.311,
+          "predicted_per_second": 41.1,
+          "draft_n": 109,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.629603383000358,
+        "wall_s": 5.498371368001244,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2569.4,
+          "prompt_per_token_ms": 0.669,
+          "prompt_per_second": 1495.3,
+          "predicted_n": 128,
+          "predicted_ms": 2908.9,
+          "predicted_per_token_ms": 22.726,
+          "predicted_per_second": 44.0,
+          "draft_n": 118,
+          "draft_n_accepted": 70
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 47.9,
+        "decode_tps": 38.5,
+        "ttft_s": 1.246108193998225,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 603.5,
+        "decode_tps": 40.1,
+        "ttft_s": 1.5134428119999939,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1495.2,
+        "decode_tps": 44.0,
+        "ttft_s": 2.629603383000358,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "p2": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 69.17201644899978,
+    "rows": [
+      {
+        "ttft_s": 1.8315560759983782,
+        "wall_s": 2.967643690000841,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1767.2,
+          "prompt_per_token_ms": 30.469,
+          "prompt_per_second": 32.8,
+          "predicted_n": 32,
+          "predicted_ms": 1183.8,
+          "predicted_per_token_ms": 36.994,
+          "predicted_per_second": 27.0,
+          "draft_n": 26,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.1838580000003276,
+        "wall_s": 3.3517530520002765,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 2129.7,
+          "prompt_per_token_ms": 2.39,
+          "prompt_per_second": 418.4,
+          "predicted_n": 32,
+          "predicted_ms": 1202.5,
+          "predicted_per_token_ms": 37.578,
+          "predicted_per_second": 26.6,
+          "draft_n": 24,
+          "draft_n_accepted": 18
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.010191666002356,
+        "wall_s": 4.9974922300025355,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 3937.5,
+          "prompt_per_token_ms": 1.025,
+          "prompt_per_second": 975.7,
+          "predicted_n": 32,
+          "predicted_ms": 1027.5,
+          "predicted_per_token_ms": 32.109,
+          "predicted_per_second": 31.1,
+          "draft_n": 28,
+          "draft_n_accepted": 22
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.1398725050021312,
+        "wall_s": 4.892275786001846,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1108.1,
+          "prompt_per_token_ms": 19.105,
+          "prompt_per_second": 52.3,
+          "predicted_n": 128,
+          "predicted_ms": 3766.3,
+          "predicted_per_token_ms": 29.424,
+          "predicted_per_second": 34.0,
+          "draft_n": 105,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4944895000007818,
+        "wall_s": 4.9177042430019355,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1461.3,
+          "prompt_per_token_ms": 1.64,
+          "prompt_per_second": 609.7,
+          "predicted_n": 128,
+          "predicted_ms": 3439.1,
+          "predicted_per_token_ms": 26.868,
+          "predicted_per_second": 37.2,
+          "draft_n": 113,
+          "draft_n_accepted": 77
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6686141200007114,
+        "wall_s": 5.788522004000697,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2591.9,
+          "prompt_per_token_ms": 0.675,
+          "prompt_per_second": 1482.3,
+          "predicted_n": 128,
+          "predicted_ms": 3162.6,
+          "predicted_per_token_ms": 24.708,
+          "predicted_per_second": 40.5,
+          "draft_n": 117,
+          "draft_n_accepted": 73
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.247474259002047,
+        "wall_s": 4.296587089000241,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1210.6,
+          "prompt_per_token_ms": 20.872,
+          "prompt_per_second": 47.9,
+          "predicted_n": 128,
+          "predicted_ms": 3075.1,
+          "predicted_per_token_ms": 24.024,
+          "predicted_per_second": 41.6,
+          "draft_n": 102,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4400535189997754,
+        "wall_s": 4.589990327000123,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理协助用户在其个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic",
+        "text_sha256": "d28185fa808bb3766eb89a17a91524d10865ae6d1088bf38733a8e9546187326",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1408.8,
+          "prompt_per_token_ms": 1.581,
+          "prompt_per_second": 632.5,
+          "predicted_n": 128,
+          "predicted_ms": 3172.8,
+          "predicted_per_token_ms": 24.788,
+          "predicted_per_second": 40.3,
+          "draft_n": 114,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6557430110005953,
+        "wall_s": 5.519073663999734,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2594.5,
+          "prompt_per_token_ms": 0.675,
+          "prompt_per_second": 1480.8,
+          "predicted_n": 128,
+          "predicted_ms": 2906.0,
+          "predicted_per_token_ms": 22.703,
+          "predicted_per_second": 44.0,
+          "draft_n": 116,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2497020379996684,
+        "wall_s": 4.507852966002247,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列中的所有Token在因果注意力机制下是相互独立的（即每个Token只关注它之前的Token），因此可以利用矩阵乘法的高度并行性。这一阶段的特点是计算密集（Compute-bound），",
+        "text_sha256": "d2ad96dd2ab14885923239c23330b8333e55206f56a062e745bedd73a3ac911d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1215.8,
+          "prompt_per_token_ms": 20.962,
+          "prompt_per_second": 47.7,
+          "predicted_n": 128,
+          "predicted_ms": 3284.9,
+          "predicted_per_token_ms": 25.663,
+          "predicted_per_second": 39.0,
+          "draft_n": 105,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4425932330013893,
+        "wall_s": 4.644493304000207,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1410.7,
+          "prompt_per_token_ms": 1.583,
+          "prompt_per_second": 631.6,
+          "predicted_n": 128,
+          "predicted_ms": 3224.8,
+          "predicted_per_token_ms": 25.194,
+          "predicted_per_second": 39.7,
+          "draft_n": 112,
+          "draft_n_accepted": 78
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6349390389987093,
+        "wall_s": 5.487226739998732,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2588.4,
+          "prompt_per_token_ms": 0.674,
+          "prompt_per_second": 1484.3,
+          "predicted_n": 128,
+          "predicted_ms": 2876.6,
+          "predicted_per_token_ms": 22.473,
+          "predicted_per_second": 44.5,
+          "draft_n": 117,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.243605301999196,
+        "wall_s": 8.520763732998603,
+        "text": "以下是根据图片内容进行的逐项抄写及详细分析：\n\n**一、 图片内容抄写**\n\n*   **BENCH-7392**\n*   **ALPHA: 30**\n*   **BETA: 50**\n*   **GAMMA: 20**\n*   **TOTAL: 100**\n\n**二、 各类别销量占比详细分析**\n\n根据图片中提供的数据（编号 BENCH-7392），我们可以清晰地看到三个主要类别（ALPHA、BETA、GAMMA）的数值分布及其",
+        "text_sha256": "f421a368f5a97bb183a5818e3418effc7da123947e9f60ef6448bff39fd2a0e6",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1244.7,
+          "prompt_per_token_ms": 2.922,
+          "prompt_per_second": 342.3,
+          "predicted_n": 128,
+          "predicted_ms": 4309.0,
+          "predicted_per_token_ms": 33.664,
+          "predicted_per_second": 29.7,
+          "draft_n": 100,
+          "draft_n_accepted": 81
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-first",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.262896357999125,
+        "wall_s": 4.67757115600034,
+        "text": "以下是根据图片内容进行的逐项抄写及详细分析：\n\n**一、 图片内容抄写**\n\n*   **BENCH-7392**\n*   **ALPHA: 30**\n*   **BETA: 50**\n*   **GAMMA: 20**\n*   **TOTAL: 100**\n\n***\n\n**二、 各类别销量占比详细分析**\n\n根据图片中提供的数据，我们可以清晰地看到在编号为“BENCH-7392”的项目中，三个主要类别（ALPHA、BETA、",
+        "text_sha256": "472f62f7f2929d3a5ff48ba63e74415dbc1e827e19c409a1d82fc1fd489ba7a4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1220.5,
+          "prompt_per_token_ms": 2.865,
+          "prompt_per_second": 349.0,
+          "predicted_n": 128,
+          "predicted_ms": 3432.4,
+          "predicted_per_token_ms": 26.816,
+          "predicted_per_second": 37.3,
+          "draft_n": 107,
+          "draft_n_accepted": 82
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-cached",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 47.9,
+        "decode_tps": 39.0,
+        "ttft_s": 1.247474259002047,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 631.6,
+        "decode_tps": 39.7,
+        "ttft_s": 1.4425932330013893,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1482.3,
+        "decode_tps": 44.0,
+        "ttft_s": 2.6557430110005953,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "final": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 71.28212071300004,
+    "rows": [
+      {
+        "ttft_s": 1.9173301500013622,
+        "wall_s": 3.0364816910005175,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1831.3,
+          "prompt_per_token_ms": 31.574,
+          "prompt_per_second": 31.7,
+          "predicted_n": 32,
+          "predicted_ms": 1171.9,
+          "predicted_per_token_ms": 36.622,
+          "predicted_per_second": 27.3,
+          "draft_n": 26,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.2109716039994964,
+        "wall_s": 3.376770447997842,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 2158.4,
+          "prompt_per_token_ms": 2.422,
+          "prompt_per_second": 412.8,
+          "predicted_n": 32,
+          "predicted_ms": 1201.1,
+          "predicted_per_token_ms": 37.534,
+          "predicted_per_second": 26.6,
+          "draft_n": 26,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.254784770000697,
+        "wall_s": 5.226886271000694,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 4182.9,
+          "prompt_per_token_ms": 1.089,
+          "prompt_per_second": 918.5,
+          "predicted_n": 32,
+          "predicted_ms": 1005.6,
+          "predicted_per_token_ms": 31.425,
+          "predicted_per_second": 31.8,
+          "draft_n": 29,
+          "draft_n_accepted": 22
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.1327134189996286,
+        "wall_s": 4.748242180001398,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1102.0,
+          "prompt_per_token_ms": 19.0,
+          "prompt_per_second": 52.6,
+          "predicted_n": 128,
+          "predicted_ms": 3632.4,
+          "predicted_per_token_ms": 28.378,
+          "predicted_per_second": 35.2,
+          "draft_n": 105,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5023399599995173,
+        "wall_s": 4.980893716001447,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理协助用户在其个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic",
+        "text_sha256": "d28185fa808bb3766eb89a17a91524d10865ae6d1088bf38733a8e9546187326",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1468.6,
+          "prompt_per_token_ms": 1.648,
+          "prompt_per_second": 606.7,
+          "predicted_n": 128,
+          "predicted_ms": 3491.9,
+          "predicted_per_token_ms": 27.28,
+          "predicted_per_second": 36.7,
+          "draft_n": 118,
+          "draft_n_accepted": 78
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6817180840007495,
+        "wall_s": 5.938067270002648,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务验证的全流程安装。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥",
+        "text_sha256": "314847544ae8e4d69a242de104e8df199fce86f96bfbf0196488cfb94c636c3b",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2613.3,
+          "prompt_per_token_ms": 0.68,
+          "prompt_per_second": 1470.2,
+          "predicted_n": 128,
+          "predicted_ms": 3289.9,
+          "predicted_per_token_ms": 25.702,
+          "predicted_per_second": 38.9,
+          "draft_n": 121,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2474592469989148,
+        "wall_s": 4.606215480998799,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列是已知的，模型可以利用矩阵乘法的高度并行性，通过GPU的大规模并行计算能力快速生成每个Token的Key-Value（KV）缓存。这一阶段的特点是计算密集型",
+        "text_sha256": "3ffe02306a49a982bead733149f33ddf9b0f3dcf196eadf85d72ceb6fb40c1cb",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1211.3,
+          "prompt_per_token_ms": 20.884,
+          "prompt_per_second": 47.9,
+          "predicted_n": 128,
+          "predicted_ms": 3383.9,
+          "predicted_per_token_ms": 26.437,
+          "predicted_per_second": 37.8,
+          "draft_n": 110,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5125320400002238,
+        "wall_s": 4.838301372998103,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1474.9,
+          "prompt_per_token_ms": 1.655,
+          "prompt_per_second": 604.1,
+          "predicted_n": 128,
+          "predicted_ms": 3348.8,
+          "predicted_per_token_ms": 26.163,
+          "predicted_per_second": 38.2,
+          "draft_n": 114,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6953672700001334,
+        "wall_s": 5.876705483002297,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件安装指南，旨在指导AI代理在用户本地PC上部署Strata。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。\n\n文档首先确立了安装的基本原则：严禁在无API密钥的情况下暴露服务器，默认仅监听本地地址；安装过程需限制在用户账户及特定文件夹内",
+        "text_sha256": "12e6373089efd7d4c67f88c1a993dda40deda49fa7355f41778ba07d966a2418",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2619.3,
+          "prompt_per_token_ms": 0.682,
+          "prompt_per_second": 1466.8,
+          "predicted_n": 128,
+          "predicted_ms": 3224.1,
+          "predicted_per_token_ms": 25.188,
+          "predicted_per_second": 39.7,
+          "draft_n": 113,
+          "draft_n_accepted": 66
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2840568350002286,
+        "wall_s": 4.460850131999905,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "2363ea88b511bb0cebab78672489451f84b42c999220f090d5c1c47e73f1bb1f",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1246.6,
+          "prompt_per_token_ms": 21.493,
+          "prompt_per_second": 46.5,
+          "predicted_n": 128,
+          "predicted_ms": 3201.6,
+          "predicted_per_token_ms": 25.012,
+          "predicted_per_second": 40.0,
+          "draft_n": 105,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4971166960021947,
+        "wall_s": 4.589241478002805,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1461.5,
+          "prompt_per_token_ms": 1.64,
+          "prompt_per_second": 609.6,
+          "predicted_n": 128,
+          "predicted_ms": 3112.5,
+          "predicted_per_token_ms": 24.316,
+          "predicted_per_second": 41.1,
+          "draft_n": 111,
+          "draft_n_accepted": 76
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6864781880030932,
+        "wall_s": 5.72040221700081,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2625.3,
+          "prompt_per_token_ms": 0.683,
+          "prompt_per_second": 1463.5,
+          "predicted_n": 128,
+          "predicted_ms": 3066.2,
+          "predicted_per_token_ms": 23.955,
+          "predicted_per_second": 41.7,
+          "draft_n": 119,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.3786936510005035,
+        "wall_s": 8.917206326997984,
+        "text": "以下是图片中编号和所有数字的逐项抄写：\n\nBENCH-7392\nALPHA: 30\nBETA: 50\nGAMMA: 20\nTOTAL: 100\n\n***\n\n**关于各类别销量占比的详细分析**\n\n根据图片提供的数据（编号 BENCH-7392），我们可以清晰地看到三个主要类别（ALPHA、BETA、GAMMA）在总销量中的分布情况。由于总销量（TOTAL）设定为 100，这意味着各项数值直接等同于百分比占比，这极大地简化了我们对市场结构的",
+        "text_sha256": "df62ddd3ac36d6126075633047335dfcb88d1b7ef6971a2245f2ad676229ae70",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1291.8,
+          "prompt_per_token_ms": 3.032,
+          "prompt_per_second": 329.8,
+          "predicted_n": 128,
+          "predicted_ms": 4568.0,
+          "predicted_per_token_ms": 35.688,
+          "predicted_per_second": 28.0,
+          "draft_n": 101,
+          "draft_n_accepted": 73
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-first",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2834714179989533,
+        "wall_s": 4.949768217000383,
+        "text": "以下是根据图片内容进行的逐项抄写及详细分析：\n\n**一、 图片内容抄写**\n\n*   **BENCH-7392**\n*   **ALPHA: 30**\n*   **BETA: 50**\n*   **GAMMA: 20**\n*   **TOTAL: 100**\n\n**二、 各类别销量占比详细分析**\n\n根据图片中提供的数据，我们可以清晰地看到在编号为“BENCH-7392”的项目中，三个主要类别（ALPHA、BETA、GAM",
+        "text_sha256": "f801d01b4bc59ad653bdaaa9b718001c52a402141c4488e262d58f7f7625362d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1232.0,
+          "prompt_per_token_ms": 2.892,
+          "prompt_per_second": 345.8,
+          "predicted_n": 128,
+          "predicted_ms": 3690.5,
+          "predicted_per_token_ms": 28.832,
+          "predicted_per_second": 34.7,
+          "draft_n": 108,
+          "draft_n_accepted": 85
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-cached",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 47.9,
+        "decode_tps": 37.8,
+        "ttft_s": 1.2474592469989148,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 606.7,
+        "decode_tps": 38.2,
+        "ttft_s": 1.5023399599995173,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1466.8,
+        "decode_tps": 39.7,
+        "ttft_s": 2.6864781880030932,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "final-hot": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 51.7840884799989,
+    "rows": [
+      {
+        "ttft_s": 1.217403116999776,
+        "wall_s": 1.9548509619999095,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1188.2,
+          "prompt_per_token_ms": 20.486,
+          "prompt_per_second": 48.8,
+          "predicted_n": 32,
+          "predicted_ms": 759.5,
+          "predicted_per_token_ms": 23.734,
+          "predicted_per_second": 42.1,
+          "draft_n": 24,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4541843100014376,
+        "wall_s": 2.1837164759999723,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1421.3,
+          "prompt_per_token_ms": 1.595,
+          "prompt_per_second": 626.9,
+          "predicted_n": 32,
+          "predicted_ms": 752.5,
+          "predicted_per_token_ms": 23.516,
+          "predicted_per_second": 42.5,
+          "draft_n": 25,
+          "draft_n_accepted": 18
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.654270341001393,
+        "wall_s": 3.355742834999546,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2612.4,
+          "prompt_per_token_ms": 0.68,
+          "prompt_per_second": 1470.7,
+          "predicted_n": 32,
+          "predicted_ms": 722.9,
+          "predicted_per_token_ms": 22.591,
+          "predicted_per_second": 44.3,
+          "draft_n": 22,
+          "draft_n_accepted": 20
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.0163149779982632,
+        "wall_s": 4.362200178999046,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码）。这两个阶段在计算特性、内存访问模式以及优化策略上有着本质的区别，理解它们对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是指模型处理用户输入提示词（Prompt）的过程。在这个阶段，模型需要一次性并行处理所有输入Token。由于输入序列中的所有Token都是已知的，模型可以利用矩阵乘法的高度并行性，通过GPU的大规模并行计算能力快速生成每个Token对应的Key-",
+        "text_sha256": "3ea5a95aa8b02e2573bb0f7f91d971418bb3fb869745a89fcd41792105ee6ad7",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 989.0,
+          "prompt_per_token_ms": 17.052,
+          "prompt_per_second": 58.6,
+          "predicted_n": 128,
+          "predicted_ms": 3357.4,
+          "predicted_per_token_ms": 26.23,
+          "predicted_per_second": 38.1,
+          "draft_n": 105,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.493465734001802,
+        "wall_s": 4.633835339001962,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1461.0,
+          "prompt_per_token_ms": 1.64,
+          "prompt_per_second": 609.9,
+          "predicted_n": 128,
+          "predicted_ms": 3157.0,
+          "predicted_per_token_ms": 24.664,
+          "predicted_per_second": 40.5,
+          "draft_n": 111,
+          "draft_n_accepted": 78
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.686197513001389,
+        "wall_s": 5.5714926889995695,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编码助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "0f53229f2d56231b9c3744c364280c1df411710559011a0420ff9a3cce9e1b93",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2627.6,
+          "prompt_per_token_ms": 0.684,
+          "prompt_per_second": 1462.2,
+          "predicted_n": 128,
+          "predicted_ms": 2914.4,
+          "predicted_per_token_ms": 22.769,
+          "predicted_per_second": 43.9,
+          "draft_n": 120,
+          "draft_n_accepted": 73
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2659019419988908,
+        "wall_s": 4.54920962200049,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "2363ea88b511bb0cebab78672489451f84b42c999220f090d5c1c47e73f1bb1f",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1228.3,
+          "prompt_per_token_ms": 21.178,
+          "prompt_per_second": 47.2,
+          "predicted_n": 128,
+          "predicted_ms": 3308.7,
+          "predicted_per_token_ms": 25.849,
+          "predicted_per_second": 38.7,
+          "draft_n": 107,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.5323521820027963,
+        "wall_s": 4.5155486469993775,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1493.1,
+          "prompt_per_token_ms": 1.676,
+          "prompt_per_second": 596.7,
+          "predicted_n": 128,
+          "predicted_ms": 3007.5,
+          "predicted_per_token_ms": 23.496,
+          "predicted_per_second": 42.6,
+          "draft_n": 108,
+          "draft_n_accepted": 79
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6751860280019173,
+        "wall_s": 5.513780552002572,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2621.6,
+          "prompt_per_token_ms": 0.682,
+          "prompt_per_second": 1465.5,
+          "predicted_n": 128,
+          "predicted_ms": 2874.1,
+          "predicted_per_token_ms": 22.454,
+          "predicted_per_second": 44.5,
+          "draft_n": 120,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2397261849982897,
+        "wall_s": 4.401519556999119,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1205.6,
+          "prompt_per_token_ms": 20.786,
+          "prompt_per_second": 48.1,
+          "predicted_n": 128,
+          "predicted_ms": 3187.9,
+          "predicted_per_token_ms": 24.905,
+          "predicted_per_second": 40.2,
+          "draft_n": 106,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4964960040015285,
+        "wall_s": 4.538223743998969,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1464.3,
+          "prompt_per_token_ms": 1.643,
+          "prompt_per_second": 608.5,
+          "predicted_n": 128,
+          "predicted_ms": 3064.9,
+          "predicted_per_token_ms": 23.945,
+          "predicted_per_second": 41.8,
+          "draft_n": 113,
+          "draft_n_accepted": 79
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.6673528579995036,
+        "wall_s": 6.191457763001381,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理协助非技术用户完成从环境检查到服务启动的全流程，强调操作的安全性与规范性。\n\n首先，文档确立了严格的“基本规则”。核心原则是安全性，严禁在无API密钥",
+        "text_sha256": "3566e94ff0e933c326bdfecf62d7cbb2cbb31fd3b6811edf93754c422fd78f91",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2612.9,
+          "prompt_per_token_ms": 0.68,
+          "prompt_per_second": 1470.4,
+          "predicted_n": 128,
+          "predicted_ms": 3561.3,
+          "predicted_per_token_ms": 27.823,
+          "predicted_per_second": 35.9,
+          "draft_n": 119,
+          "draft_n_accepted": 68
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 48.1,
+        "decode_tps": 38.7,
+        "ttft_s": 1.2397261849982897,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 608.5,
+        "decode_tps": 41.8,
+        "ttft_s": 1.4964960040015285,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1465.5,
+        "decode_tps": 43.9,
+        "ttft_s": 2.6751860280019173,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "accepted": {
+    "fixture_sha256": "3732eaebcbdac45891ae09352ed1d28b7325cbb21b513f921527694477f50244",
+    "context": 32768,
+    "repeats": 3,
+    "total_s": 70.91843909999807,
+    "rows": [
+      {
+        "ttft_s": 1.8349443309998605,
+        "wall_s": 2.9271687510008633,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（",
+        "text_sha256": "efb77e9bac698f2dfa4006685be59cea9a650ffbb17b175ba2b55af9e8035a86",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1765.1,
+          "prompt_per_token_ms": 30.433,
+          "prompt_per_second": 32.9,
+          "predicted_n": 32,
+          "predicted_ms": 1153.1,
+          "predicted_per_token_ms": 36.034,
+          "predicted_per_second": 27.8,
+          "draft_n": 26,
+          "draft_n_accepted": 21
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 32,
+          "total_tokens": 90,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.204882017998898,
+        "wall_s": 3.694082588997844,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Cod",
+        "text_sha256": "a80395c3cd56e590878aca313e8673057f4ea5d548bc279556575c6d36d36ad2",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 2159.5,
+          "prompt_per_token_ms": 2.424,
+          "prompt_per_second": 412.6,
+          "predicted_n": 32,
+          "predicted_ms": 1522.4,
+          "predicted_per_token_ms": 47.575,
+          "predicted_per_second": 21.0,
+          "draft_n": 27,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 32,
+          "total_tokens": 923,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-medium",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.321113231002528,
+        "wall_s": 5.226576069002476,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code",
+        "text_sha256": "64accb78ebedb7aeeb352e29d04674a306cc8815c162e87a05de7b4da5279ca4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 4248.0,
+          "prompt_per_token_ms": 1.106,
+          "prompt_per_second": 904.4,
+          "predicted_n": 32,
+          "predicted_ms": 946.6,
+          "predicted_per_token_ms": 29.581,
+          "predicted_per_second": 33.8,
+          "draft_n": 26,
+          "draft_n_accepted": 22
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 32,
+          "total_tokens": 3874,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "warmup-long",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.1526160799985519,
+        "wall_s": 5.077372355997795,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）在推理过程中，通常分为两个截然不同的阶段：Prefill（预填充）和Decode（解码）。理解这两个阶段对于优化模型性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。在这个阶段，模型并行地处理所有输入Token，计算它们的Key和Value向量，并将这些中间状态存储在KV Cache中。由于输入是已知的，GPU可以充分利用并行计算能力，因此Prefill阶段通常是计算密集型（Compute-bound），速度较快，但显存占用会随着输入长度的",
+        "text_sha256": "fd11a7e304cb7fd9b936cc063ccb67fe6416a38ce1057460ebe9529c5b069f3e",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1122.1,
+          "prompt_per_token_ms": 19.347,
+          "prompt_per_second": 51.7,
+          "predicted_n": 128,
+          "predicted_ms": 3947.6,
+          "predicted_per_token_ms": 30.841,
+          "predicted_per_second": 32.4,
+          "draft_n": 122,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4823979400025564,
+        "wall_s": 4.8657288499998685,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1451.2,
+          "prompt_per_token_ms": 1.629,
+          "prompt_per_second": 614.0,
+          "predicted_n": 128,
+          "predicted_ms": 3404.9,
+          "predicted_per_token_ms": 26.601,
+          "predicted_per_second": 37.6,
+          "draft_n": 114,
+          "draft_n_accepted": 79
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.712613830000919,
+        "wall_s": 5.680040341001586,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2656.7,
+          "prompt_per_token_ms": 0.691,
+          "prompt_per_second": 1446.2,
+          "predicted_n": 128,
+          "predicted_ms": 3006.8,
+          "predicted_per_token_ms": 23.491,
+          "predicted_per_second": 42.6,
+          "draft_n": 116,
+          "draft_n_accepted": 73
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-1",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2525615289996495,
+        "wall_s": 4.828721495996433,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于部署和优化本地模型至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行地计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token",
+        "text_sha256": "337dfbca4b317b9daacc6f612b3f4a266f9037c6fc96720cb05d20b87d555d3c",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1218.9,
+          "prompt_per_token_ms": 21.016,
+          "prompt_per_second": 47.6,
+          "predicted_n": 128,
+          "predicted_ms": 3604.1,
+          "predicted_per_token_ms": 28.157,
+          "predicted_per_second": 35.5,
+          "draft_n": 111,
+          "draft_n_accepted": 77
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.467842740999913,
+        "wall_s": 4.528511554999568,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理协助用户在其个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic",
+        "text_sha256": "d28185fa808bb3766eb89a17a91524d10865ae6d1088bf38733a8e9546187326",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1436.1,
+          "prompt_per_token_ms": 1.612,
+          "prompt_per_second": 620.4,
+          "predicted_n": 128,
+          "predicted_ms": 3079.9,
+          "predicted_per_token_ms": 24.062,
+          "predicted_per_second": 41.6,
+          "draft_n": 113,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.7039176160033094,
+        "wall_s": 5.628627368001617,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编码助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "0f53229f2d56231b9c3744c364280c1df411710559011a0420ff9a3cce9e1b93",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2651.7,
+          "prompt_per_token_ms": 0.69,
+          "prompt_per_second": 1448.9,
+          "predicted_n": 128,
+          "predicted_ms": 2958.5,
+          "predicted_per_token_ms": 23.113,
+          "predicted_per_second": 43.3,
+          "draft_n": 116,
+          "draft_n_accepted": 69
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-2",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2657753710009274,
+        "wall_s": 4.338324735999777,
+        "text": "17乘以23的结果是391。\n\n本地大语言模型（LLM）的推理过程通常分为两个核心阶段：Prefill（预填充）和Decode（解码），而MTP（Multi-Token Prediction，多令牌预测）则是近年来为提升推理效率而兴起的一种优化技术。理解这三者对于优化本地部署性能至关重要。\n\n**Prefill阶段**是模型处理输入提示词（Prompt）的过程。当用户输入一段文本时，模型需要并行计算所有输入Token的Key-Value（KV）缓存。这一阶段的特点是计算密集但并行度高，因为所有输入Token可以同时",
+        "text_sha256": "cee50180e9ac50b8f7be617e0c9fd8af42dfabed98d0424ae5abf77543c7302a",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 58,
+          "prompt_ms": 1230.3,
+          "prompt_per_token_ms": 21.212,
+          "prompt_per_second": 47.1,
+          "predicted_n": 128,
+          "predicted_ms": 3100.6,
+          "predicted_per_token_ms": 24.223,
+          "predicted_per_second": 41.3,
+          "draft_n": 102,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 128,
+          "total_tokens": 186,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "short-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.4631830360012827,
+        "wall_s": 4.653511640000943,
+        "text": "验收口令是 KAL-1K-7392。\n\n这份资料是一份专门面向 AI 编程助手（如 Claude Code、Cursor、Codex 等）的操作指南，旨在指导 AI 代理帮助用户在个人电脑上安装名为 Strata 的本地大语言模型运行环境。Strata 的核心功能是本地运行 Qwen3.8-Flash-Next 模型，该模型依赖于一块 NVIDIA 或 AMD 独立显卡以及系统内存，并在本地 `http://127.0.0.1:8080` 地址上提供兼容 OpenAI 和 Anthropic ",
+        "text_sha256": "4225bb97e305c44c607c4144bb39b6ce02f6f76232fbda2b46a2f193cbc47014",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 891,
+          "prompt_ms": 1430.9,
+          "prompt_per_token_ms": 1.606,
+          "prompt_per_second": 622.7,
+          "predicted_n": 128,
+          "predicted_ms": 3213.9,
+          "predicted_per_token_ms": 25.109,
+          "predicted_per_second": 39.8,
+          "draft_n": 112,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 891,
+          "completion_tokens": 128,
+          "total_tokens": 1019,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "medium1k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 2.701124979001179,
+        "wall_s": 5.516016207999201,
+        "text": "验收口令是 KAL-32K-7392。\n\n这份资料《AI_SETUP.md》是一份专为AI编程助手（如Claude Code、Cursor等）设计的Strata软件本地部署指南。Strata是一款能在单张NVIDIA或AMD显卡及系统内存上本地运行Qwen3.8-Flash-Next模型的应用，并提供兼容OpenAI和Anthropic标准的API服务。文档旨在指导AI代理以非技术用户能理解的方式，按步骤完成从环境检查到服务启动的全流程。\n\n首先，文档确立了严格的“基本规则”。核心安全原则是严禁在无API密钥的情况下",
+        "text_sha256": "e22c6e6574f5c3b0fbb7008877372d542feae078ae173671f171ea81d1d76af4",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 3842,
+          "prompt_ms": 2650.5,
+          "prompt_per_token_ms": 0.69,
+          "prompt_per_second": 1449.5,
+          "predicted_n": 128,
+          "predicted_ms": 2846.2,
+          "predicted_per_token_ms": 22.236,
+          "predicted_per_second": 45.0,
+          "draft_n": 117,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 3842,
+          "completion_tokens": 128,
+          "total_tokens": 3970,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "long4k-3",
+        "passed": true
+      },
+      {
+        "ttft_s": 4.649857306998456,
+        "wall_s": 9.01027933899968,
+        "text": "以下是图片中编号和所有数字的逐项抄写：\n\nBENCH-7392\nALPHA: 30\nBETA: 50\nGAMMA: 20\nTOTAL: 100\n\n***\n\n**关于各类别销量占比的详细分析**\n\n根据图片提供的数据（编号 BENCH-7392），我们可以清晰地看到三个主要类别（ALPHA、BETA、GAMMA）在总销量中的分布情况。由于总销量（TOTAL）设定为 100，这意味着各项数值直接对应其百分比占比，这极大地简化了我们对市场",
+        "text_sha256": "47a6cb9caf0624649b397b93fc66d95d50612088728167c17c384327aacee3b7",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1318.6,
+          "prompt_per_token_ms": 3.095,
+          "prompt_per_second": 323.1,
+          "predicted_n": 128,
+          "predicted_ms": 4392.9,
+          "predicted_per_token_ms": 34.32,
+          "predicted_per_second": 29.1,
+          "draft_n": 95,
+          "draft_n_accepted": 75
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-first",
+        "passed": true
+      },
+      {
+        "ttft_s": 1.2288060710015998,
+        "wall_s": 4.929746312001953,
+        "text": "以下是根据图片内容进行的逐项抄写及详细分析：\n\n**一、 图片内容抄写**\n\n*   **编号：** BENCH-7392\n*   **ALPHA：** 30\n*   **BETA：** 50\n*   **GAMMA：** 20\n*   **TOTAL：** 100\n\n***\n\n**二、 各类别销量占比详细分析**\n\n根据图片提供的数据（编号 BENCH-7392），我们可以清晰地看到三个主要类别（ALPHA、BETA、GAMMA）的销量分布情况。由于",
+        "text_sha256": "c8f9ec6ef9df13a9df5c82ada4d289bac18276681224f285a2588157c5b31678",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 426,
+          "prompt_ms": 1179.0,
+          "prompt_per_token_ms": 2.768,
+          "prompt_per_second": 361.3,
+          "predicted_n": 128,
+          "predicted_ms": 3725.8,
+          "predicted_per_token_ms": 29.108,
+          "predicted_per_second": 34.4,
+          "draft_n": 108,
+          "draft_n_accepted": 79
+        },
+        "usage": {
+          "prompt_tokens": 426,
+          "completion_tokens": 128,
+          "total_tokens": 554,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "name": "image-cached",
+        "passed": true
+      }
+    ],
+    "summary": {
+      "short": {
+        "prefill_tps": 47.6,
+        "decode_tps": 35.5,
+        "ttft_s": 1.2525615289996495,
+        "prompt_n": [
+          58,
+          58,
+          58
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "medium1k": {
+        "prefill_tps": 620.4,
+        "decode_tps": 39.8,
+        "ttft_s": 1.467842740999913,
+        "prompt_n": [
+          891,
+          891,
+          891
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      },
+      "long4k": {
+        "prefill_tps": 1448.9,
+        "decode_tps": 43.3,
+        "ttft_s": 2.7039176160033094,
+        "prompt_n": [
+          3842,
+          3842,
+          3842
+        ],
+        "output_n": [
+          128,
+          128,
+          128
+        ]
+      }
+    }
+  },
+  "accepted_16k": {
+    "rows": [
+      {
+        "ttft_s": 7.032511889003217,
+        "wall_s": 7.626125309001509,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境",
+        "text_sha256": "3c8346826a03b801c86da7475a0508c282edf042317e1a50394836a6c8232bc8",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 6948.0,
+          "prompt_per_token_ms": 0.45,
+          "prompt_per_second": 2219.8,
+          "predicted_n": 32,
+          "predicted_ms": 622.3,
+          "predicted_per_token_ms": 19.447,
+          "predicted_per_second": 51.4,
+          "draft_n": 24,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 32,
+          "total_tokens": 15455,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": true,
+        "passed": true
+      },
+      {
+        "ttft_s": 7.0127056909987004,
+        "wall_s": 10.015450950999366,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在配备 NVIDIA 或 AMD 独立显卡及充足内存的个人电脑上，本地运行 Qwen3.8-Flash-Next 模型，并提供兼容 OpenAI 和 Anthropic 标准的 API 服务。\n\n文档首先详细列出了 AI 助手协助用户安装 Strata 的标准操作流程。这包括检查硬件兼容性（如显卡型号、显存大小、内存及磁盘空间",
+        "text_sha256": "de6863e441257cd68bf87fdea0c0af5496cb7aa0a859658b9e9fb403540c542d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 6932.3,
+          "prompt_per_token_ms": 0.449,
+          "prompt_per_second": 2224.8,
+          "predicted_n": 128,
+          "predicted_ms": 3037.4,
+          "predicted_per_token_ms": 23.73,
+          "predicted_per_second": 42.1,
+          "draft_n": 97,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      },
+      {
+        "ttft_s": 7.032829949999723,
+        "wall_s": 9.568176346001565,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在配备 NVIDIA 或 AMD 独立显卡及充足内存的个人电脑上，本地运行 Qwen3.8-Flash-Next 模型，并提供兼容 OpenAI 和 Anthropic 标准的 API 服务。\n\n文档首先详细列出了 AI 助手协助用户安装 Strata 的标准操作流程。这包括检查硬件兼容性（如显卡型号、显存大小、内存及磁盘空间",
+        "text_sha256": "de6863e441257cd68bf87fdea0c0af5496cb7aa0a859658b9e9fb403540c542d",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 6937.2,
+          "prompt_per_token_ms": 0.45,
+          "prompt_per_second": 2223.2,
+          "predicted_n": 128,
+          "predicted_ms": 2584.2,
+          "predicted_per_token_ms": 20.189,
+          "predicted_per_second": 49.5,
+          "draft_n": 102,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      },
+      {
+        "ttft_s": 7.013832172000548,
+        "wall_s": 9.518892021998909,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在配备 NVIDIA 或 AMD 独立显卡及充足系统内存的个人电脑上，本地运行 Qwen3.8-Flash-Next 模型，并提供兼容 OpenAI 和 Anthropic 标准的 API 服务。\n\n文档首先详细列出了 AI 代理协助用户安装 Strata 的标准操作流程。这包括检查硬件兼容性（如显卡型号、显存大小、驱动版本及",
+        "text_sha256": "6951c686a5e799ad41cb7980674da279042e28f716d12ac1003ca25d14327ff9",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 6935.1,
+          "prompt_per_token_ms": 0.45,
+          "prompt_per_second": 2223.9,
+          "predicted_n": 128,
+          "predicted_ms": 2538.3,
+          "predicted_per_token_ms": 19.83,
+          "predicted_per_second": 50.4,
+          "draft_n": 98,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      }
+    ],
+    "summary": {
+      "prefill": 2223.9,
+      "decode": 49.5,
+      "ttft_s": 7.013832172000548
+    }
+  },
+  "rejected_p1_16k": {
+    "rows": [
+      {
+        "ttft_s": 9.749415025999042,
+        "wall_s": 10.513679338997463,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境",
+        "text_sha256": "3c8346826a03b801c86da7475a0508c282edf042317e1a50394836a6c8232bc8",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 9660.7,
+          "prompt_per_token_ms": 0.626,
+          "prompt_per_second": 1596.5,
+          "predicted_n": 32,
+          "predicted_ms": 804.1,
+          "predicted_per_token_ms": 25.128,
+          "predicted_per_second": 39.8,
+          "draft_n": 24,
+          "draft_n_accepted": 19
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 32,
+          "total_tokens": 15455,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": true,
+        "passed": true
+      },
+      {
+        "ttft_s": 8.676728036996792,
+        "wall_s": 11.860514912998042,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在个人电脑上本地运行 Qwen3.8-Flash-Next 模型，通过 OpenAI 和 Anthropic 兼容的 API 提供服务，强调数据隐私和离线运行能力。\n\n文档首先面向 AI 编码助手提供了详细的安装指南。安装过程分为多个步骤：首先检查硬件兼容性，要求配备 NVIDIA RTX 20/30/40/50",
+        "text_sha256": "656ef6f94b6937751cec4370957455bd37d11869f32dde351faf5919283ce4f0",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 8562.4,
+          "prompt_per_token_ms": 0.555,
+          "prompt_per_second": 1801.2,
+          "predicted_n": 128,
+          "predicted_ms": 3211.0,
+          "predicted_per_token_ms": 25.086,
+          "predicted_per_second": 39.9,
+          "draft_n": 102,
+          "draft_n_accepted": 72
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      },
+      {
+        "ttft_s": 8.640528697000263,
+        "wall_s": 11.257226606998302,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在个人电脑上本地运行 Qwen3.8-Flash-Next 模型，通过 OpenAI 和 Anthropic 兼容的 API 提供服务，强调数据隐私和离线运行能力。\n\n文档首先面向 AI 编码助手提供了详细的安装指南。安装过程分为多个步骤：首先检查硬件兼容性，要求 NVIDIA RTX 20-50 系列或特定型号的 AMD Radeon",
+        "text_sha256": "8689f5f382a692966a632ae90e88074cd290572fd66c83899a65a75d6a586a77",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 8559.3,
+          "prompt_per_token_ms": 0.555,
+          "prompt_per_second": 1801.9,
+          "predicted_n": 128,
+          "predicted_ms": 2654.0,
+          "predicted_per_token_ms": 20.734,
+          "predicted_per_second": 48.2,
+          "draft_n": 102,
+          "draft_n_accepted": 70
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      },
+      {
+        "ttft_s": 8.68768536800053,
+        "wall_s": 11.333364555001026,
+        "text": "验收口令是 KAL-16000-739。\n\n这份资料主要介绍了名为 Strata 的本地大语言模型运行环境及其在 AMD 显卡上的 HIP 后端支持情况。Strata 旨在让用户在个人电脑上本地运行 Qwen3.8-Flash-Next 模型，通过 OpenAI 和 Anthropic 兼容的 API 提供服务，确保数据隐私且无需联网推理。\n\n文档首先面向 AI 编码助手提供了详细的安装指南。安装过程分为多个步骤：首先检查硬件兼容性，要求配备 NVIDIA RTX 20-50 系列或特定型号的 AMD",
+        "text_sha256": "60fb5ec8e1e8b67d733c27019504f334fe19cbe1855aa542d7bafc0bacf4624b",
+        "timings": {
+          "cache_n": 0,
+          "prompt_n": 15423,
+          "prompt_ms": 8570.1,
+          "prompt_per_token_ms": 0.556,
+          "prompt_per_second": 1799.6,
+          "predicted_n": 128,
+          "predicted_ms": 2718.4,
+          "predicted_per_token_ms": 21.238,
+          "predicted_per_second": 47.1,
+          "draft_n": 103,
+          "draft_n_accepted": 71
+        },
+        "usage": {
+          "prompt_tokens": 15423,
+          "completion_tokens": 128,
+          "total_tokens": 15551,
+          "prompt_tokens_details": {
+            "cached_tokens": 0
+          }
+        },
+        "finish_reason": "length",
+        "warmup": false,
+        "passed": true
+      }
+    ],
+    "summary": {
+      "prefill": 1801.2,
+      "decode": 47.1,
+      "ttft_s": 8.676728036996792
+    }
+  },
+  "messages_check": {
+    "status": 200,
+    "passed": true,
+    "text": "391"
+  }
+}
