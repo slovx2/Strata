@@ -22,6 +22,24 @@ An additional counterbalanced sweep sets request-local `strata_tune.pcie_frac` t
 
 `--arms sweep --pcie-fracs 0.0,0.25,0.55` repeats the transfer-policy experiment without GPU timestamp probes. It enables only the host timing report, whose counters the existing native loop already accumulates. This supplies exact window counts with no added GPU kernels.
 
+### Finer, balanced tuning
+
+`--arms sweep --balanced-sweep --repeats 3 --pcie-fracs 0,0.125,0.2,0.25,0.35,0.55` tests all six 4K domains in one resident engine. Six rotated Williams orders balance both each candidate's position and directed within-block adjacent pairs across domains. Each domain receives three repetitions, but not every position within that domain; global position balance does not eliminate domain-specific cache history. A 64-token request at 0.25 conditions each domain block first. The complete run is 108 measured requests, 18 conditioning requests and two initial warmups. No generated payload is saved.
+
+On Song PC:
+
+```sh
+/mnt/data/strata-deploy/direct-env.sh \
+  /mnt/data/strata-deploy/Strata/.venv/bin/python \
+  /mnt/data/strata-deploy/Strata/tools/profile_song_pc.py \
+  --config /mnt/data/strata-deploy/strata-sc117-iq3_s.json \
+  --out /mnt/data/strata-deploy/tune-pcie-NEW-DATE \
+  --arms sweep --balanced-sweep --repeats 3 \
+  --pcie-fracs 0,0.125,0.2,0.25,0.35,0.55
+```
+
+Use a new output directory. Run `tools/report_pcie_sweep.py <results.json>` to produce a numeric CSV, per-domain medians/ranges and a ranking JSON. Ranking uses the geometric mean of per-domain median throughput ratios to 0.55, weighting domains equally. The pooled throughput is separately reported as total generated tokens divided by total decode time. Close candidates are a performance plateau, not a statistically established unique optimum. Keep the production 256K capacity separate from this 32K calibration.
+
 ## What the timers mean
 
 - The printed prefill `host staging` counter is cumulative across requests; the parser differences it within each engine lifetime before displaying it.

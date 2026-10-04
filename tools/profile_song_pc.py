@@ -1,7 +1,7 @@
 """Isolated, content-free profiling of an existing Song PC deployment.
 
 Uses the deployed native engine and its existing CUDA-graph timestamp probes.
-No production config writes, downloads, API key reads, or real conversations.
+No production config writes, downloads, API calls, or real conversations.
 Results contain timings/counters only. All test inputs are synthetic and public.
 Run under direct-env.sh with the deployment Python. A stopped production service
 is required. Child engines are closed before this foreground runner exits.
@@ -25,6 +25,25 @@ from calibrate import chat_ids, with_arg
 import strata_tokenizer as ST
 
 PROBES = ('STRATA_DECODE_TIMING', 'STRATA_VERIFY_PROFILE', 'STRATA_PREFILL_TIMING')
+
+def balanced_orders(fractions, repeats, start=0):
+    """Rotate a Williams order across six domains; each value visits every position.
+
+    Six values are required. Across a complete six-domain pass each directed
+    pair of different values occurs once as an adjacent pair inside a block.
+    Adaptive cache state is retained; this is not identical-route replay.
+    """
+    if len(fractions) != 6 or len(set(fractions)) != 6:
+        raise ValueError('Balanced sweep requires six distinct fractions')
+    domains=('network_4096','go_code_4096','zh_story_4096',
+             'math_4096','en_science_4096','mixed_structured_4096')
+    base=(0,1,5,2,4,3)
+    for rep in range(start,start+repeats):
+        order=domains[rep%6:]+domains[:rep%6]
+        if rep%2:order=order[::-1]
+        for name in order:
+            shift=(domains.index(name)+2*rep)%6
+            yield rep,name,tuple(fractions[(i+shift)%6] for i in base)
 
 def fixtures(tok):
     domains = {
@@ -96,12 +115,21 @@ def main():
     ap.add_argument('--arms',default='baseline,profile,baseline_after')
     ap.add_argument('--repeats',type=int,default=2)
     ap.add_argument('--pcie-fracs',default='0.0,0.25,0.55,1.0')
+    ap.add_argument('--balanced-sweep',action='store_true',help='Six-domain balanced order, a 64-token conditioning request per block')
+    ap.add_argument('--round-start',type=int,default=0,help='Balanced sweep round index for a separately recorded continuation')
     a=ap.parse_args(); os.umask(0o077)
     fractions=tuple(float(v) for v in a.pcie_fracs.split(','))
     assert fractions and all(0<=v<=1 for v in fractions)
-    a.out.mkdir(parents=True,exist_ok=True)
+    if a.repeats < 1:raise SystemExit('repeats must be positive')
+    if a.balanced_sweep:
+        if a.arms != 'sweep':raise SystemExit('Balanced sweep requires --arms sweep (no GPU probes)')
+        if a.round_start < 0:raise SystemExit('round-start must be non-negative')
+        list(balanced_orders(fractions,a.repeats,a.round_start))  # validate before starting the engine
     if not str(a.out.resolve()).startswith('/mnt/data/'):
         raise SystemExit('Results must be on /mnt/data')
+    if a.out.exists() and any(a.out.iterdir()):
+        raise SystemExit('Use a new output directory; existing measurements must not be overwritten')
+    a.out.mkdir(parents=True,exist_ok=True)
     # Only read configuration; credentials are removed immediately and never used.
     cfg=json.loads(a.config.read_text());cfg.pop('api_key',None)
     original_config=a.config.read_bytes()
@@ -148,7 +176,7 @@ def main():
             print('START',arm,flush=True);t0=time.monotonic();mon.label=arm+'/loading'
             engine=StrataEngine.__new__(StrataEngine)
             engine.__init__(c['exe'],engine_args(c),cwd=c.get('cwd'),log=str(log),env=env)
-            result['arms'][arm]={'load_s':time.monotonic()-t0,'engine':engine.info,'args':engine_args(c)}
+            result['arms'][arm]={'load_s':time.monotonic()-t0,'engine':engine.info,'args':engine_args(c),'pid':engine.proc.pid}
             assert engine.max_context==32768
             (a.out/'child-handle.json').write_text(json.dumps({'pid':engine.proc.pid,'arm':arm,'cleanup':'runner closes this exact engine in finally'}))
             print('READY',arm,round(result['arms'][arm]['load_s'],2),flush=True);save()
@@ -189,11 +217,18 @@ def main():
                 for rep in range(a.repeats):
                     for name in ('network_4096','go_code_4096','zh_story_4096'):run(name,'matrix',rep)
             if arm in ('profile','sweep'):
-                # Change only request-local PCIe offload share; counterbalanced order.
-                for rep in range(2):
-                    for name in ('network_4096','go_code_4096','zh_story_4096'):
-                        for frac in (fractions if rep==0 else fractions[::-1]):
-                            run(name,'pcie_sweep',rep,frac)
+                if a.balanced_sweep:
+                    result['balanced_sweep']=True
+                    result['fractions']=fractions
+                    for rep,name,order in balanced_orders(fractions,a.repeats,a.round_start):
+                        run(name,'warmup',rep,0.25,limit=64)
+                        for frac in order:run(name,'pcie_sweep',rep,frac)
+                else:
+                    # Change only request-local PCIe offload share; counterbalanced order.
+                    for rep in range(a.repeats):
+                        for name in ('network_4096','go_code_4096','zh_story_4096'):
+                            for frac in (fractions if rep%2==0 else fractions[::-1]):
+                                run(name,'pcie_sweep',rep,frac)
             engine.close();engine=None;mon.label=arm+'/closed';save()
         result['completed']=True
     finally:
