@@ -45,7 +45,7 @@ def balanced_orders(fractions, repeats, start=0):
             shift=(domains.index(name)+2*rep)%6
             yield rep,name,tuple(fractions[(i+shift)%6] for i in base)
 
-def fixtures(tok):
+def fixtures(tok, network_budgets=(256,4096,16384)):
     domains = {
         'go_code': ('Review this synthetic Go service. Explain cancellation, race conditions, backpressure, and write improved Go code with tests. Give at least 30 detailed points.',
           lambda i: f'// service {i}, workers={2+i%11}, queue={32+i%97}\nfunc route{i}(ctx context.Context, in <-chan Job, out chan<- Result) {{ for j := range in {{ r := process(j); select {{ case out <- r: case <-ctx.Done(): return }} }} }}\n'),
@@ -63,7 +63,7 @@ def fixtures(tok):
     result = {}
     for name, (instruction, line) in domains.items():
         body = ''.join(line(i) for i in range(600))
-        for budget in ([256,4096,16384] if name == 'network' else [4096]):
+        for budget in (network_budgets if name == 'network' else [4096]):
             prefix = 'Synthetic benchmark records:\n'
             suffix = '\nTASK:\n'+instruction
             lo, hi = 0, len(body)
@@ -114,7 +114,7 @@ def main():
     ap.add_argument('--out',type=Path,required=True)
     ap.add_argument('--arms',default='baseline,profile,baseline_after')
     ap.add_argument('--repeats',type=int,default=2)
-    ap.add_argument('--pcie-fracs',default='0.0,0.25,0.55,1.0')
+    ap.add_argument('--pcie-fracs',default='0.25')
     ap.add_argument('--balanced-sweep',action='store_true',help='Six-domain balanced order, a 64-token conditioning request per block')
     ap.add_argument('--round-start',type=int,default=0,help='Balanced sweep round index for a separately recorded continuation')
     a=ap.parse_args(); os.umask(0o077)

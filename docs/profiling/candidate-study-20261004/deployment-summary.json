@@ -1,0 +1,32 @@
+{
+  "source_commit": "5bf523a9c0a5dfaf1cb14eaa3d4924c3f33cdf50",
+  "binary_sha256": "9c831e895c4e7b467f38af9eb6e2e35e92f6f5f05e9c9568424d06562ba0b4e9",
+  "fetch_blocks": 384,
+  "experimental_features_enabled": false,
+  "initial_service_active": false,
+  "api_monitor": false,
+  "checks": {
+    "health_256k_auth_images": true,
+    "tailscale_address_health": true,
+    "bind_all_ipv4": true,
+    "unauthenticated_rejected": true,
+    "authenticated_models": true,
+    "chat_nonempty": true,
+    "messages_stream_nonempty_completed": true,
+    "messages_structured_tool_call": true,
+    "image_request_nonempty": true,
+    "image_color_correct": true,
+    "text_after_image_nonempty": true
+  },
+  "deployed": true,
+  "serve_tests_returncode": 0,
+  "serve_tests_rerun": [
+    "serve.test_detok.HeapBpe.test_speed_synthetic",
+    "serve.test_detok.HeapBpe.test_synthetic_vocab",
+    "serve.test_detok.HeapBpe.test_words_directly",
+    "serve.test_server.LiteralThinkTags.test_the_real_tokenizer_reads_the_tag_as_text"
+  ],
+  "final_service_active": false,
+  "autostart_state": "linked",
+  "original_config_unchanged": true
+}

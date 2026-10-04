@@ -1,0 +1,149 @@
+{
+  "note": "Instrumented fixed-window samples only; explicit verify waits after subtracting overlapping recorded GPU activity, not full-request hardware idle. Adaptive metrics include warmups and are bounded.",
+  "groups": {
+    "all": {
+      "samples": 18,
+      "median": {
+        "duration_ms": 39.0581695,
+        "compute_union_ms": 14.945556640625,
+        "transfer_union_ms": 5.872314453125,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 5.7899169921875,
+        "exposed_wait_ms": 5.656494140625,
+        "active_union_ms": 20.24609375,
+        "transfer_mib": 78.08837890625,
+        "host_prepare_ms": 0.0013985
+      },
+      "sum": {
+        "duration_ms": 1102.802657,
+        "compute_union_ms": 265.053955078125,
+        "transfer_union_ms": 128.281982421875,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 491.815185546875,
+        "exposed_wait_ms": 489.103515625,
+        "active_union_ms": 393.3359375,
+        "transfer_mib": 1636.3525390625,
+        "host_prepare_ms": 116.27654400000002
+      },
+      "emitted": 41,
+      "verified": 50
+    },
+    "math_4096": {
+      "samples": 6,
+      "median": {
+        "duration_ms": 43.462205999999995,
+        "compute_union_ms": 16.2894287109375,
+        "transfer_union_ms": 11.95068359375,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 5.9478759765625,
+        "exposed_wait_ms": 5.8048095703125,
+        "active_union_ms": 28.2401123046875,
+        "transfer_mib": 148.73046875,
+        "host_prepare_ms": 7.9657055
+      },
+      "sum": {
+        "duration_ms": 268.45539199999996,
+        "compute_union_ms": 93.229736328125,
+        "transfer_union_ms": 64.97998046875,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 33.96923828125,
+        "exposed_wait_ms": 33.123046875,
+        "active_union_ms": 158.209716796875,
+        "transfer_mib": 796.09375,
+        "host_prepare_ms": 48.115563
+      },
+      "emitted": 16,
+      "verified": 20
+    },
+    "network_4096": {
+      "samples": 6,
+      "median": {
+        "duration_ms": 38.0113865,
+        "compute_union_ms": 14.31494140625,
+        "transfer_union_ms": 4.94189453125,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 6.27880859375,
+        "exposed_wait_ms": 6.1424560546875,
+        "active_union_ms": 18.8712158203125,
+        "transfer_mib": 65.71044921875,
+        "host_prepare_ms": 0.0013830000000000001
+      },
+      "sum": {
+        "duration_ms": 610.024513,
+        "compute_union_ms": 84.69921875,
+        "transfer_union_ms": 29.983642578125,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 425.354736328125,
+        "exposed_wait_ms": 424.390869140625,
+        "active_union_ms": 114.682861328125,
+        "transfer_mib": 402.1240234375,
+        "host_prepare_ms": 32.51797
+      },
+      "emitted": 12,
+      "verified": 14
+    },
+    "zh_story_4096": {
+      "samples": 6,
+      "median": {
+        "duration_ms": 36.852314500000006,
+        "compute_union_ms": 14.5137939453125,
+        "transfer_union_ms": 3.704833984375,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 4.964111328125,
+        "exposed_wait_ms": 4.79345703125,
+        "active_union_ms": 18.5888671875,
+        "transfer_mib": 49.4384765625,
+        "host_prepare_ms": 0.0013655
+      },
+      "sum": {
+        "duration_ms": 224.32275199999998,
+        "compute_union_ms": 87.125,
+        "transfer_union_ms": 33.318359375,
+        "compute_transfer_overlap_ms": 0.0,
+        "stream_wait_union_ms": 32.4912109375,
+        "exposed_wait_ms": 31.589599609375,
+        "active_union_ms": 120.443359375,
+        "transfer_mib": 438.134765625,
+        "host_prepare_ms": 35.643011
+      },
+      "emitted": 13,
+      "verified": 16
+    }
+  },
+  "adaptive_all_requests": {
+    "backup_evicted": {
+      "count": 159,
+      "mean_ms": 5.4042872327044025,
+      "median_ms": 5.450858,
+      "max_ms": 8.220399,
+      "sum_ms": 859.2816699999995
+    },
+    "admit_copy_wait": {
+      "count": 159,
+      "mean_ms": 7.724802327044025,
+      "median_ms": 8.010865,
+      "max_ms": 8.511504,
+      "sum_ms": 1228.2435699999999
+    },
+    "commit_ram": {
+      "count": 159,
+      "mean_ms": 8.72253765408805,
+      "median_ms": 8.484738,
+      "max_ms": 14.294196,
+      "sum_ms": 1386.8834869999991
+    },
+    "residency_upload": {
+      "count": 159,
+      "mean_ms": 0.08760547798742138,
+      "median_ms": 0.081198,
+      "max_ms": 0.20243,
+      "sum_ms": 13.929271
+    }
+  },
+  "adaptive_counts": {
+    "records": 159,
+    "swaps": 15097,
+    "backup_bytes": 19227417600,
+    "upload_bytes": 30469888000
+  }
+}

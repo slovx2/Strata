@@ -7,6 +7,7 @@
 
 #include <cuda_runtime.h>
 
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 
@@ -363,7 +364,14 @@ __global__ void dense_steps_kernel(const int32_t* __restrict__ cells, int n, int
 void fetch_blobs(const unsigned long long* src, const int32_t* n, uint8_t* dst, int64_t blob_bytes, int cap, void* stream) {
     if (cap <= 0) return;
     if (blob_bytes % 16 != 0) { std::fprintf(stderr, "fetch_blobs: blob size must be a multiple of 16\n"); std::exit(1); }
-    fetch_blobs_kernel<<<48 * 8, 256, 0, (cudaStream_t) stream>>>(src, n, (uint4*) dst, (long long) (blob_bytes / 16));
+    // Keep the cross-device default; Song PC can opt into its measured launch size.
+    static const int blocks = [] {
+        const char* setting = std::getenv("STRATA_FETCH_BLOCKS");
+        const int value = setting ? std::max(32, std::min(1536, std::atoi(setting))) : 384;
+        if (setting) std::fprintf(stderr, "strata fetch: %d blocks (configured)\n", value);
+        return value;
+    }();
+    fetch_blobs_kernel<<<blocks, 256, 0, (cudaStream_t) stream>>>(src, n, (uint4*) dst, (long long) (blob_bytes / 16));
     check("fetch_blobs");
 }
 

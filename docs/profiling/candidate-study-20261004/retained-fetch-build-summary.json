@@ -1,0 +1,10 @@
+[
+  {
+    "name": "retained-fetch",
+    "patch_sha256": "3221313c1d58aafba88860b3a63eab0358ca28e8fbe9b8c0f94945ecf28a3383",
+    "build_ok": true,
+    "build_s": 34.340209666999726,
+    "binary_sha256": "974fdcac26ac1ea212bfae14ead84a3e41972c715779f3b0bcb1c02fc1f93982",
+    "ctest_ok": true
+  }
+]

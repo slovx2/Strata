@@ -1,0 +1,64 @@
+[
+  {
+    "name": "own",
+    "patch_sha256": "ca5fd5eed88cf91e644d78eabc55e009379b81bfb7fc3e3f9476659ebc155952",
+    "build_ok": true,
+    "build_s": 77.48621642500075,
+    "binary_sha256": "291ef7aecd6a29bcbe86e0657da2cdae41e6103b23e5bd359b9fc96e5ec97d25",
+    "ctest_ok": true,
+    "micro_build_ok": true,
+    "micro_96_ok": true,
+    "micro_192_ok": true,
+    "micro_384_ok": true,
+    "micro_768_ok": true
+  },
+  {
+    "name": "699",
+    "patch_sha256": "b45175305700ab1e12bafda0e642d104591925b6bbf4b1fc608760aac413326a",
+    "build_ok": true,
+    "build_s": 35.072758262002026,
+    "binary_sha256": "d2cf7e7368f9ed241f8143d3ff307af34eefeec31e4699b90a9718c8916cf778",
+    "ctest_ok": true
+  },
+  {
+    "name": "789",
+    "patch_sha256": "7c2388eb6fbfedd9cfee9bef0e5a96a339c60ad1604e62acf759e48cbb218f2f",
+    "build_ok": true,
+    "build_s": 24.81001799900332,
+    "binary_sha256": "c57ba1cdd1b2dec4d009eac72cb0bdc25ef8ddd700ba90415f168b55a280bd15",
+    "ctest_ok": true
+  },
+  {
+    "name": "500",
+    "patch_sha256": "14db5c5cd23aa0cf8e18b44f3cfaec3e42613e1732e538a38b2d1ebcea880e84",
+    "build_ok": true,
+    "build_s": 21.847129222998774,
+    "binary_sha256": "90d3b8db0b9db3ebfffc2c88e7281c0d3befc67d5592936c29064edf75c962b4",
+    "ctest_ok": true
+  },
+  {
+    "name": "733",
+    "patch_sha256": "b62ffbb5fcebc11ac943865dae6f844961124f7dd4b28a4bc1b3bff427fa1970",
+    "build_ok": true,
+    "build_s": 22.64011698899776,
+    "binary_sha256": "994f3dde2bb815c7802f3b2e46e93b69c1f602ab9b8d7ea1c2c1e11a2f72c725",
+    "ctest_ok": true,
+    "pipeline_parity_ok": true
+  },
+  {
+    "name": "783",
+    "patch_sha256": "1fc9d5887c83aaafe5f70739069a309478621cce825bf4ae1ed2c6fa86381b79",
+    "build_ok": true,
+    "build_s": 42.55208759499874,
+    "binary_sha256": "8f09b494e3081eeff3be690bc887714e952cecf68ae248d6d76b887867d40323",
+    "ctest_ok": true
+  },
+  {
+    "name": "378",
+    "patch_sha256": "68e437c247859ebdd2fe3639d44a8446e6fa668393a20472c07dc326dd0565ea",
+    "build_ok": true,
+    "build_s": 33.13724596299653,
+    "binary_sha256": "3df96d3bef58f7f1c9787713079ccda62988d5801748ac25518caa72aa52bcaa",
+    "ctest_ok": true
+  }
+]

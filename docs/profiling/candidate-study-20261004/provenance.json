@@ -1,0 +1,47 @@
+{
+  "baseline_commit": "5bf523a9c0a5dfaf1cb14eaa3d4924c3f33cdf50",
+  "upstream_baseline": "6f32ec070f23ced9f50e704d854d775da52591ab",
+  "candidates": {
+    "378": {
+      "url": "https://github.com/Niko1221/Strata/pull/378",
+      "head": "d5ee0ccf9a2376dc6ff01c9baf5010621a459c81",
+      "title": "Elastic K/V (--kv-grow, opt-in): the K/V takes VRAM as the context grows, the expert cache holds the rest (+68% cache on a 16 GB card at 262K)"
+    },
+    "500": {
+      "url": "https://github.com/Niko1221/Strata/pull/500",
+      "head": "8eacd97390dc286e81af046f4a9bd8332c84ed1d",
+      "title": "perf(cpu-pool): eliminate host serialization barrier for intermediate activation quantization with adaptive threshold"
+    },
+    "699": {
+      "url": "https://github.com/Niko1221/Strata/pull/699",
+      "head": "5949e9d2fd3e114808edaccd0333ca6c063cf700",
+      "title": "Linux: read ahead at startup (cold start ~920 s \u2192 70 s)"
+    },
+    "733": {
+      "url": "https://github.com/Niko1221/Strata/pull/733",
+      "head": "6b22c97e1ed5efd5263714cb2730f2e7e20b8002",
+      "title": "Pipeline CPU expert work without a batch-wide phase barrier"
+    },
+    "764": {
+      "url": "https://github.com/Niko1221/Strata/pull/764",
+      "head": "ae64f76bb93cc4bf221463d47381ce98ab909178",
+      "title": "decode: STRATA_ADAPT_LAG - #463's reproducibility without its stall"
+    },
+    "783": {
+      "url": "https://github.com/Niko1221/Strata/pull/783",
+      "head": "e1f292a12cb048a666fed9c137a11892ded81996",
+      "title": "perf(cuda): fused decode/verify/MTP kernels and graph launch reductions on 0.1.39"
+    },
+    "789": {
+      "url": "https://github.com/Niko1221/Strata/pull/789",
+      "head": "d96ac4cac33ea81d99713b9caeafa92dd42c689e",
+      "title": "prefill: overlap shared-expert work with routed expert uploads"
+    }
+  },
+  "runner_sources": {
+    "benchmark-screen-v2.py": "59f52b8baa6cf1a6d0a1e81171fae58c57044b52bb01330923b7d9d1d50afe77",
+    "benchmark-followup.py": "a07d2ce1238fcad48fea3b26229f317e3230e7566f2eec9bd069bd8e08cf7627",
+    "benchmark-combined.py": "dba1e661f6b29ed3e02595e93ef977736c7482b3038bd41dff8efd64e0fdea59",
+    "benchmark_candidates.py": "89d89ea18fda99c6b5f6f88f46baaedf9fe554e95c5f78ca37357a5cc7b5996d"
+  }
+}
