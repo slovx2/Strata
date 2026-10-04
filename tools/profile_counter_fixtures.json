@@ -1,0 +1,94 @@
+[
+  {
+    "arm": "profile",
+    "tag": "pcie_sweep",
+    "fixture": "network_4096",
+    "repeat": 0,
+    "pcie_frac": 0.0,
+    "input_tokens": 4096,
+    "emitted_tokens": 192,
+    "ttft_native_s": 2.5744710500000565,
+    "wall_s": 6.401005447000216,
+    "engine": {
+      "generated": 192,
+      "prompt_tokens": 4096,
+      "prompt_ms": 2540.3,
+      "decode_ms": 3858.8,
+      "finish": "length",
+      "drafts_accepted": 118,
+      "drafts_offered": 156,
+      "reused": 0,
+      "hits": 71697,
+      "lookups": 110400,
+      "ram_blobs": 32594,
+      "file_blobs": 0,
+      "file_mb": 0.0,
+      "prompt_read": 4096
+    },
+    "diagnostic_lines": [
+      "strata prefill timing: 4095 tokens, GPU timeline 2432 ms, wall 2438 ms, host staging 47226 ms: embed+steps 8 (0.3%) hc read 142 (5.8%) gdn 161 (6.6%) qsa proj 91 (3.7%) qsa indexer 0 (0.0%) qsa select 13 (0.5%) qsa attn 78 (3.2%) router+shared 38 (1.6%) gather 5 (0.2%) wait copy 1181 (48.6%) gemm gate/up 411 (16.9%) combine 75 (3.1%) ple 6 (0.3%) gdn conv+gates 29 (1.2%) gdn recurrence 102 (4.2%) gdn out proj 90 (3.7%)",
+      "strata prefill timing: host: chunk setup (PLE rows, the expert stream plan) 7 ms, waiting for each chunk 128 ms, after each chunk (the draft layer, progress) 6 ms, PLE 1713 ms",
+      "strata decode timing: 74 windows, avg T 3.11, 2.59 tokens/window, 52.15 ms/window = verify 44.62 (GPU-reach wait 10.54 + per-layer host 29.04 [plan 0.16 actq 0.51 jobs 0.61 CPU 26.79] + stage 3.02) + commit/emit 0.13 + draft 2.89; per layer-window: CPU experts 8.69 (10.90 entries), VRAM hits 20.18, PCIe 0.00",
+      "strata decode GPU stages (ms/window): GDN layers: q8+qkv/q-idx gemv 1.22 conv 0.09 ab 0.28 z 0.67 rec 0.36 out-proj 1.06 hc-read1+router 1.70 shared+quant 0.76 waitA 1.08 VRAM hits 2.13 waitB 0.16 PCIe grp 0.42 waitCPU 19.36 copy+combine 0.41 (gap) 0.03 head 0.93   hc0 norm 0.36   hc0 down 0.54   hc0 up 0.51 | QSA layers: q8+kv-idx 0.06 k/v+norm-rope 0.11 kv+idx append 0.12 q+q-idx 0.59 scores+topk 0.29 kv-resolve 0.01 attention 0.66 gate 0.02 out-proj 0.36 hc-read1+router 0.57 shared+quant 0.25 waitA 0.15 VRAM hits 0.83 waitB 0.06 PCIe grp 0.14 waitCPU 4.58 copy+combine 0.12 (gap) 0.01   hc0 norm 0.04   hc0 down 0.18   hc0 up 0.17 | total 41.38 ms/window over 74 windows",
+      "strata serve: expert tiers: GPU 71697 hits this request; since the start RAM 1060728 blobs, files 0 blobs 8693.4 MB read (the GGUF in place)"
+    ],
+    "before": {
+      "pswpin": 4327,
+      "pswpout": 104106,
+      "pgmajfault": 53527
+    },
+    "after": {
+      "pswpin": 4329,
+      "pswpout": 104106,
+      "pgmajfault": 53758
+    },
+    "output_nonempty": true,
+    "replacement_chars": 0
+  },
+  {
+    "arm": "profile",
+    "tag": "pcie_sweep",
+    "fixture": "network_4096",
+    "repeat": 0,
+    "pcie_frac": 1.0,
+    "input_tokens": 4096,
+    "emitted_tokens": 192,
+    "ttft_native_s": 2.583897246000106,
+    "wall_s": 8.323621838000008,
+    "engine": {
+      "generated": 192,
+      "prompt_tokens": 4096,
+      "prompt_ms": 2533.0,
+      "decode_ms": 5789.0,
+      "finish": "length",
+      "drafts_accepted": 117,
+      "drafts_offered": 152,
+      "reused": 0,
+      "hits": 79427,
+      "lookups": 80387,
+      "ram_blobs": 26988,
+      "file_blobs": 0,
+      "file_mb": 0.0,
+      "prompt_read": 4096
+    },
+    "diagnostic_lines": [
+      "strata prefill timing: 4095 tokens, GPU timeline 2431 ms, wall 2438 ms, host staging 54107 ms: embed+steps 9 (0.4%) hc read 142 (5.8%) gdn 161 (6.6%) qsa proj 91 (3.7%) qsa indexer 0 (0.0%) qsa select 13 (0.5%) qsa attn 78 (3.2%) router+shared 38 (1.6%) gather 5 (0.2%) wait copy 1182 (48.6%) gemm gate/up 410 (16.9%) combine 75 (3.1%) ple 6 (0.3%) gdn conv+gates 29 (1.2%) gdn recurrence 102 (4.2%) gdn out proj 90 (3.7%)",
+      "strata prefill timing: host: chunk setup (PLE rows, the expert stream plan) 7 ms, waiting for each chunk 128 ms, after each chunk (the draft layer, progress) 6 ms, PLE 1734 ms",
+      "strata decode timing: 76 windows, avg T 3.00, 2.53 tokens/window, 76.17 ms/window = verify 68.88 (GPU-reach wait 62.16 + per-layer host 3.50 [plan 0.14 actq 0.42 jobs 0.30 CPU 1.93] + stage 0.06) + commit/emit 0.11 + draft 2.82; per layer-window: CPU experts 0.25 (0.26 entries), VRAM hits 21.77, PCIe 6.65",
+      "strata decode GPU stages (ms/window): GDN layers: q8+qkv/q-idx gemv 1.23 conv 0.09 ab 0.28 z 0.74 rec 0.37 out-proj 1.31 hc-read1+router 1.83 shared+quant 0.78 waitA 1.20 VRAM hits 2.30 waitB 39.46 PCIe grp 1.15 waitCPU 0.74 copy+combine 0.19 (gap) 0.03 head 0.96   hc0 norm 0.42   hc0 down 0.53   hc0 up 0.50 | QSA layers: q8+kv-idx 0.06 k/v+norm-rope 0.11 kv+idx append 0.12 q+q-idx 0.61 scores+topk 0.29 kv-resolve 0.01 attention 0.65 gate 0.02 out-proj 0.45 hc-read1+router 0.63 shared+quant 0.26 waitA 0.12 VRAM hits 0.89 waitB 9.56 PCIe grp 0.31 waitCPU 0.04 copy+combine 0.06 (gap) 0.01   hc0 norm 0.05   hc0 down 0.18   hc0 up 0.17 | total 68.67 ms/window over 76 windows",
+      "strata serve: expert tiers: GPU 79427 hits this request; since the start RAM 1207713 blobs, files 0 blobs 8693.4 MB read (the GGUF in place)"
+    ],
+    "before": {
+      "pswpin": 4391,
+      "pswpout": 104106,
+      "pgmajfault": 54261
+    },
+    "after": {
+      "pswpin": 4391,
+      "pswpout": 104106,
+      "pgmajfault": 54557
+    },
+    "output_nonempty": true,
+    "replacement_chars": 0
+  }
+]
