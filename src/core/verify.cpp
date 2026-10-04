@@ -1,4 +1,5 @@
 // src/core/verify.cpp - see include/strata/core/verify.hpp.
+#include "strata/core/window_timeline.hpp"
 #include "strata/core/verify.hpp"
 #if defined(_WIN32)
 #include <intrin.h>
@@ -328,7 +329,7 @@ bool Verifier::init(const WeightTable& wt, const ModelGeometry& g, SessionState&
         return false;
     }
     cudaMemset(arena_, 0, count.used);
-    prof_on_ = std::getenv("STRATA_VERIFY_PROFILE") != nullptr;
+    prof_on_ = std::getenv("STRATA_VERIFY_PROFILE") != nullptr || strata::timeline::path() != nullptr;
     if (prof_on_) {
         const size_t np = (size_t) g.n_layers * kProfPer + 4;
         if (cudaMalloc((void**) &prof_, np * 8) != cudaSuccess) { prof_on_ = false; prof_ = nullptr; cudaGetLastError(); }
@@ -762,6 +763,7 @@ bool Verifier::record_window(int T, cudaStream_t cs, std::string& err) {
         stamp(l, 20, grp);
         if (device_plan_) wait_flag_ge_or(m_flagB_, ring, skip_ + grp, cs);
         else wait_flag_ge(m_flagB_, ring, cs);                 // the PCIe share is in staging (DMA) or mapped
+        if (strata::timeline::path()) stamp(l, 25, grp); // separate the flag wait from the fetch kernel
         if (sink_.pcie_mode == 2) {                            // stage it with a copy kernel, then point at staging
             const int64_t per = G == 2 ? kStagingBlobs / 2 : kStagingBlobs;
             uint8_t* stage = staging_ + (size_t) (grp * per) * lay.max_blob;
@@ -1025,6 +1027,28 @@ bool Verifier::run(int T, const int32_t* tokens, int64_t pos0, PoolMultiFn pool,
     if (!capture(T, err) || !capture_commit(err)) return false;
     VDBG("captured; staging\n");
     const Clock::time_point t0 = Clock::now();
+    if (strata::timeline::state.active) {
+        auto& tr = strata::timeline::state;
+        tr.pcie_mode = sink_.pcie_mode;
+        if (device_ != 0 || g.n_layers != 48 || lb_ != 0 || le_ != 48 || split_) {
+            err = "timeline supports one GPU, 48 layers and unsplit verify windows only"; return false;
+        }
+        if (!tr.dma_dev && cudaMalloc((void**)&tr.dma_dev, 97*sizeof(unsigned long long)) != cudaSuccess) {
+            err = "timeline: timestamp allocation failed"; return false;
+        }
+        cudaMemsetAsync(tr.dma_dev, 0, 97*sizeof(unsigned long long), cs_);
+        const auto ca = Clock::now();
+        gpu_stamp(tr.dma_dev, 96, cs_);
+        const auto ce = cudaStreamSynchronize(cs_);
+        const auto cb = Clock::now();
+        unsigned long long ns=0;
+        if (ce != cudaSuccess || cudaMemcpy(&ns,tr.dma_dev+96,8,cudaMemcpyDeviceToHost) != cudaSuccess || !ns) {
+            err = "timeline: clock calibration failed"; return false;
+        }
+        tr.gpu_offset = (strata::timeline::us(ca)+strata::timeline::us(cb))/2 - (double)ns/1000;
+        tr.alignment_error = (strata::timeline::us(cb)-strata::timeline::us(ca))/2;
+        strata::timeline::span("CPU", "trace_clock_setup", -1, t0, Clock::now());
+    }
     const QsaShapes s = shapes_of(g);
     for (int t = 0; t < T; ++t) {
         h_tok_[t] = tokens[t];
@@ -1093,6 +1117,7 @@ bool Verifier::run(int T, const int32_t* tokens, int64_t pos0, PoolMultiFn pool,
             }
         }
         const Clock::time_point b = Clock::now();
+        strata::timeline::span("CPU", "wait_gpu_layer", (int)l, a, b);
         VDBG("layer %lld rang\n", (long long) l);
         cur_layer_ = want - 1;
         set_plan_slot(grp);
@@ -1125,12 +1150,20 @@ bool Verifier::run(int T, const int32_t* tokens, int64_t pos0, PoolMultiFn pool,
     // spin kernel outlives the process - the case that left Windows GPUs "lost" until a power cycle.  The wait
     // itself stays a blocking sync: a cudaStreamQuery poll here cost IQ3_S ~3% decode (a core calling the driver
     // beside the expert workers).
+    const auto trace_sync = Clock::now();
     const cudaError_t se = cudaStreamSynchronize(cs_);
     if (se != cudaSuccess) { err = std::string("verify: ") + cudaGetErrorString(se); return false; }
     progress_at("verify window: waiting for the expert copies", (int64_t) T);
+    strata::timeline::span("CPU", "wait_gpu_finish", -1, trace_sync, Clock::now());
     cudaStreamSynchronize(copy_);   // no host function of this window may raise flag B in the next one
     if (prof_on_ && G == 1) {       // the window's GPU stage stamps
         cudaMemcpy(prof_h_.data(), prof_, prof_h_.size() * 8, cudaMemcpyDeviceToHost);
+        if (strata::timeline::state.active) {
+            auto& tr=strata::timeline::state;
+            tr.gpu=prof_h_; tr.dma.resize(96);
+            cudaMemcpy(tr.dma.data(),tr.dma_dev,96*8,cudaMemcpyDeviceToHost);
+            for (int64_t l=0;l<g.n_layers;++l) tr.kinds.push_back(is_qsa_layer(g,l)?1:0);
+        }
         const int64_t L = g.n_layers;
         auto at = [&](int64_t l, int i) { return prof_h_[(size_t) (l * kProfPer + i)]; };
         // D8: the derived columns below read stamps the hc-read kernels write themselves or the next
@@ -1245,7 +1278,17 @@ void Verifier::fetch_dma(void* ctx, const uint8_t* const* src, int n, size_t byt
     const uint32_t want = v->cur_layer_ + 1;
     if (n <= 0) { raise_flag(v->h_flagB_, want); return; }
     uint8_t* stage = (uint8_t*) v->sink_.staging;                  // this group's half in a split window
+    const bool traced = strata::timeline::state.active;
+    const int slot = (int)v->cur_layer_;
+    const auto submit0 = Clock::now();
+    if (traced) {
+        strata::kernels::gpu_stamp(strata::timeline::state.dma_dev,slot*2,v->copy_);
+    }
     for (int i = 0; i < n; ++i) cudaMemcpyAsync(stage + (size_t) i * bytes, src[i], bytes, cudaMemcpyHostToDevice, v->copy_);
+    if (traced) {
+        strata::kernels::gpu_stamp(strata::timeline::state.dma_dev,slot*2+1,v->copy_);
+        strata::timeline::span("Copy submit", "enqueue_copies",slot,submit0,Clock::now());
+    }
     FlagSet& fs = v->flag_sets_[v->cur_layer_ % (sizeof v->flag_sets_ / sizeof v->flag_sets_[0])];
     fs.flag = v->h_flagB_;
     fs.value = want;

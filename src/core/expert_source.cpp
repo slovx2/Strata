@@ -1,4 +1,5 @@
 // src/core/expert_source.cpp - the adapter.  See the header for the three clauses of the contract.
+#include "strata/core/window_timeline.hpp"
 #include "strata/core/expert_source.hpp"
 #include "strata/core/remote_experts.hpp"
 #include "strata/kernels/cpu/expert_layout.hpp"
@@ -1728,6 +1729,11 @@ void expert_pool_dispatch_multi(ExpertDispatch& d, const float* x_f, const int32
         pt("publish", fetches);
         if (P.publish) P.publish(P.ctx);
         pt("fetch", fetches);
+        if (strata::timeline::state.active) {
+            const int layer = (int)d.layers;
+            strata::timeline::state.bytes[layer] = (unsigned long long)fetches * bb;
+            strata::timeline::state.copies[layer] = fetches;
+        }
         if (P.fetch) P.fetch(P.ctx, dma_src, P.pcie_mode != 0 ? 0 : fetches, (size_t) bb);   // the copy engine, beside the CPU's work
     } else {
         for (int64_t i = 0; i < n; ++i) {
@@ -1819,6 +1825,10 @@ void expert_pool_dispatch_multi(ExpertDispatch& d, const float* x_f, const int32
     const auto c4 = std::chrono::steady_clock::now();
     pt("ran");
     auto ms = [](auto a, auto b) { return std::chrono::duration<double, std::milli>(b - a).count(); };
+    strata::timeline::span("CPU", "plan", (int)d.layers, c0, c1);
+    strata::timeline::span("CPU", "activation_quant", (int)d.layers, c1, c2);
+    strata::timeline::span("CPU", "job_pack", (int)d.layers, c2, c3);
+    strata::timeline::span("CPU", "expert_pool", (int)d.layers, c3, c4);
     d.ms_plan += ms(c0, c1);
     d.ms_actq += ms(c1, c2);
     d.ms_jobs += ms(c2, c3);

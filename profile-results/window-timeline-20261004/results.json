@@ -1,0 +1,116 @@
+{
+  "context": 32768,
+  "source_revision": "7ebaacf",
+  "completed": true,
+  "config_unchanged": true,
+  "rows": [
+    {
+      "request": 4,
+      "fixture": "network_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 5.774405951000517,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2465.5,
+        "decode_ms": 3303.8,
+        "drafts_accepted": 123,
+        "drafts_offered": 156,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    },
+    {
+      "request": 5,
+      "fixture": "network_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 6.045602155000779,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2466.6,
+        "decode_ms": 3575.0,
+        "drafts_accepted": 119,
+        "drafts_offered": 148,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    },
+    {
+      "request": 7,
+      "fixture": "math_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 6.2729825790002,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2470.5,
+        "decode_ms": 3694.4,
+        "drafts_accepted": 117,
+        "drafts_offered": 166,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    },
+    {
+      "request": 8,
+      "fixture": "math_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 5.523926883999593,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2467.5,
+        "decode_ms": 3054.8,
+        "drafts_accepted": 118,
+        "drafts_offered": 166,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    },
+    {
+      "request": 10,
+      "fixture": "zh_story_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 6.112594342000193,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2465.7,
+        "decode_ms": 3635.0,
+        "drafts_accepted": 94,
+        "drafts_offered": 132,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    },
+    {
+      "request": 11,
+      "fixture": "zh_story_4096",
+      "pcie_frac": 0.25,
+      "tag": "measure",
+      "emitted": 192,
+      "output_nonempty": true,
+      "wall_s": 5.610388703999888,
+      "engine": {
+        "prompt_tokens": 4096,
+        "prompt_ms": 2466.0,
+        "decode_ms": 3140.4,
+        "drafts_accepted": 97,
+        "drafts_offered": 141,
+        "file_mb": 0.0,
+        "reused": 0
+      }
+    }
+  ]
+}

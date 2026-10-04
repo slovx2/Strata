@@ -14,6 +14,7 @@
 // AND IT IS PHASE 2, so hit rate is `h = 0` and the number it prints is slow on purpose
 // (`phase-2-correct-engine.md:5-9`).  What it is FOR is the honest tok/s figure and the logit dump.
 
+#include "strata/core/window_timeline.hpp"
 #include "strata/core/device.hpp"
 #include "strata/core/expert_cache.hpp"
 #include "strata/core/conversation_snapshot.hpp"
@@ -5693,6 +5694,7 @@ int main(int argc, char** argv) {
             const uint64_t file_bytes0 = src.file_read_bytes();
             const int64_t decode_look0 = drive.d.cache_hits + drive.d.cache_admitted + drive.d.cache_refused;
             if (cancelled) finish = "cancel";
+            strata::timeline::request();
             while (!cancelled && produced_n < max_new) {
                 int T = S_mtp;
                 if (req_spec_min_p > 0.0) {
@@ -5714,6 +5716,8 @@ int main(int argc, char** argv) {
                 }
                 const bool timed_round = !first_window;
                 const Clock::time_point round0 = Clock::now();
+                const auto trace_emitted0 = produced_n;
+                strata::timeline::begin(T, req_pcie_frac, round0);
                 if (p + T > o.max_context) break;
                 window[0] = x;
                 for (int i = 1; i < T; ++i) window[(size_t) i] = from_sfx ? sbuf[(size_t) i - 1] : drafts[(size_t) i - 1];
@@ -5743,6 +5747,8 @@ int main(int argc, char** argv) {
                 while (a < T - 1 && window[(size_t) a + 1] == outv[(size_t) a]) ++a;
                 if (from_sfx) { ++sfx_windows; sfx_drafts += T - 1; sfx_ok += a; }
                 const Clock::time_point tw1 = Clock::now();
+                strata::timeline::span("Window", "prepare", -1, round0, tw0);
+                strata::timeline::span("Window", "verify", -1, tw0, tw1);
                 // (as in generate) STRATA_DUMP_FIRST_LOGITS: the first window runs the prompt's last token over the state
                 // the prompt path left, so its logits are where two prompt paths can be compared by output
                 if (first_window)
@@ -5788,9 +5794,13 @@ int main(int argc, char** argv) {
                     const Clock::time_point tw3 = Clock::now();
                     auto msd = [](Clock::time_point a0, Clock::time_point b0) { return std::chrono::duration<double, std::milli>(b0 - a0).count(); };
                     dt_run += msd(tw0, tw1); dt_commit += msd(tw1, tw2); dt_draft += msd(tw2, tw3);
+                    strata::timeline::span("Window", "commit_emit", -1, tw1, tw2);
+                    strata::timeline::span("Window", "draft", -1, tw2, tw3);
                     ++dec_windows; dec_T += T;
                 }
+                const auto join0 = Clock::now();
                 if (adapt_thr.joinable()) adapt_thr.join();
+                strata::timeline::span("Window", "adapt_join", -1, join0, Clock::now());
                 if (!adapt_ok) {
                     std::printf("ERR an adaptive refill failed\n");
                     return 1;
@@ -5802,6 +5812,7 @@ int main(int argc, char** argv) {
                 if (timed_round && !eos)
                     policy.observe(from_sfx, T, a, sfx_match,
                                    std::chrono::duration<double, std::milli>(Clock::now() - round0).count());
+                strata::timeline::finish((int)(produced_n-trace_emitted0));
                 if (eos) { finish = "stop"; break; }
                 if (stop_req.load()) { finish = "cancel"; break; }
                 x = outv[(size_t) a];

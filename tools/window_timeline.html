@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Strata · Decode window timeline</title><link rel="icon" href="data:,">
+<style>
+:root{color-scheme:dark;--bg:#0c1220;--panel:#151e30;--line:#2b3850;--text:#e4ecf9;--muted:#a5b5cc;--gpu:#46c3ad;--gpuwait:#eb8e62;--cpu:#6a9df8;--hostwait:#b68de4;--copy:#e6c45c;--phase:#62789b;--gap:#667084;--trace:#df74b0;--submit:#a6bfef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px system-ui,sans-serif;line-height:1.6}main{max-width:1560px;margin:auto;padding:30px 28px}h1{font-size:30px;letter-spacing:-1px;margin:8px 0}h2{font-size:18px;margin:0 0 12px}.eyebrow{letter-spacing:2px;color:var(--gpu);font-size:12px}.muted{color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin:18px 0}.controls{display:flex;gap:15px;align-items:center;flex-wrap:wrap}label{display:flex;gap:8px;align-items:center}button,select,input{font:inherit}button,select{background:#202d44;border:1px solid #405474;color:var(--text);border-radius:6px;padding:7px 12px}button{cursor:pointer}button:hover,button:focus{border-color:var(--gpu)}input[type=range]{width:160px;accent-color:var(--gpu)}.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:16px 0}.card{background:#0f1828;padding:14px;border-radius:8px}.card b{font-size:24px;display:block;font-variant-numeric:tabular-nums}.card span{color:var(--muted);font-size:12px}.legend{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0;font-size:12px}.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}.chartwrap{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:8px}canvas{display:block;width:100%;height:346px;touch-action:none;cursor:crosshair}.tooltip{position:fixed;background:#060b15;border:1px solid #7184a3;padding:12px;border-radius:8px;z-index:5;pointer-events:none;max-width:350px;white-space:pre-line;font-variant-numeric:tabular-nums}.details{min-height:50px;padding:12px 0;color:var(--muted)}.tablewrap{overflow:auto;max-height:410px}table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;white-space:nowrap}th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:right}th{position:sticky;top:0;background:#1c2940;text-align:right}th:first-child,td:first-child{text-align:left}tbody tr:hover{background:#25354e}tbody tr{cursor:pointer}tr.selected{background:#304e5c}p{margin:8px 0}a{color:#8dceff}.note{border-left:3px solid #e6c45c;padding-left:13px}summary{cursor:pointer;font-weight:600}.small{font-size:12px}#rangeText{font-variant-numeric:tabular-nums}@media(max-width:800px){main{padding:16px}.cards{grid-template-columns:repeat(2,1fr)}h1{font-size:24px}.panel{padding:12px}}
+</style>
+<main>
+<div class="eyebrow">SONG PC / RTX 4080 · i5-13600KF</div>
+<h1>一次 Decode 窗口，时间花在哪里？</h1>
+<p class="muted">SC117 IQ3_S · MTP 开启 · 测试上下文上限 32K · pcie_frac 固定 0.25 · 合成输入，无用户聊天内容</p>
+<div class="panel">
+<h2>样本分布</h2><p class="muted">每类输入两次独立请求。每个请求抽样第 6 / 21 / 41 个窗口（从 1 计数）；这是定点样本，不代表整场请求的无偏分布。点击一行打开接近中位耗时的真实窗口。</p>
+<div class="tablewrap"><table><thead><tr><th>输入类型</th><th>采样窗口数</th><th>最短 / 中位 / 最长 ms</th><th>GPU 等待中位 ms</th><th>专家搬运中位 ms</th><th>传输中位 MiB</th></tr></thead><tbody id="summaryRows"></tbody></table></div>
+</div>
+<div class="panel">
+<div class="controls"><label>真实窗口 <select id="windowSelect" aria-label="真实窗口"></select></label><button id="reset">显示整个窗口</button><button id="download">下载数值数据</button></div>
+<div class="cards" id="cards"></div>
+<p id="attribution" class="small muted"></p>
+<div class="controls"><label>放大 <input id="zoom" aria-label="时间线放大" type="range" min="1" max="60" value="1" step=".25"></label><label>平移 <input id="pan" aria-label="时间线平移" type="range" min="0" max="1000" value="0"></label><span id="rangeText" class="muted"></span></div>
+<div class="legend" id="legend"></div>
+<div class="chartwrap"><canvas id="timeline" aria-label="同步时间线；下方表格提供各层数值"></canvas></div>
+<div id="detail" class="details">悬停查看区间，点击定位到该层。缩放后可拖动时间线；也可在下方选择某层。</div>
+<p class="small muted" id="alignment"></p>
+<p class="note small">各轨道共享同一时间轴，彼此会重叠。GPU 等待包含同步内核；CPU expert_pool 是整组任务的墙钟耗时（含访存与同步），不是所有 CPU 核的 CPU 时间之和。当前使用 kernel 搬运模式：黄色区间是 GPU 从主机内存搬运专家并重设指针的阶段。专家搬运轨道是 GPU 黄色区间的展开视图，不是另一个并行活动；不要重复相加。即使专家数为 0，捕获图仍会运行空操作内核，仍可能有少量耗时。</p>
+</div>
+<div class="panel"><div class="controls"><h2>逐层耗时</h2><label>排序 <select id="sort" aria-label="逐层排序"><option value="layer">执行顺序</option><option value="gpuwait">GPU 等待最多</option><option value="cpu">CPU expert_pool 最长</option><option value="copy">专家搬运最长</option></select></label></div>
+<p class="muted small">单位 ms。点击一层放大其时间范围。GPU 非等待是已标记阶段耗时，仍包含访存与阶段调度开销；不能当作纯算术耗时。所有列不可直接相加。</p>
+<div class="tablewrap"><table><thead><tr><th>层 / 类型</th><th>GPU 非等待</th><th>waitA</th><th>waitB</th><th>waitCPU</th><th>CPU expert_pool</th><th>专家搬运</th><th>传输 MiB / 数量</th></tr></thead><tbody id="layerRows"></tbody></table></div></div>
+<div class="panel"><h2>请求级概览：Prefill 与 Decode</h2><p class="muted small">这是带诊断插桩的请求统计，不作为正式吞吐基准。Prefill 仅有总耗时；Decode 时间包含整个生成阶段，不是图中几个采样窗口之和。每请求输出 192 token，前缀复用为 0。</p><div class="tablewrap"><table><thead><tr><th>请求 / 输入</th><th>Prefill ms</th><th>Prefill tok/s</th><th>Decode ms</th><th>Decode tok/s</th><th>MTP 接受 / 提议</th><th>专家文件读取 MB</th></tr></thead><tbody id="requestRows"></tbody></table></div></div>
+<div class="panel"><h2>这轮发现的优化线索</h2><p id="findingTransfers"></p><p id="findingPrepare"></p><p id="findingFiles"></p></div>
+<div class="panel"><details open><summary>如何读图，以及没有测到什么</summary>
+<p>Window 轨道展示 prepare → verify → commit_emit → draft → adapt_join 的主机调用区间。GPU 轨道只细分 verify 内的 48 层及 head；commit / MTP draft 目前只有主机调用包络，不能把这部分空白解释为 GPU 空闲。</p>
+<p>waitA：等待 CPU 路由 / 调度计划；waitB：等待专家就绪标志（已把 GPU 搬运内核拆为黄色区间）；waitCPU：等待 CPU 专家结果。旧 profile 的 waitB 还包括 GPU 搬运内核，两者之和才可与旧统计比较。GPU 的“PCIe experts compute”是对已搬入专家的计算，不是搬运本身。</p>
+<p>GPU 计算和专家搬运使用同一设备时钟。每个采样窗口通过一次同步校准对齐 CPU 时钟，误差范围在图下给出。“trace_clock_setup”属于诊断开销；额外时间戳（包括每层 waitB 拆分点）、同步和 trace 输出也可能改变调度。本报告用来找热点，不能直接替代无插桩性能基准。</p>
+<p>所有窗口是真实采样，未把中位耗时拼接成时间线。空隙表示未归因区间；不同轨道耗时重叠，不能相加得到总耗时。pcie_frac 是调度比例参数，不是观测等待百分比。</p>
+<p>时间线只展示 decode；prefill 不在此细粒度跟踪范围内，仅列请求级概览。上下文 32K 是容量上限，不表示每个请求输入 32K。输入是 4096 token 的网络、数学、中文写作合成用例；先暖机，再独立请求，禁用前缀缓存。</p>
+<p>隐私：只包含时间、层号、计数、字节数和固定阶段标签。没有提示词、生成文本、token ID、专家 ID、激活值、聊天记录、API key 或内容 hash。</p>
+</details></div>
+</main><div class="tooltip" id="tooltip" hidden></div>
+<script id="traceData" type="application/json">__TRACE_DATA__</script>
+<script>
+'use strict';
+const D=JSON.parse(document.getElementById('traceData').textContent),$=id=>document.getElementById(id);
+const names={network_4096:'网络工程',math_4096:'数学推理',zh_story_4096:'中文写作'};
+const colors={gpu:'#46c3ad',gpuwait:'#eb8e62',cpu:'#6a9df8',hostwait:'#b68de4',copy:'#e6c45c',gpucopy:'#e6c45c',phase:'#62789b',gap:'#667084',trace:'#df74b0',submit:'#a6bfef'};
+const labels={gpu:'GPU 非等待',gpuwait:'GPU 等待',cpu:'CPU 工作',hostwait:'主机等待',copy:'拷贝区间',phase:'窗口阶段',gap:'未归因间隙',trace:'诊断开销'};
+const lanes=['Window','GPU','CPU','Expert transfer','Copy submit'],laneNames=['窗口阶段','GPU verify','CPU 调度 / 专家','专家搬运（展开）','CPU 提交拷贝'];
+let current=0,left=0,span=0,selected=-1,boxes=[],drag=null;
+const median=values=>{const a=[...values].sort((a,b)=>a-b),n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2};
+const slowPrepare=D.windows.flatMap(w=>w.events.filter(e=>e.name==='prepare'&&e.end-e.start>10).map(e=>e.end-e.start));
+$('findingTransfers').textContent=`当前 kernel 路径中，旧 waitB 包含实际搬运；本次已将两者拆开。${D.windows.length} 个窗口的专家搬运中位耗时为 ${median(D.windows.map(w=>w.sums.gpucopy||0)).toFixed(2)} ms，GPU 信号 / CPU 结果等待合计中位耗时为 ${median(D.windows.map(w=>w.sums.gpuwait||0)).toFixed(2)} ms，不能把前者也算成纯等待。`;
+$('findingPrepare').textContent=slowPrepare.length?`${D.windows.length} 个窗口中有 ${slowPrepare.length} 个 prepare 区间超过 10 ms，耗时 ${Math.min(...slowPrepare).toFixed(2)}–${Math.max(...slowPrepare).toFixed(2)} ms。对应源码包含 apply_pending(true)：等待自适应专家缓存换入、提交换入并更新驻留表。目前未对 prepare 内部逐项计时，这是下一步优先定位的候选，尚不能把整个区间都归因于它。`:'本次采样没有超过 10 ms 的 prepare 区间。';
+$('findingFiles').textContent=`${D.requests.length} 个正式请求的专家文件读取总量为 ${D.requests.reduce((s,r)=>s+r.file_mb,0).toFixed(1)} MB。此统计不覆盖冷启动、swap 或其他内存压力。窗口宽度 T 和产出不同，不宜直接把各类窗口总耗时当作速度排名。`;
+
+const f=(n,p=3)=>Number(n).toFixed(p),sum=events=>events.reduce((s,e)=>s+e.end-e.start,0);
+function windowLabel(w){return `${names[w.fixture]} · 请求 ${w.request} · 窗口 ${w.window+1} · ${f(w.duration,2)} ms`}
+D.windows.forEach((w,i)=>{const o=document.createElement('option');o.value=i;o.textContent=windowLabel(w);$('windowSelect').append(o)});
+D.requests.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${r.request} · ${names[r.fixture]}</td><td>${f(r.prompt_ms,1)}</td><td>${f(r.prompt_tokens/r.prompt_ms*1000,1)}</td><td>${f(r.decode_ms,1)}</td><td>${f(r.emitted/r.decode_ms*1000,1)}</td><td>${r.drafts_accepted} / ${r.drafts_offered}</td><td>${f(r.file_mb,1)}</td>`;$('requestRows').append(tr)});
+Object.entries(labels).forEach(([k,v])=>{const el=document.createElement('span');el.innerHTML=`<i class="dot" style="background:${colors[k]}"></i>${v}`;$('legend').append(el)});
+Object.entries(D.groups).forEach(([key,g])=>{const tr=document.createElement('tr');tr.tabIndex=0;tr.innerHTML=`<td>${names[key]}</td><td>${g.count}</td><td>${f(g.minimum,2)} / ${f(g.median,2)} / ${f(g.maximum,2)}</td><td>${f(g.gpuWaitMedian,2)}</td><td>${f(g.fetchMedian,2)}</td><td>${f(g.copyMiBMedian,1)}</td>`;const open=()=>choose(D.windows.findIndex(w=>w.request===g.representative[0]&&w.window===g.representative[1]));tr.onclick=open;tr.onkeydown=e=>{if(e.key==='Enter')open()};$('summaryRows').append(tr)});
+function choose(i){current=Number(i);selected=-1;$('windowSelect').value=current;$('zoom').value=1;$('pan').value=0;const w=D.windows[current];
+ const verify=w.events.find(e=>e.lane==='Window'&&e.name==='verify');const wait=w.sums.gpuwait||0;const gpu=w.events.filter(e=>e.lane==='GPU');const gpuSpan=gpu.length?Math.max(...gpu.map(e=>e.end))-Math.min(...gpu.map(e=>e.start)):0;
+ $('cards').innerHTML=[[`${f(w.duration,2)} ms`,'整个窗口墙钟'],[`${w.emitted} / ${w.T}`,'产出 token / 验证宽度 T'],[`${f(wait,2)} ms`,`GPU 等待 / verify GPU 范围 ${f(gpuSpan?wait/gpuSpan*100:0,1)}%`],[`${f(w.copyMiB,1)} MiB`,'窗口专家搬运逻辑字节量'],[`${f(verify?verify.end-verify.start:0,2)} ms`,'verify 主机区间']].map(([v,k])=>`<div class="card"><b>${v}</b><span>${k}</span></div>`).join('');
+ $('alignment').textContent=`CPU ↔ GPU 时钟对齐误差上界：±${f(w.alignment*1000,1)} µs。GPU 与专家搬运使用同一时钟。层号从 1 开始。`;
+ const stageTotal=prefix=>sum(w.events.filter(e=>e.lane==='GPU'&&e.name.startsWith(prefix)));
+ $('attribution').textContent=`本窗口 GPU 阶段：非等待计算 ${f(w.sums.gpu||0,2)} ms，专家搬运 ${f(w.sums.gpucopy||0,2)} ms，waitA ${f(stageTotal('waitA'),2)} ms，waitB 信号 ${f(stageTotal('waitB'),2)} ms，waitCPU ${f(stageTotal('waitCPU'),2)} ms。同期 CPU expert_pool 合计 ${f(sum(w.events.filter(e=>e.lane==='CPU'&&e.name==='expert_pool')),2)} ms（与 GPU 重叠，不能加到前述总计）。`;
+ $('detail').textContent='悬停查看区间，点击定位到该层。缩放后可拖动时间线。';updateRange();table();}
+function updateRange(){const w=D.windows[current];span=w.duration/Number($('zoom').value);left=(w.duration-span)*Number($('pan').value)/1000;draw()}
+function draw(){const c=$('timeline'),ratio=window.devicePixelRatio||1,W=c.clientWidth,H=346;c.width=W*ratio;c.height=H*ratio;const x=c.getContext('2d');x.scale(ratio,ratio);x.fillStyle='#0e1726';x.fillRect(0,0,W,H);const labelWidth=W<700?108:145,pad=16,pw=W-labelWidth-pad;boxes=[];
+ x.font='11px system-ui';for(let i=0;i<=8;i++){let px=labelWidth+i*pw/8;x.strokeStyle='#27344b';x.beginPath();x.moveTo(px,34);x.lineTo(px,H-16);x.stroke();x.fillStyle='#a5b5cc';x.textAlign=i===8?'right':'left';x.fillText(f(left+i*span/8,2)+' ms',px,20)}
+ lanes.forEach((lane,j)=>{const y=45+j*57;x.fillStyle=j%2?'#131f32':'#101b2d';x.fillRect(0,y,W,47);x.fillStyle='#c5d5ec';x.textAlign='left';x.fillText(laneNames[j],8,y+27);
+ D.windows[current].events.filter(e=>e.lane===lane&&e.end>=left&&e.start<=left+span).forEach(e=>{const a=labelWidth+Math.max(0,(e.start-left)/span)*pw,b=labelWidth+Math.min(1,(e.end-left)/span)*pw;const width=Math.max(.7,b-a);x.fillStyle=colors[e.category]||'#bbb';x.globalAlpha=selected<0||selected===e.layer?1:.35;x.fillRect(a,y+5,width,36);x.globalAlpha=1;if(selected===e.layer){x.strokeStyle='#fff';x.strokeRect(a,y+5,width,36)}if(width>48){x.save();x.beginPath();x.rect(a+2,y+5,width-4,36);x.clip();x.fillStyle='#091421';x.fillText((e.layer>=0?`L${e.layer+1} `:'')+e.name,a+4,y+27);x.restore()}boxes.push({a,b:a+width,y:y+5,h:36,e})})});$('rangeText').textContent=`${f(left,2)} — ${f(left+span,2)} ms / ${f(D.windows[current].duration,2)} ms`;
+}
+function focusLayer(layer){selected=layer;const w=D.windows[current],ev=w.events.filter(e=>e.layer===layer);if(!ev.length)return;const a=Math.max(0,Math.min(...ev.map(e=>e.start))-.1),b=Math.min(w.duration,Math.max(...ev.map(e=>e.end))+.1);const z=Math.min(60,w.duration/(b-a));$('zoom').value=z;const s=w.duration/Number($('zoom').value);$('pan').value=w.duration>s?Math.max(0,Math.min(1000,(a-(s-(b-a))/2)/(w.duration-s)*1000)):0;updateRange();table()}
+function table(){const w=D.windows[current];let rows=Array.from({length:48},(_,layer)=>{const ev=w.events.filter(e=>e.layer===layer),duration=(lane,name)=>sum(ev.filter(e=>e.lane===lane&&e.name.startsWith(name)));return {layer,gpu:sum(ev.filter(e=>e.category==='gpu')),a:duration('GPU','waitA'),b:duration('GPU','waitB'),c:duration('GPU','waitCPU'),cpu:duration('CPU','expert_pool'),copy:sum(ev.filter(e=>e.lane==='Expert transfer')),bytes:ev.reduce((s,e)=>s+(e.bytes||0),0),copies:ev.reduce((s,e)=>s+(e.copies||0),0)}});const key=$('sort').value;rows.sort((a,b)=>key==='layer'?a.layer-b.layer:key==='gpuwait'?(b.a+b.b+b.c)-(a.a+a.b+a.c):b[key]-a[key]);$('layerRows').replaceChildren();rows.forEach(r=>{const tr=document.createElement('tr');tr.tabIndex=0;tr.className=r.layer===selected?'selected':'';tr.innerHTML=`<td>L${r.layer+1} · ${w.kinds[r.layer]?'QSA':'GDN'}</td><td>${f(r.gpu)}</td><td>${f(r.a)}</td><td>${f(r.b)}</td><td>${f(r.c)}</td><td>${f(r.cpu)}</td><td>${f(r.copy)}</td><td>${f(r.bytes/2**20,2)} / ${r.copies}</td>`;tr.onclick=()=>focusLayer(r.layer);tr.onkeydown=e=>{if(e.key==='Enter')focusLayer(r.layer)};$('layerRows').append(tr)})}
+function hit(e){const r=$('timeline').getBoundingClientRect(),xx=e.clientX-r.left,yy=e.clientY-r.top;return boxes.findLast(b=>xx>=b.a&&xx<=b.b&&yy>=b.y&&yy<=b.y+b.h)}
+function describe(e){return `${e.lane} · ${e.layer>=0?'L'+(e.layer+1)+' · ':''}${e.name}\n开始 ${f(e.start)} ms → 结束 ${f(e.end)} ms\n耗时 ${f(e.end-e.start)} ms${e.bytes!==undefined?'\n传输 '+f(e.bytes/2**20,2)+' MiB / '+e.copies+' 份专家权重':''}`}
+$('timeline').onpointermove=e=>{if(drag){const width=$('timeline').clientWidth-160;const w=D.windows[current];const next=Math.max(0,Math.min(w.duration-span,drag.left-(e.clientX-drag.x)/width*span));$('pan').value=w.duration>span?next/(w.duration-span)*1000:0;updateRange();$('tooltip').hidden=true;return}const b=hit(e);$('tooltip').hidden=!b;if(b){$('tooltip').textContent=describe(b.e);$('tooltip').style.left=Math.min(e.clientX+14,window.innerWidth-365)+'px';$('tooltip').style.top=Math.min(e.clientY+14,window.innerHeight-140)+'px'}};
+$('timeline').onpointerleave=()=>{$('tooltip').hidden=true};$('timeline').onpointerdown=e=>{drag={x:e.clientX,left};$('timeline').setPointerCapture(e.pointerId)};$('timeline').onpointerup=e=>{const moved=drag&&Math.abs(e.clientX-drag.x)>4;drag=null;if(!moved){const b=hit(e);if(b){$('detail').textContent=describe(b.e);if(b.e.layer>=0)focusLayer(b.e.layer)}}};$('timeline').onpointercancel=()=>{drag=null};
+$('windowSelect').onchange=e=>choose(e.target.value);$('zoom').oninput=updateRange;$('pan').oninput=updateRange;$('sort').onchange=table;$('reset').onclick=()=>choose(current);$('download').onclick=()=>{const a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(D,null,2)],{type:'application/json'}));a.href=u;a.download='strata-window-timeline-numeric.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};new ResizeObserver(draw).observe($('timeline'));const initial=D.groups.math_4096.representative;choose(D.windows.findIndex(w=>w.request===initial[0]&&w.window===initial[1]));
+</script></html>

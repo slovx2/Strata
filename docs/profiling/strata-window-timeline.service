@@ -1,0 +1,20 @@
+[Unit]
+Description=Strata numeric window timeline on Tailscale
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+WorkingDirectory=/mnt/data/strata-deploy/window-timeline-site
+ExecStart=/usr/bin/python3 -u -m http.server 8766 --bind 100.64.141.92 --directory /mnt/data/strata-deploy/window-timeline-site
+Restart=on-failure
+RestartSec=5
+StandardOutput=append:/mnt/data/strata-deploy/window-timeline-web.log
+StandardError=append:/mnt/data/strata-deploy/window-timeline-web.log
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_INET AF_INET6
