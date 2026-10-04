@@ -10,6 +10,7 @@
 <h1>GPU 和 CPU，什么时候在等待？</h1>
 <p class="muted">SC117 IQ3_S · MTP 开启 · 测试上下文上限 32K · pcie_frac 固定 0.25 · 合成输入，无用户聊天内容</p>
 <div class="panel">
+<p id="scheduleNote" class="muted" hidden>此图采自旧式串行诊断模式：共享专家并行已关闭，不能代表新主干默认性能。</p>
 <div class="controls"><label>真实窗口 <select id="windowSelect" aria-label="真实窗口"></select></label><button id="reset">显示整个窗口</button><button id="download">下载数值数据</button></div>
 <div class="cards" id="cards"></div>
 <p id="attribution" class="small muted"></p>
@@ -66,6 +67,7 @@ function segments(w,lane){
 }
 let current=0,left=0,span=0,selected=-1,boxes=[],drag=null;
 const median=values=>{const a=[...values].sort((a,b)=>a-b),n=a.length;return n%2?a[(n-1)/2]:(a[n/2-1]+a[n/2])/2};
+$('scheduleNote').hidden=!D.legacy_serial;
 const slowPrepare=D.windows.flatMap(w=>w.events.filter(e=>e.name==='prepare'&&e.end-e.start>10).map(e=>e.end-e.start));
 $('findingTransfers').textContent=`当前 kernel 路径中，旧 waitB 包含实际搬运；本次已将两者拆开。${D.windows.length} 个窗口的专家搬运中位耗时为 ${median(D.windows.map(w=>w.sums.gpucopy||0)).toFixed(2)} ms，GPU 信号 / CPU 结果等待合计中位耗时为 ${median(D.windows.map(w=>w.sums.gpuwait||0)).toFixed(2)} ms，不能把前者也算成纯等待。`;
 $('findingPrepare').textContent=slowPrepare.length?`${D.windows.length} 个窗口中有 ${slowPrepare.length} 个 prepare 区间超过 10 ms，耗时 ${Math.min(...slowPrepare).toFixed(2)}–${Math.max(...slowPrepare).toFixed(2)} ms。对应源码包含 apply_pending(true)：等待自适应专家缓存换入、提交换入并更新驻留表。目前未对 prepare 内部逐项计时，这是下一步优先定位的候选，尚不能把整个区间都归因于它。`:'本次采样没有超过 10 ms 的 prepare 区间。';

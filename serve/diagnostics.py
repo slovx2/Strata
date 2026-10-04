@@ -237,7 +237,7 @@ class RequestDiagnostic:
         self.sink = sink
         self.id = uuid.uuid4().hex
         self.variant = known(os.environ.get('STRATA_DIAGNOSTIC_VARIANT'), {'sc117-iq3_s', 'orca-iq3_xxs'})
-        self.api = known(api, {'openai', 'anthropic'})
+        self.api = known(api, {'openai', 'anthropic', 'responses'})
         self.stream = bool(stream)
         self.clock = time.monotonic()
         self.runs = deque(maxlen=8)

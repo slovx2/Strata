@@ -64,6 +64,16 @@ private:
 /// slot: gate rows then up rows at `gu_dst`, down at `d_dst`.
 void gather_native(const void* gate, const void* up, size_t gu_half_bytes, const void* down, size_t d_bytes,
                    void* gu_dst, void* d_dst, void* stream);
+/// gather_native for an MMQ group's experts [first, n) in ONE launch: expert q's blob (`blob[q]`; gate at +0, up at
+/// +up_off, down at +down_off) to gu_dst + q * gu_stride and d_dst + q * d_stride - the same bytes as one gather_native
+/// each.  Every pointer, offset and size 16-byte aligned (false otherwise: nothing launched, gather one at a time).
+constexpr int kGatherGroupMax = 16;
+struct GatherGroup {
+    const uint8_t* blob[kGatherGroupMax] = {};
+    int first = 0, n = 0;
+};
+bool gather_native_group(const GatherGroup& g, size_t up_off, size_t gu_half_bytes, size_t down_off, size_t d_bytes,
+                         void* gu_dst, size_t gu_stride, void* d_dst, size_t d_stride, void* stream);
 /// `gather_native` for up to kGatherMax experts of one layer (same sizes) in ONE launch.  The prompt path gathers
 /// every routed expert of every layer of every chunk - ~22,000 per chunk - and one launch each cost ~23 us of launch
 /// and event overhead for ~2 us of copying (STRATA_PREFILL_TIMING's "dequant", 22-42% of the prompt path's GPU

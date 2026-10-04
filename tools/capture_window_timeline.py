@@ -1,7 +1,14 @@
 """Capture bounded synthetic windows using an isolated diagnostic engine."""
-import argparse,json,os,sys,threading,time,subprocess
+import argparse,json,os,re,sys,threading,time,subprocess
 from pathlib import Path
-p=argparse.ArgumentParser();p.add_argument('--source-root',type=Path,required=True);p.add_argument('--config',type=Path,required=True);p.add_argument('--exe',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('--source-root',type=Path,required=True);p.add_argument('--config',type=Path,required=True);p.add_argument('--exe',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument("--legacy-serial", action="store_true", help="Explicitly disable shared-expert overlap for legacy timeline diagnostics, not performance comparisons");a=p.parse_args()
+version_text=(a.source_root/'CMakeLists.txt').read_text(encoding='utf-8-sig')
+match=re.search(r'project\(strata VERSION (\d+)\.(\d+)\.(\d+)',version_text)
+if not match:
+ raise SystemExit('Cannot identify source version; no model loaded')
+version=tuple(map(int,match.groups()))
+if version >= (0,1,39) and not a.legacy_serial:
+ raise SystemExit('This version uses parallel shared experts. Legacy timeline requires --legacy-serial; it cannot measure the default optimized schedule. No model loaded.')
 os.umask(0o077);sys.path[:0]=[str(a.source_root),str(a.source_root/'tools')]
 from profile_song_pc import fixtures
 from calibrate import with_arg
@@ -22,11 +29,12 @@ assert not c.get('expert_profile_save') and '--expert-profile-save' not in c['ar
 c['log']=str(a.out/'engine.log');env=child_env(c)
 for k in list(env):
  if k.startswith('STRATA_') and any(s in k for s in ('DEBUG','DUMP','STATE_HASH','LOGPOS','DIAGNOSTIC','TRACE','TIMELINE')):env.pop(k,None)
+if a.legacy_serial:env['STRATA_SH_STREAM']='0'
 env.update(STRATA_WINDOW_TIMELINE_PATH=str(a.out/'windows.jsonl'),STRATA_VERIFY_PROFILE='1',STRATA_DECODE_TIMING='1')
 tp=Path(c['tokenizer']);vocab=json.loads((tp/'vocab.json').read_text());v=[None]*len(vocab)
 for t,i in vocab.items():v[i]=t
 tok=ST.Tokenizer(v,(tp/'merges.txt').read_text().split('\n'),json.loads((tp/'token_type.json').read_text()));fs=fixtures(tok)
-engine=None;data={'context':32768,'source_revision':'7ebaacf','rows':[],'completed':False,'config_unchanged':False}
+engine=None;data={'context':32768,'source_version':'.'.join(map(str,version)), 'schedule_mode':'legacy_serial' if a.legacy_serial else 'legacy_default','rows':[],'completed':False,'config_unchanged':False}
 def save():
  t=a.out/'results.tmp';t.write_text(json.dumps(data,indent=2));t.replace(a.out/'results.json')
 try:

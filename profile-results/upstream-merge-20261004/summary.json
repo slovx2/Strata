@@ -1,0 +1,54 @@
+{
+  "baseline": {
+    "network_256": {
+      "prefill_tps": 329.98195411188453,
+      "decode_tps": 49.06683107908494
+    },
+    "network_4096": {
+      "prefill_tps": 1573.6596423151543,
+      "decode_tps": 59.26799373186664
+    },
+    "math_4096": {
+      "prefill_tps": 1596.1965628775185,
+      "decode_tps": 55.0567141807071
+    },
+    "zh_story_4096": {
+      "prefill_tps": 1476.7544571232852,
+      "decode_tps": 50.43703292930894
+    },
+    "4K aggregate": {
+      "prefill_tps": 1547.1004456978822,
+      "decode_tps": 54.682355635718174
+    },
+    "all": {
+      "prefill_tps": 1438.7961093778677,
+      "decode_tps": 53.16132444064058
+    }
+  },
+  "candidate": {
+    "network_256": {
+      "prefill_tps": 294.7441137528064,
+      "decode_tps": 49.11730292003652
+    },
+    "network_4096": {
+      "prefill_tps": 1578.3896264041155,
+      "decode_tps": 60.2885009942868
+    },
+    "math_4096": {
+      "prefill_tps": 1603.8530062454727,
+      "decode_tps": 57.52838769916569
+    },
+    "zh_story_4096": {
+      "prefill_tps": 1591.112146991415,
+      "decode_tps": 53.84908160532289
+    },
+    "4K aggregate": {
+      "prefill_tps": 1591.050341827222,
+      "decode_tps": 57.09929597464911
+    },
+    "all": {
+      "prefill_tps": 1460.0052375825646,
+      "decode_tps": 54.87007857050518
+    }
+  }
+}

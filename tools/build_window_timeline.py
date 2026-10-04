@@ -4,6 +4,20 @@ No writes to the production source/build/binary. Run on Song PC, under direct-en
 import argparse,json,shlex,shutil,subprocess
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--base',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+# Reusing old libraries across an upstream upgrade can link incompatible buffer layouts.
+# Only the three instrumented translation units and the timeline header may differ.
+root = Path(__file__).resolve().parents[1]
+allowed = {'src/core/verify.cpp', 'src/core/expert_source.cpp', 'src/program/generate.cpp',
+           'include/strata/core/window_timeline.hpp'}
+paths = ['CMakeLists.txt'] + [str(p.relative_to(root)) for folder in ('include', 'src', 'cmake')
+                             for p in (root / folder).rglob('*') if p.is_file()]
+for rel in paths:
+    if rel in allowed:
+        continue
+    base_file = a.base / rel
+    if not base_file.is_file() or base_file.read_bytes() != (root / rel).read_bytes():
+        raise SystemExit('Library reuse refused: base differs at ' + rel +
+                         '. Configure and build the entire checkout with CMake instead.')
 build=a.base/'build';out=a.out.resolve();ninja=a.base/'.venv/bin/ninja'
 commands=subprocess.check_output([str(ninja),'-C',str(build),'-t','commands','strata'],text=True).splitlines()
 objects={}

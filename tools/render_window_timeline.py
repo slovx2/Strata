@@ -113,6 +113,7 @@ def report(capture):
                               copyMiBMedian=statistics.median(w['copyMiB'] for w in subset))
     # Explicit public allowlist. Engine metadata/logs are deliberately not exported.
     return dict(context=results['context'], fraction=.25, windows=windows, groups=groups,
+                legacy_serial=results.get('schedule_mode') == 'legacy_serial',
                 requests=[{**{k: r[k] for k in ('request','fixture','emitted','wall_s')},
                            **{k: r['engine'][k] for k in ('prompt_tokens','prompt_ms','decode_ms',
                                                         'drafts_accepted','drafts_offered','file_mb')}}
