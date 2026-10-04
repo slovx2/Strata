@@ -18,7 +18,7 @@
 <div class="chartwrap"><canvas id="timeline" aria-label="GPU 与 CPU 的工作和等待；悬停查看详情，下方可展开数据"></canvas></div>
 <div id="detail" class="details">悬停查看细节，点击保留说明；缩放后可拖动时间线。</div>
 <p class="small muted" id="alignment"></p>
-<p class="note small">实色 = 已记录的工作；透明虚线框 = 已记录的等待；灰色斜纹 = 未细分采集，不能判断是否在等待。悬停任意区间查看细节。CPU 行表示主机调度与专家线程池的阶段，不是整颗 CPU 的利用率；GPU 工作也不表示算力满载。</p>
+<p class="note small">绿色 = GPU 计算；黄色 = GPU 专家搬运；蓝色 = CPU 工作；透明虚线框 = 已记录的等待；灰色斜纹 = 未细分采集，不能判断是否在等待。悬停任意区间查看细节。CPU 行表示主机调度与专家线程池的阶段，不是整颗 CPU 的利用率；GPU 工作也不表示算力满载。</p>
 </div>
 <div class="panel"><details><summary>展开样本分布</summary><p class="muted">每类输入两次独立请求。每个请求抽样第 6 / 21 / 41 个窗口（从 1 计数）；这是定点样本，不代表整场请求的无偏分布。点击一行打开接近中位耗时的真实窗口。</p>
 <div class="tablewrap"><table><thead><tr><th>输入类型</th><th>采样窗口数</th><th>最短 / 中位 / 最长 ms</th><th>GPU 等待中位 ms</th><th>专家搬运中位 ms</th><th>传输中位 MiB</th></tr></thead><tbody id="summaryRows"></tbody></table></div></details>
@@ -29,8 +29,8 @@
 <div class="panel"><details><summary>展开请求性能数据</summary><p class="muted small">这是带诊断插桩的请求统计，不作为正式吞吐基准。Prefill 仅有总耗时；Decode 时间包含整个生成阶段，不是图中几个采样窗口之和。每请求输出 192 token，前缀复用为 0。</p><div class="tablewrap"><table><thead><tr><th>请求 / 输入</th><th>Prefill ms</th><th>Prefill tok/s</th><th>Decode ms</th><th>Decode tok/s</th><th>MTP 接受 / 提议</th><th>专家文件读取 MB</th></tr></thead><tbody id="requestRows"></tbody></table></div></details></div>
 <div class="panel"><details><summary>展开优化线索</summary><p id="findingTransfers"></p><p id="findingPrepare"></p><p id="findingFiles"></p></details></div>
 <div class="panel"><details><summary>如何读图，以及没有测到什么</summary>
-<p>主图只保留 GPU / CPU 两行；同一行连续的工作合并，不再区分计算与搬运颜色。GPU 细粒度记录覆盖主模型验证阶段；其他阶段用斜纹表示未细分。主机阶段名称保留在悬浮提示中。</p>
-<p>waitA：等待 CPU 路由 / 调度计划；waitB：等待专家就绪标志（已将 GPU 搬运内核与等待拆开；搬运并入绿色工作块）；waitCPU：等待 CPU 专家结果。旧 profile 的 waitB 还包括 GPU 搬运内核，两者之和才可与旧统计比较。GPU 的“PCIe experts compute”是对已搬入专家的计算，不是搬运本身。</p>
+<p>主图只保留 GPU / CPU 两行；同一行连续且同类的工作合并；GPU 计算为绿色，专家搬运为黄色。GPU 细粒度记录覆盖主模型验证阶段；其他阶段用斜纹表示未细分。主机阶段名称保留在悬浮提示中。</p>
+<p>waitA：等待 CPU 路由 / 调度计划；waitB：等待专家就绪标志（已将 GPU 搬运内核与等待拆开；搬运为黄色块）；waitCPU：等待 CPU 专家结果。旧 profile 的 waitB 还包括 GPU 搬运内核，两者之和才可与旧统计比较。GPU 的“PCIe experts compute”是对已搬入专家的计算，不是搬运本身。</p>
 <p>GPU 计算和专家搬运使用同一设备时钟。每个采样窗口通过一次同步校准对齐 CPU 时钟，误差范围在图下给出。“trace_clock_setup”属于诊断开销；额外时间戳（包括每层 waitB 拆分点）、同步和 trace 输出也可能改变调度。本报告用来找热点，不能直接替代无插桩性能基准。</p>
 <p>所有窗口是真实采样，未把中位耗时拼接成时间线。透明虚线表示已记录等待，斜纹表示未归因区间；不同轨道耗时重叠，不能相加得到总耗时。pcie_frac 是调度比例参数，不是观测等待百分比。</p>
 <p>时间线只展示 decode；prefill 不在此细粒度跟踪范围内，仅列请求级概览。上下文 32K 是容量上限，不表示每个请求输入 32K。输入是 4096 token 的网络、数学、中文写作合成用例；先暖机，再独立请求，禁用前缀缓存。</p>
@@ -42,7 +42,7 @@
 'use strict';
 const D=JSON.parse(document.getElementById('traceData').textContent),$=id=>document.getElementById(id);
 const names={network_4096:'网络工程',math_4096:'数学推理',zh_story_4096:'中文写作'};
-const colors={GPU:'#46c3ad',CPU:'#6a9df8'};
+const colors={GPU:'#46c3ad',CPU:'#6a9df8',transfer:'#e6c45c'};
 const lanes=['GPU','CPU'];
 const stageNames={
  'waitA: CPU plan':'等 CPU 准备专家调度计划', 'waitB: delivery flag':'等专家就绪信号',
@@ -55,7 +55,7 @@ const stageNames={
  'head':'计算下一个 token 的候选分数', 'prepare':'准备本轮数据与缓存', 'verify':'主模型验证候选 token',
  'commit_emit':'接受并输出 token', 'draft':'生成下一轮候选 token', 'layer gap':'层间未归因区间',
  'before head':'输出计算前的未归因区间'};
-function stateOf(e){return ['gpuwait','hostwait'].includes(e.category)?'wait':['gpu','gpucopy','cpu'].includes(e.category)?'work':'unknown'}
+function stateOf(e){return e.category==='gpucopy'?'transfer':['gpuwait','hostwait'].includes(e.category)?'wait':['gpu','cpu'].includes(e.category)?'work':'unknown'}
 // Merge only touching intervals of the same state. Unmeasured gaps stay unknown.
 function segments(w,lane){
  const events=w.events.filter(e=>e.lane===lane || (lane==='CPU'&&e.lane==='Window'&&e.name==='adapt_join')).sort((a,b)=>a.start-b.start);
@@ -75,7 +75,7 @@ const f=(n,p=3)=>Number(n).toFixed(p),sum=events=>events.reduce((s,e)=>s+e.end-e
 function windowLabel(w){return `${names[w.fixture]} · 请求 ${w.request} · 窗口 ${w.window+1} · ${f(w.duration,2)} ms`}
 D.windows.forEach((w,i)=>{const o=document.createElement('option');o.value=i;o.textContent=windowLabel(w);$('windowSelect').append(o)});
 D.requests.forEach(r=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${r.request} · ${names[r.fixture]}</td><td>${f(r.prompt_ms,1)}</td><td>${f(r.prompt_tokens/r.prompt_ms*1000,1)}</td><td>${f(r.decode_ms,1)}</td><td>${f(r.emitted/r.decode_ms*1000,1)}</td><td>${r.drafts_accepted} / ${r.drafts_offered}</td><td>${f(r.file_mb,1)}</td>`;$('requestRows').append(tr)});
-$('legend').innerHTML='<span><i class="dot" style="background:#46c3ad"></i>GPU 工作</span><span><i class="dot" style="background:#6a9df8"></i>CPU 工作</span><span><i class="dot wait"></i>等待（透明）</span><span><i class="dot unknown"></i>未细分采集</span>';
+$('legend').innerHTML='<span><i class="dot" style="background:#46c3ad"></i>GPU 计算</span><span><i class="dot" style="background:#e6c45c"></i>GPU 专家搬运</span><span><i class="dot" style="background:#6a9df8"></i>CPU 工作</span><span><i class="dot wait"></i>等待（透明）</span><span><i class="dot unknown"></i>未细分采集</span>';
 Object.entries(D.groups).forEach(([key,g])=>{const tr=document.createElement('tr');tr.tabIndex=0;tr.innerHTML=`<td>${names[key]}</td><td>${g.count}</td><td>${f(g.minimum,2)} / ${f(g.median,2)} / ${f(g.maximum,2)}</td><td>${f(g.gpuWaitMedian,2)}</td><td>${f(g.fetchMedian,2)}</td><td>${f(g.copyMiBMedian,1)}</td>`;const open=()=>choose(D.windows.findIndex(w=>w.request===g.representative[0]&&w.window===g.representative[1]));tr.onclick=open;tr.onkeydown=e=>{if(e.key==='Enter')open()};$('summaryRows').append(tr)});
 function choose(i){current=Number(i);selected=-1;$('windowSelect').value=current;$('zoom').value=1;$('pan').value=0;const w=D.windows[current];
  const gpuWait=sum(segments(w,'GPU').filter(e=>e.state==='wait')),cpuWait=sum(segments(w,'CPU').filter(e=>e.state==='wait'));
@@ -94,7 +94,7 @@ function draw(){
   const y=62+j*95,h=52;x.fillStyle='#c5d5ec';x.textAlign='left';x.font='bold 15px system-ui';x.fillText(lane,15,y+31);x.font='12px system-ui';
   for(const e of segments(D.windows[current],lane).filter(e=>e.end>left&&e.start<left+span)){
    const a=labelWidth+Math.max(0,(e.start-left)/span)*pw,b=labelWidth+Math.min(1,(e.end-left)/span)*pw,width=b-a;
-   if(e.state==='work'){x.fillStyle=colors[lane];x.fillRect(a,y,width,h)}
+   if(e.state==='work'||e.state==='transfer'){x.fillStyle=e.state==='transfer'?colors.transfer:colors[lane];x.fillRect(a,y,width,h)}
    else if(e.state==='wait'){
     // No fill: leave the underlying grid visible through the entire waiting interval.
     x.save();x.strokeStyle='#8b9bb3';x.setLineDash([3,4]);x.strokeRect(a,y,width,h);x.restore();
@@ -102,7 +102,7 @@ function draw(){
     x.save();x.beginPath();x.rect(a,y,width,h);x.clip();x.strokeStyle='#394457';
     for(let px=a-h;px<b;px+=9){x.beginPath();x.moveTo(px,y+h);x.lineTo(px+h,y);x.stroke()}x.restore();
    }
-   if(width>62){x.save();x.beginPath();x.rect(a+3,y,width-6,h);x.clip();x.fillStyle=e.state==='work'?'#091421':'#a5b5cc';x.fillText(e.state==='work'?'工作':e.state==='wait'?'等待':'未细分',a+8,y+31);x.restore()}
+   if(width>62){x.save();x.beginPath();x.rect(a+3,y,width-6,h);x.clip();x.fillStyle=['work','transfer'].includes(e.state)?'#091421':'#a5b5cc';x.fillText(e.state==='transfer'?'专家搬运':e.state==='work'?(lane==='GPU'?'计算':'工作'):e.state==='wait'?'等待':'未细分',a+8,y+31);x.restore()}
    boxes.push({a,b,y,h,e});
   }
  });
@@ -112,7 +112,7 @@ function focusLayer(layer){selected=layer;const w=D.windows[current],ev=w.events
 function table(){const w=D.windows[current];let rows=Array.from({length:48},(_,layer)=>{const ev=w.events.filter(e=>e.layer===layer),duration=(lane,name)=>sum(ev.filter(e=>e.lane===lane&&e.name.startsWith(name)));return {layer,gpu:sum(ev.filter(e=>e.category==='gpu')),a:duration('GPU','waitA'),b:duration('GPU','waitB'),c:duration('GPU','waitCPU'),cpu:duration('CPU','expert_pool'),copy:sum(ev.filter(e=>e.lane==='Expert transfer')),bytes:ev.reduce((s,e)=>s+(e.bytes||0),0),copies:ev.reduce((s,e)=>s+(e.copies||0),0)}});const key=$('sort').value;rows.sort((a,b)=>key==='layer'?a.layer-b.layer:key==='gpuwait'?(b.a+b.b+b.c)-(a.a+a.b+a.c):b[key]-a[key]);$('layerRows').replaceChildren();rows.forEach(r=>{const tr=document.createElement('tr');tr.tabIndex=0;tr.className=r.layer===selected?'selected':'';tr.innerHTML=`<td>L${r.layer+1} · ${w.kinds[r.layer]?'QSA':'GDN'}</td><td>${f(r.gpu)}</td><td>${f(r.a)}</td><td>${f(r.b)}</td><td>${f(r.c)}</td><td>${f(r.cpu)}</td><td>${f(r.copy)}</td><td>${f(r.bytes/2**20,2)} / ${r.copies}</td>`;tr.onclick=()=>focusLayer(r.layer);tr.onkeydown=e=>{if(e.key==='Enter')focusLayer(r.layer)};$('layerRows').append(tr)})}
 function hit(e){const r=$('timeline').getBoundingClientRect(),xx=e.clientX-r.left,yy=e.clientY-r.top;const b=boxes.findLast(b=>xx>=b.a&&xx<b.b&&yy>=b.y&&yy<=b.y+b.h);if(!b)return null;const at=Math.max(b.e.start,left)+(xx-b.a)/(b.b-b.a)*(Math.min(b.e.end,left+span)-Math.max(b.e.start,left));return {...b,at}}
 function describe(e,at){
- const label={work:'工作（已合并连续阶段）',wait:'等待',unknown:'未细分采集'};
+ const label={work:e.lane==='GPU'?'计算（已合并连续阶段）':'工作（已合并连续阶段）',transfer:'专家搬运',wait:'等待',unknown:'未细分采集'};
  let text=`${e.lane} · ${label[e.state]}\n${f(e.start)} → ${f(e.end)} ms · 共 ${f(e.end-e.start)} ms`;
  const member=e.members.find(m=>m.start<=at&&at<m.end);
  if(member)text+=`\n当前指向：${member.layer>=0?'第 '+(member.layer+1)+' 层 · ':''}${stageNames[member.name]||('内部计算（'+member.name+'）')}\n该步骤 ${f(member.end-member.start)} ms`;
@@ -124,7 +124,7 @@ function describe(e,at){
  const phase=D.windows[current].events.find(m=>m.lane==='Window'&&m.start<=at&&at<m.end);
  if(phase)text+=`\n所在阶段：${stageNames[phase.name]||phase.name}`;
  if(e.lane==='CPU'&&e.state==='work')text+='\n包含线程池访存与同步，不是所有 CPU 核用时之和。';
- if(e.lane==='GPU'&&e.state==='work')text+='\n工作包含计算与搬运，不代表算力满载。';
+ if(e.lane==='GPU'&&e.state==='work')text+='\n计算阶段包含访存开销，不代表算力满载。';
  return text;
 }
 $('timeline').onpointermove=e=>{if(drag){const width=$('timeline').clientWidth-($('timeline').clientWidth<700?70:100)-16;const w=D.windows[current];const next=Math.max(0,Math.min(w.duration-span,drag.left-(e.clientX-drag.x)/width*span));$('pan').value=w.duration>span?next/(w.duration-span)*1000:0;updateRange();$('tooltip').hidden=true;return}const b=hit(e);$('tooltip').hidden=!b;if(b){$('tooltip').textContent=describe(b.e,b.at);$('tooltip').style.left=Math.max(12,Math.min(e.clientX+14,window.innerWidth-$('tooltip').offsetWidth-12))+'px';$('tooltip').style.top=Math.max(12,Math.min(e.clientY+14,window.innerHeight-$('tooltip').offsetHeight-12))+'px'}};
