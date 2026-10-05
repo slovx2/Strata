@@ -1,0 +1,18 @@
+[
+  {
+    "name": "r2-kv",
+    "patch_sha256": "77f89b658e6cbe76f6df5b604fb206d93dfb87c182563a9059cb6ed15cf9d13b",
+    "build_ok": true,
+    "build_s": 25.240442246000043,
+    "binary_sha256": "aac468699e37d6ae8f6e0d2e404eef1aa76c0c584ee0ede88bd5f1e21d79cc9d",
+    "ctest_ok": true
+  },
+  {
+    "name": "r2-783",
+    "patch_sha256": "1c86a9e80f1ac635bb366f27df9fda29317274dbe279a50e41f407a850fdb148",
+    "build_ok": true,
+    "build_s": 31.52710243599995,
+    "binary_sha256": "f1e9af0bf8af46798f7e7b0b71145ccfb6b1a438122ee2e2d114a2f3b00f5675",
+    "ctest_ok": true
+  }
+]

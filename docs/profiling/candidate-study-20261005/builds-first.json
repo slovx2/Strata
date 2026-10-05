@@ -1,0 +1,18 @@
+[
+  {
+    "name": "r2-864",
+    "patch_sha256": "3ed7e3acede73417a8a0dcaac9ddd0d96c577c40f985fed695fbd8ac4e3f078f",
+    "build_ok": true,
+    "build_s": 20.421089579000068,
+    "binary_sha256": "6985b76cf460e59bbb4603e6456c60f097c26acf73726b0aed7ddad348b89325",
+    "ctest_ok": true
+  },
+  {
+    "name": "r2-726",
+    "patch_sha256": "9f7e7541b9eb286239bb492b7f6f7b7a113872a05ff859b5d45bf4ed95bff317",
+    "build_ok": true,
+    "build_s": 22.83544310000002,
+    "binary_sha256": "6cad3c9ec567beb45d08e42a30b219bd9e7676078c757a4e0e7add2b92c9ed58",
+    "ctest_ok": true
+  }
+]

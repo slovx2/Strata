@@ -1,0 +1,209 @@
+{
+  "base256": {
+    "requests": 16,
+    "outputs": 3072,
+    "prefill_tps": 1519.978476867271,
+    "decode_tps": 40.455173376492546,
+    "mean_wall_s": 7.450251019249663,
+    "acceptance": 0.7030060120240481,
+    "file_mb": 0.0,
+    "swapout_pages": 0,
+    "major_faults": 2326,
+    "arms": [
+      {
+        "load_s": 199.28349331000027,
+        "expert_slots": 2471,
+        "rotation": null
+      },
+      {
+        "load_s": 210.562908726999,
+        "expert_slots": 2471,
+        "rotation": null
+      }
+    ],
+    "fixtures": {
+      "network_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1519.640124286973,
+        "decode_tps": 42.524916943521596,
+        "mean_wall_s": 7.2184937777497,
+        "acceptance": 0.8060200668896321,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 424
+      },
+      "go_code_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1519.8938745976232,
+        "decode_tps": 41.170573761264286,
+        "mean_wall_s": 7.367971380999279,
+        "acceptance": 0.690625,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 549
+      },
+      "zh_story_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1519.3441893245297,
+        "decode_tps": 41.00176713345328,
+        "mean_wall_s": 7.391796441749193,
+        "acceptance": 0.6530249110320284,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 1029
+      },
+      "math_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1521.0368004753243,
+        "decode_tps": 37.48005212069748,
+        "mean_wall_s": 7.82274247650048,
+        "acceptance": 0.6661870503597123,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 324
+      }
+    }
+  },
+  "elastic256": {
+    "requests": 16,
+    "outputs": 3072,
+    "prefill_tps": 1623.946872831797,
+    "decode_tps": 48.43867272991025,
+    "mean_wall_s": 6.493959280812533,
+    "acceptance": 0.7036741214057508,
+    "file_mb": 0.0,
+    "swapout_pages": 0,
+    "major_faults": 2460,
+    "arms": [
+      {
+        "load_s": 226.6323777409998,
+        "expert_slots": 4107,
+        "rotation": null
+      },
+      {
+        "load_s": 229.62484212100026,
+        "expert_slots": 4107,
+        "rotation": null
+      }
+    ],
+    "fixtures": {
+      "network_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1625.267835886041,
+        "decode_tps": 51.70916289059607,
+        "mean_wall_s": 6.241046585499589,
+        "acceptance": 0.787828947368421,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 588
+      },
+      "go_code_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1624.0917516678066,
+        "decode_tps": 53.355935500455054,
+        "mean_wall_s": 6.12673815449989,
+        "acceptance": 0.6717791411042945,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 583
+      },
+      "zh_story_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1623.1424608678424,
+        "decode_tps": 45.9464795304844,
+        "mean_wall_s": 6.7126176540000415,
+        "acceptance": 0.6429809358752167,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 867
+      },
+      "math_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1623.2871962033469,
+        "decode_tps": 43.98852174510714,
+        "mean_wall_s": 6.89543472925061,
+        "acceptance": 0.7106446776611695,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 422
+      }
+    }
+  },
+  "cap32-256": {
+    "requests": 16,
+    "outputs": 3072,
+    "prefill_tps": 1513.7677192544804,
+    "decode_tps": 40.875904638856326,
+    "mean_wall_s": 7.411117500375212,
+    "acceptance": 0.6936119873817035,
+    "file_mb": 0.0,
+    "swapout_pages": 0,
+    "major_faults": 2006,
+    "arms": [
+      {
+        "load_s": 211.30792167600157,
+        "expert_slots": 2471,
+        "rotation": null
+      },
+      {
+        "load_s": 207.90297193900005,
+        "expert_slots": 2471,
+        "rotation": null
+      }
+    ],
+    "fixtures": {
+      "network_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1512.387844773474,
+        "decode_tps": 44.121702362349474,
+        "mean_wall_s": 7.067749542250567,
+        "acceptance": 0.8087248322147651,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 375
+      },
+      "go_code_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1514.0789753352246,
+        "decode_tps": 44.39819632327437,
+        "mean_wall_s": 7.037755087750156,
+        "acceptance": 0.6774691358024691,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 516
+      },
+      "zh_story_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1514.0370007577578,
+        "decode_tps": 37.46853228733681,
+        "mean_wall_s": 7.839569418500105,
+        "acceptance": 0.6318493150684932,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 777
+      },
+      "math_4096": {
+        "requests": 4,
+        "outputs": 768,
+        "prefill_tps": 1514.5688507617215,
+        "decode_tps": 38.49103128899848,
+        "mean_wall_s": 7.699395953000021,
+        "acceptance": 0.6624293785310734,
+        "file_mb": 0.0,
+        "swapout_pages": 0,
+        "major_faults": 338
+      }
+    }
+  }
+}

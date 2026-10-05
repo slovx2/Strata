@@ -1,0 +1,200 @@
+{
+  "completed": true,
+  "context": 262144,
+  "keep_ram": true,
+  "kv_growth_cells": [
+    40960,
+    139264,
+    253952
+  ],
+  "kv_trim_cells": [
+    8192,
+    8192,
+    8192
+  ],
+  "image_reclaim_passed": true,
+  "rows": [
+    {
+      "case": "network_32768",
+      "input_tokens": 32768,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": false,
+      "wall_s": 17.273325104999913,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 32768,
+        "prompt_ms": 16629.9,
+        "decode_ms": 634.3,
+        "finish": "length",
+        "drafts_accepted": 23,
+        "drafts_offered": 27,
+        "reused": 0,
+        "hits": 11304,
+        "lookups": 17393,
+        "ram_blobs": 6207,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 32768,
+        "offloaded": 1327
+      },
+      "system_deltas": {
+        "pgmajfault": 73,
+        "pswpin": 0,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 5119.48046875,
+      "disk_read_mib": 58.9765625
+    },
+    {
+      "case": "image_after_kv_growth",
+      "input_tokens": 41,
+      "color_correct": true,
+      "same_pid": true,
+      "vision_loan": true,
+      "wall_s": 3.7018872529999953,
+      "engine": {
+        "generated": 2,
+        "prompt_tokens": 41,
+        "prompt_ms": 576.5,
+        "decode_ms": 128.9,
+        "finish": "stop",
+        "drafts_accepted": 3,
+        "drafts_offered": 3,
+        "reused": 0,
+        "hits": 357,
+        "lookups": 2003,
+        "ram_blobs": 1696,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 41,
+        "offloaded": 397
+      }
+    },
+    {
+      "case": "network_131072",
+      "input_tokens": 131072,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": true,
+      "wall_s": 120.55308903199989,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 131072,
+        "prompt_ms": 119857.2,
+        "decode_ms": 672.5,
+        "finish": "length",
+        "drafts_accepted": 22,
+        "drafts_offered": 30,
+        "reused": 0,
+        "hits": 11806,
+        "lookups": 18677,
+        "ram_blobs": 6951,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 131072,
+        "offloaded": 1483
+      },
+      "system_deltas": {
+        "pgmajfault": 61,
+        "pswpin": 6,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 4319.84375,
+      "disk_read_mib": 24.01171875
+    },
+    {
+      "case": "image_after_long_input_while_lent",
+      "input_tokens": 41,
+      "color_correct": true,
+      "same_pid": true,
+      "vision_loan": true,
+      "wall_s": 0.7778743809999469,
+      "engine": {
+        "generated": 2,
+        "prompt_tokens": 41,
+        "prompt_ms": 642.4,
+        "decode_ms": 121.8,
+        "finish": "stop",
+        "drafts_accepted": 3,
+        "drafts_offered": 3,
+        "reused": 0,
+        "hits": 486,
+        "lookups": 2026,
+        "ram_blobs": 1732,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 41,
+        "offloaded": 374
+      }
+    },
+    {
+      "case": "network_245760",
+      "input_tokens": 245760,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": false,
+      "wall_s": 125.28781175799986,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 245760,
+        "prompt_ms": 124559.3,
+        "decode_ms": 685.8,
+        "finish": "length",
+        "drafts_accepted": 21,
+        "drafts_offered": 30,
+        "reused": 0,
+        "hits": 14359,
+        "lookups": 19498,
+        "ram_blobs": 5712,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 245760,
+        "offloaded": 1142
+      },
+      "system_deltas": {
+        "pgmajfault": 9,
+        "pswpin": 1,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 4962.6640625,
+      "disk_read_mib": 5.10546875
+    },
+    {
+      "case": "network_256",
+      "input_tokens": 256,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": false,
+      "wall_s": 1.508913642999687,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 256,
+        "prompt_ms": 1114.9,
+        "decode_ms": 390.0,
+        "finish": "length",
+        "drafts_accepted": 23,
+        "drafts_offered": 25,
+        "reused": 0,
+        "hits": 13217,
+        "lookups": 16539,
+        "ram_blobs": 3921,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 256,
+        "offloaded": 741
+      },
+      "system_deltas": {
+        "pgmajfault": 0,
+        "pswpin": 0,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 4964.8828125,
+      "disk_read_mib": 0.6328125
+    }
+  ]
+}

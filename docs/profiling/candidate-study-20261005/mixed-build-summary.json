@@ -1,0 +1,10 @@
+[
+  {
+    "name": "r2-864-mixed",
+    "patch_sha256": "5f3de75fb23388a2032284b3c9877df433c060a956bca965c2769a92a39cbf2d",
+    "build_ok": true,
+    "build_s": 26.83672551699965,
+    "binary_sha256": "d05385045612b40cd9b832262b3e940c7655d413b4bcbe71f94a699e63f192a2",
+    "ctest_ok": true
+  }
+]

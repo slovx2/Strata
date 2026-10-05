@@ -1,0 +1,38 @@
+{
+  "baseline": "5bf523a9c0a5dfaf1cb14eaa3d4924c3f33cdf50",
+  "fork_parent": "4d494f3194c102fc0fd56bd8d7af1c0b00501e7b",
+  "community": [
+    {
+      "pr": 378,
+      "url": "https://github.com/Niko1221/Strata/pull/378",
+      "head": "d5ee0ccf9a2376dc6ff01c9baf5010621a459c81",
+      "title": "Elastic K/V (--kv-grow, opt-in): the K/V takes VRAM as the context grows, the expert cache holds the rest (+68% cache on a 16 GB card at 262K)"
+    },
+    {
+      "pr": 864,
+      "url": "https://github.com/Niko1221/Strata/pull/864",
+      "head": "92a65170b783ffd578646f617bf1059a1d4bdada",
+      "title": "perf: opt-in resident expert exchange buffer rotation"
+    },
+    {
+      "pr": 726,
+      "url": "https://github.com/Niko1221/Strata/pull/726",
+      "head": "ddce013646ddc4da9322e5e9ada4389318ad2c2d",
+      "title": "Add opt-in live RAM/VRAM expert cache resizing"
+    },
+    {
+      "pr": 783,
+      "url": "https://github.com/Niko1221/Strata/pull/783",
+      "head": "4327807fc39136b27c0c6c2b5af6636ff03693d4",
+      "title": "perf(cuda): fused decode/verify/MTP kernels and graph launch reductions on 0.1.39"
+    }
+  ],
+  "retained": "Adapted #378 plus local image-loan ownership and protected RAM complement",
+  "experimental_rotation": "#864 mixed-size extension not retained",
+  "stopped_by_user": [
+    "783 actual-long-context comparison",
+    "726 matched-budget performance",
+    "mixed rotation normal-cache ABBA",
+    "multi-candidate combination"
+  ]
+}

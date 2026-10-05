@@ -24,8 +24,11 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
+
+#include "strata/core/vmm.hpp"
 
 namespace strata::core {
 
@@ -199,7 +202,7 @@ public:
     /// new memory at the SAME addresses: every pointer the graphs captured (`device_slot`, the slot offsets) stays
     /// valid.  0 (the default) keeps the single allocation.  CUDA only; a HIP build refuses it in `open`.
     void set_lendable(uint64_t chunk_bytes) { lend_chunk_ = chunk_bytes; }
-    bool lendable() const { return !vmm_.empty(); }
+    bool lendable() const { return !vmm_.empty() || (elastic_vmm_ && lend_chunk_ > 0); }
     /// The first slot whose bytes `release_tail(bytes)` would unmap (even partly): `bytes` rounded up to whole
     /// chunks from the end, at most all but the first chunk.  -1 when the cache is not lendable or `bytes` is 0.
     int32_t tail_first_slot(uint64_t bytes) const;
@@ -212,6 +215,13 @@ public:
     bool remap_tail(std::string& err);
     /// Bytes released and not yet mapped again.
     uint64_t released_bytes() const;
+    /// The elastic K/V (--kv-grow): the arena in a VMM range (vmm.hpp) instead of one cudaMalloc, so the K/V can take
+    /// single chunks of it and give them back. Applies to the next `open`; ignored where VMM is not available.
+    static void set_vmm(bool enabled);
+    /// The arena's range (null: one cudaMalloc).
+    VmmRange* vmm_range() { return elastic_vmm_.get(); }
+    /// Byte offset of slot `s` in the arena (s == slots(): the end).
+    uint64_t slot_offset(int64_t s) const { return off_.empty() ? (uint64_t) s * (uint64_t) blob_ : off_[(size_t) s]; }
 
 private:
     struct VmmChunk {
@@ -242,6 +252,9 @@ private:
     std::vector<unsigned long long> segs_;   ///< #533: each segment's physical handle (0: unmapped)
     std::vector<int64_t> seg_size_;     ///< #533: each segment's size (the last one may be shorter)
     int64_t mapped_segs_ = 0;           ///< #533: segments [0, mapped_segs_) are backed
+    int64_t elastic_loan_begin_ = -1; // only the image loan; KV holes have a different owner
+    int64_t elastic_tail_begin(uint64_t bytes) const;
+    std::unique_ptr<VmmRange> elastic_vmm_;    ///< the arena's range when it is in VMM (set_vmm)
     std::vector<int32_t> residency_;   ///< [n_layers * n_expert] -> slot or kNotResident
     int64_t slots_ = 0;
     int64_t n_layers_ = 0;

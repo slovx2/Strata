@@ -1,0 +1,14 @@
+{
+  "test_completed": false,
+  "harness_assertion": "Expected repeated image to reborrow VRAM; image embedding cache legitimately avoided another loan",
+  "image_color_correct": true,
+  "same_pid": true,
+  "reclaim_with_full_kv_passed": true,
+  "kv_growth_cells": [
+    262144
+  ],
+  "kv_trim_cells": [
+    8192
+  ],
+  "followup": "kv-reloan-final uses distinct image dimensions to force a new encoder loan"
+}

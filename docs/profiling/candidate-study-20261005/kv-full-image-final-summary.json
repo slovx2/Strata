@@ -1,0 +1,131 @@
+{
+  "completed": false,
+  "context": 262144,
+  "keep_ram": true,
+  "engine": {
+    "version": "0.1.39",
+    "context": 262144,
+    "kv": "int8",
+    "kv_resident": 0,
+    "expert_slots": 4107,
+    "expert_cache_mib": 8028,
+    "expert_slots_primary": 4107,
+    "expert_cache_primary_mib": 8028,
+    "spec": 6,
+    "mtp_enabled": 1,
+    "mtp_max": 4,
+    "lookup": 3,
+    "vram_free_mib": 403,
+    "cvec": 0,
+    "arena_mib": 45862,
+    "pool_workers": 9,
+    "pcie_frac": "0.25",
+    "spec_min_p": "0.50",
+    "conversation_cache_mib": 0,
+    "conversation_cache_slots": 4,
+    "conversation_cache_min_free_mib": 2560,
+    "lendable": 1,
+    "vram_elastic": 0,
+    "engine": "0.1.39"
+  },
+  "last_image_checks": {
+    "color_correct": true,
+    "nonempty": true,
+    "same_pid": true,
+    "vision_loan": false
+  },
+  "reclaim_with_full_kv_passed": true,
+  "rows": [
+    {
+      "case": "image_before_full_capacity",
+      "input_tokens": 41,
+      "color_correct": true,
+      "same_pid": true,
+      "vision_loan": true,
+      "wall_s": 4.047647900999436,
+      "engine": {
+        "generated": 2,
+        "prompt_tokens": 41,
+        "prompt_ms": 545.1,
+        "decode_ms": 152.0,
+        "finish": "stop",
+        "drafts_accepted": 3,
+        "drafts_offered": 3,
+        "reused": 0,
+        "hits": 343,
+        "lookups": 1999,
+        "ram_blobs": 1710,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 41,
+        "offloaded": 401
+      }
+    },
+    {
+      "case": "network_262080",
+      "input_tokens": 262080,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": true,
+      "wall_s": 258.1407352210008,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 262080,
+        "prompt_ms": 257090.3,
+        "decode_ms": 996.4,
+        "finish": "length",
+        "drafts_accepted": 21,
+        "drafts_offered": 28,
+        "reused": 0,
+        "hits": 7305,
+        "lookups": 17489,
+        "ram_blobs": 9601,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 262080,
+        "offloaded": 2191
+      },
+      "system_deltas": {
+        "pgmajfault": 106,
+        "pswpin": 5,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 4590.43359375,
+      "disk_read_mib": 85.81640625
+    },
+    {
+      "case": "network_256",
+      "input_tokens": 256,
+      "emitted": 32,
+      "nonempty": true,
+      "same_pid": true,
+      "vision_loan": false,
+      "wall_s": 2.1985688820004725,
+      "engine": {
+        "generated": 32,
+        "prompt_tokens": 256,
+        "prompt_ms": 1262.9,
+        "decode_ms": 929.3,
+        "finish": "length",
+        "drafts_accepted": 20,
+        "drafts_offered": 32,
+        "reused": 0,
+        "hits": 12828,
+        "lookups": 20797,
+        "ram_blobs": 8331,
+        "file_blobs": 0,
+        "file_mb": 0.0,
+        "prompt_read": 256,
+        "offloaded": 1763
+      },
+      "system_deltas": {
+        "pgmajfault": 0,
+        "pswpin": 0,
+        "pswpout": 0
+      },
+      "min_available_ram_mib": 5095.921875,
+      "disk_read_mib": 3.14453125
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "deployed": true,
+  "control_directory": "/root/strata",
+  "release": "/mnt/data/strata-deploy/releases/0.1.39-elastic-kv-20261005",
+  "source_tree": "679d628f2bd640ba480717f744b6b683416ae374",
+  "binary_sha256": "23e04d4faae576ad031284589751e0af2912b90375e74f656cecf931681e68ed",
+  "enabled_flags": {
+    "STRATA_KV_GROW": "1",
+    "STRATA_KV_GROW_COMPLEMENT": "1",
+    "STRATA_KV_GROW_LEND": "1",
+    "STRATA_KV_GROW_KEEP_RAM": "1"
+  },
+  "initial_service_active": false,
+  "checks": {
+    "private_config_permissions": true,
+    "linux_root_directory": true
+  },
+  "final_service_active": false,
+  "autostart_state": "linked",
+  "baseline_config_unchanged": true,
+  "api_smoke": "Not run: user requested no further tests",
+  "control_scripts_runtime_test": "Not run: user requested no further tests; prior syntax checks passed"
+}

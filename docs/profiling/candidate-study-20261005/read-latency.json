@@ -1,0 +1,31 @@
+{
+  "completed": true,
+  "read_only": true,
+  "block_bytes": 4096,
+  "direct_io_requested": true,
+  "note": "O_DIRECT bypasses Linux file cache; this is the WSL storage path, not an isolated physical SSD verdict.",
+  "direct_io_supported": true,
+  "continuous": {
+    "reads": 65536,
+    "read_mib": 256.0,
+    "p50_ms": 0.26325199996790616,
+    "p95_ms": 0.4179150000709342,
+    "p99_ms": 0.45667999984289054,
+    "max_ms": 772.4479400003474,
+    "over_10ms": 6,
+    "over_100ms": 2,
+    "over_500ms": 1
+  },
+  "continuous_wall_s": 20.421323631999257,
+  "after_200ms_gap_between_reads": {
+    "reads": 32,
+    "read_mib": 0.125,
+    "p50_ms": 0.34917999983008485,
+    "p95_ms": 0.4808769999726792,
+    "p99_ms": 0.48670700016373303,
+    "max_ms": 0.5150340002728626,
+    "over_10ms": 0,
+    "over_100ms": 0,
+    "over_500ms": 0
+  }
+}

@@ -462,6 +462,12 @@ bool ExpertCache::ensure_blocking_staging(std::size_t bytes, std::string& err) {
 }
 #endif
 
+namespace {
+bool g_cache_vmm = false;   // set_vmm
+}  // namespace
+
+void ExpertCache::set_vmm(bool enabled) { g_cache_vmm = enabled; }
+
 bool ExpertCache::open(int64_t n_slots, int64_t n_layers, int64_t n_expert, int64_t blob_bytes,
                        std::string& err) {
     close();
@@ -497,10 +503,22 @@ bool ExpertCache::open(int64_t n_slots, int64_t n_layers, int64_t n_expert, int6
         }
     }
 
-    if (lend_chunk_ > 0) {
+    if (lend_chunk_ > 0 && !g_cache_vmm) {
         if (!open_vmm(want, err)) return false;   // a lendable cache: chunks of one address range (see the header)
     } else if (seg_req_ > 0) {   // #533: --vram-elastic: physical segments behind one address range (zeroed below)
         if (!open_segmented(want, err)) return false;
+    } else if (g_cache_vmm && vmm_available()) {
+        // the elastic K/V: every chunk mapped now; the K/V may later take some of them (and give them back)
+        auto r = std::make_unique<VmmRange>();
+        if (!r->reserve(want) || !r->map_range(0, r->chunks(), [] { return (strata::core::VmmChunk) 0; })) {
+            char buf[256];
+            std::snprintf(buf, sizeof buf, "ExpertCache: mapping %.2f GiB of VRAM failed: out of memory",
+                          (double) want / 1073741824.0);
+            err = buf;
+            return false;
+        }
+        base_ = r->base();
+        elastic_vmm_ = std::move(r);
     } else if (cudaMalloc((void**) &base_, (size_t) want) != cudaSuccess) {
         base_ = nullptr;
         char buf[256];
@@ -585,11 +603,15 @@ void ExpertCache::close() {
     off_.clear();
     if (!segs_.empty()) {
         release_segmented();
+    } else if (elastic_vmm_) {
+        elastic_vmm_.reset();   // unmaps and frees every chunk it still holds
+        base_ = nullptr;
     } else if (base_ != nullptr) {
         if (vmm_reserved_ > 0) close_vmm();
         else cudaFree(base_);
         base_ = nullptr;
     }
+    elastic_loan_begin_ = -1;
     residency_.clear();
     slots_ = 0;
     live_slots_ = 0;
@@ -858,7 +880,26 @@ size_t ExpertCache::tail_chunks(uint64_t bytes) const {
     return k;
 }
 
+int64_t ExpertCache::elastic_tail_begin(uint64_t bytes) const {
+    if (!elastic_vmm_ || !lend_chunk_ || !bytes) return -1;
+    const uint64_t g = vmm_granularity();
+    if (!g) return -1;
+    const uint64_t unit = std::max(lend_chunk_, g);
+    const uint64_t total = (uint64_t) elastic_vmm_->chunks() * g;
+    if (bytes > total || bytes > UINT64_MAX - (unit - 1)) return -1;
+    const uint64_t want = ((bytes + unit - 1) / unit) * unit;
+    if (total <= unit || want > total - unit) return -1;
+    return (int64_t) ((total - want) / g);
+}
+
 int32_t ExpertCache::tail_first_slot(uint64_t bytes) const {
+    if (elastic_vmm_) {
+        const int64_t begin = elastic_tail_begin(bytes);
+        if (begin < 0) return -1;
+        const uint64_t start = (uint64_t) begin * vmm_granularity();
+        if (off_.empty()) return (int32_t) std::min<int64_t>(slots_, (int64_t) (start / (uint64_t) blob_));
+        return (int32_t) (std::upper_bound(off_.begin() + 1, off_.end(), start) - (off_.begin() + 1));
+    }
     const size_t k = tail_chunks(bytes);
     if (k == 0) return -1;
     const uint64_t start = vmm_[vmm_.size() - k].off;
@@ -868,6 +909,21 @@ int32_t ExpertCache::tail_first_slot(uint64_t bytes) const {
 }
 
 uint64_t ExpertCache::release_tail(uint64_t bytes, std::string& err) {
+    if (elastic_vmm_) {
+        if (elastic_loan_begin_ >= 0) return released_bytes();
+        const int64_t begin = elastic_tail_begin(bytes);
+        if (begin < 0) { err = "elastic cache: invalid image loan size"; return 0; }
+        // KV and images have separate ownership: never release an existing KV hole.
+        for (int64_t c = begin; c < elastic_vmm_->chunks(); ++c)
+            if (!elastic_vmm_->mapped(c)) { err = "elastic cache: image loan overlaps KV storage"; return 0; }
+        elastic_loan_begin_ = begin;
+        for (int64_t c = begin; c < elastic_vmm_->chunks(); ++c) {
+            const auto h = elastic_vmm_->unmap(c);
+            if (!h) { err = "elastic cache: image loan unmap failed"; return 0; }
+            vmm_chunk_free(h);
+        }
+        return released_bytes();
+    }
 #if defined(STRATA_EC_NO_VMM)
     (void) bytes;
     err = "ExpertCache: not lendable in a HIP build";
@@ -895,6 +951,15 @@ uint64_t ExpertCache::release_tail(uint64_t bytes, std::string& err) {
 }
 
 bool ExpertCache::remap_tail(std::string& err) {
+    if (elastic_vmm_) {
+        if (elastic_loan_begin_ < 0) return true;
+        if (!elastic_vmm_->map_range(elastic_loan_begin_, elastic_vmm_->chunks(), [] { return (strata::core::VmmChunk) 0; })) {
+            err = "elastic cache: remapping image loan failed";
+            return false;
+        }
+        elastic_loan_begin_ = -1;
+        return true;
+    }
 #if defined(STRATA_EC_NO_VMM)
     err = "ExpertCache: not lendable in a HIP build";
     return false;
@@ -932,6 +997,12 @@ bool ExpertCache::remap_tail(std::string& err) {
 
 uint64_t ExpertCache::released_bytes() const {
     uint64_t b = 0;
+    if (elastic_vmm_) {
+        if (elastic_loan_begin_ < 0) return 0;
+        for (int64_t c = elastic_loan_begin_; c < elastic_vmm_->chunks(); ++c)
+            if (!elastic_vmm_->mapped(c)) b += vmm_granularity();
+        return b;
+    }
     for (const VmmChunk& c : vmm_)
         if (c.handle == 0) b += c.bytes;
     return b;

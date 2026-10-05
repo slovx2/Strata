@@ -1,0 +1,12 @@
+[
+  {
+    "test": "--rotation-gpu",
+    "returncode": 0,
+    "seconds": 5.176981327000249
+  },
+  {
+    "test": "--mixed-rotation-gpu",
+    "returncode": 0,
+    "seconds": 4.682033713999772
+  }
+]

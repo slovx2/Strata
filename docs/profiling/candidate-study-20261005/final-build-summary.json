@@ -1,0 +1,10 @@
+[
+  {
+    "name": "r2-final-kv",
+    "patch_sha256": "aa00e510f24db3355982afc5ebac320e71a40a1c64b8565d5c9fe4454014df9d",
+    "build_ok": true,
+    "build_s": 53.32846675200017,
+    "binary_sha256": "23e04d4faae576ad031284589751e0af2912b90375e74f656cecf931681e68ed",
+    "ctest_ok": true
+  }
+]
